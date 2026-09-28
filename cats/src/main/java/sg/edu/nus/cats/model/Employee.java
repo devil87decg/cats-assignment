@@ -1,36 +1,54 @@
 package sg.edu.nus.cats.model;
 
-import jakarta.persistence.Column;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
-@Data
-@ToString
 @Entity
-@Table(name = "employees")
+@Data
+@NoArgsConstructor
 public class Employee {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private String name;
+	private BigDecimal trainingBudget;
+	private BigDecimal trainingDays;
+	@Enumerated(EnumType.STRING)
+	private Designation designation;
+	@Enumerated(EnumType.STRING)
+	private Role role;
+	private long supervisorId;
+	private String email;
+	private String password;
+	
 
-	@Column(name = "first_name", nullable = false, length = 50)
-	@NotBlank(message = "First name is required")
-	private String firstName;
+	/*
+	 * @ManyToOne
+	 * 
+	 * @JoinColumn(name = "supervisor_id") private Employee supervisor;
+	 */
 	
-	@Column(name = "last_name", nullable = false, length = 50)
-	@NotBlank(message = "Last name is required")
-	private String lastName;
-	
-	@Column(name = "contact_number", nullable = false, length = 15)
-	@NotBlank(message = "Contact number is required")
-	@Pattern(regexp = "^\\+65?[0-9]{8}$", message = "Contact number must be valid Singapore Number") 
-	private String contactNumber;
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+	private List<CourseApplication> applications = new ArrayList<>();
+
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+	private List<Course> courses = new ArrayList<>();
+
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+	private List<CourseApplication> approved = new ArrayList<>();
+	// ---------- helpers that keep both sides in sync ----------
+
 }

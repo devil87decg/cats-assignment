@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Keep local database credentials off GitHub.
+src/main/resources/application-local.properties
+
+# Ignore macOS folder metadata.
+.DS_Store

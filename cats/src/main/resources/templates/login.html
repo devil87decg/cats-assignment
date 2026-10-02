@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	
+<head>
+	
+	<meta charset="UTF-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- Load the shared CATS stylesheet -->
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+	
+	<title>Login | CATS</title>
+</head>
+
+<body>
+	
+	<!-- Show the supplied heading, or the default for the shared login URL -->
+	<h1 th:text="${loginTitle != null ? loginTitle : 'CATS Login'}">CATS Login</h1>
+	
+	<!-- Show the supplied description, or the shared login description -->
+	<p th:text="${loginDescription != null ? loginDescription : 'Sign in to view your course application(s).'}">
+		Sign in to view your course applications
+	</p>
+	
+	<p th:if="${error}" th:text="${error}"></p>
+	
+	<form action="/login" method="post">
+		
+		<p>
+			<label for="username">Username</label>
+			<input type="text" id="username" name="username" required>
+		</p>
+		
+		<p> 
+			<label for="password">Password</label>
+			<input type="password" id="password" name="password" required>
+		</p>
+		
+		<button type="submit">Sign in</button>
+		
+	</form>
+	
+	<!-- Show test accounts for local demo. -->
+	<h2>Demo accounts</h2>
+
+	<table>
+	    <thead>
+	        <tr>
+	            <th>Username</th>
+	            <th>Password</th>
+	            <th>Role</th>
+	            <th>What to try</th>
+	        </tr>
+	    </thead>
+
+	    <tbody>
+	        <tr>
+	            <td>admin</td>
+	            <td>CatsDemo123!</td>
+	            <td>Administrator</td>
+	            <td>Create accounts, employee profiles and allowances.</td>
+	        </tr>
+
+	        <tr>
+	            <td>manager1</td>
+	            <td>ManagerTest123!</td>
+	            <td>Manager</td>
+	            <td>Review Xiang Xuan's and Ratbert's applications and history.</td>
+	        </tr>
+
+	        <tr>
+	            <td>manager2</td>
+	            <td>ManagerTest456!</td>
+	            <td>Manager</td>
+	            <td>Test a manager with no assigned subordinates.</td>
+	        </tr>
+			
+			<tr>
+			    <td>xiang xuan</td>
+			    <td>CatsDemo123@</td>
+			    <td>Employee — xiang xuan</td>
+			    <td>Submit and manage personal course applications.</td>
+			</tr>
+
+	        <tr>
+	            <td>employee2</td>
+	            <td>EmployeeTest123!</td>
+	            <td>Employee — Ratbert</td>
+	            <td>Submit and manage personal course applications.</td>
+	        </tr>
+	    </tbody>
+	</table>
+	
+</body>
+
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" th:href="@{/css/cats.css}">
+
+    <title>Application Details | CATS</title>
+</head>
+
+<body>
+
+    <!-- Provide navigation back to the application list and home page. -->
+    <nav>
+        <a href="/applications">My applications</a>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <h1>Application Details</h1>
+
+    <!-- Display feedback supplied by the controller. -->
+    <p class="message message-success"
+       th:if="${success}"
+       th:text="${success}">
+    </p>
+
+    <p class="message message-error"
+       th:if="${error}"
+       th:text="${error}">
+    </p>
+
+    <!-- Display application details with labels in the left column. -->
+    <table class="detail-table">
+        <tbody>
+
+            <tr>
+                <th scope="row">Course title</th>
+                <td th:text="${courseRequest.courseTitle}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Category</th>
+                <td th:text="${courseRequest.category}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Training provider</th>
+                <td th:text="${courseRequest.trainingProvider}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Start date</th>
+                <td th:text="${courseRequest.startDate}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">End date</th>
+                <td th:text="${courseRequest.endDate}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Training days</th>
+                <td th:text="${courseRequest.durationDays}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Half-day session</th>
+                <td th:text="${courseRequest.halfDay ? 'Yes' : 'No'}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Course fee (S$)</th>
+                <td th:text="${courseRequest.fee}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Justification</th>
+                <td th:text="${courseRequest.justification}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Work dissemination during the course</th>
+                <td th:text="${courseRequest.workDissemination}"></td>
+            </tr>
+
+            <tr>
+                <th scope="row">Status</th>
+                <td th:text="${courseRequest.status}"></td>
+            </tr>
+
+            <!-- Display the manager's reason when one has been recorded. -->
+            <tr th:if="${courseRequest.managerReason != null}">
+                <th scope="row">Manager's reason</th>
+                <td th:text="${courseRequest.managerReason}"></td>
+            </tr>
+
+            <!-- Format the decision date without seconds or fractions. -->
+            <tr th:if="${courseRequest.decisionDate != null}">
+                <th scope="row">Decision date</th>
+                <td th:text="${#temporals.format(
+                        courseRequest.decisionDate, 'dd MMM yyyy, HH:mm')}">
+                </td>
+            </tr>
+
+            <tr th:if="${courseRequest.decidedBy != null}">
+                <th scope="row">Decided by</th>
+                <td th:text="${courseRequest.decidedBy.name}"></td>
+            </tr>
+
+            <tr th:if="${courseRequest.experienceComment != null}">
+                <th scope="row">Experience comments</th>
+                <td th:text="${courseRequest.experienceComment}"></td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <!-- Allow editing only while the application is pending. -->
+    <p th:if="${courseRequest.status.name() == 'APPLIED'
+            or courseRequest.status.name() == 'UPDATED'}">
+
+        <a class="button"
+           th:href="@{/applications/{id}/edit(id=${courseRequest.id})}">
+            Edit application
+        </a>
+    </p>
+
+    <!-- Submit a request to mark a pending application as deleted. -->
+    <form th:if="${courseRequest.status.name() == 'APPLIED'
+            or courseRequest.status.name() == 'UPDATED'}"
+          th:action="@{/applications/{id}/delete(id=${courseRequest.id})}"
+          method="post">
+
+        <button type="submit" class="button-danger">
+            Delete application
+        </button>
+
+    </form>
+
+    <!-- Submit a cancellation request for an approved application. -->
+    <form th:if="${courseRequest.status.name() == 'APPROVED'}"
+          th:action="@{/applications/{id}/cancel(id=${courseRequest.id})}"
+          method="post">
+
+        <button type="submit" class="button-danger">
+            Cancel application
+        </button>
+
+    </form>
+
+    <!-- Submit experience comments and request completion of the course. -->
+    <form th:if="${courseRequest.status.name() == 'APPROVED'}"
+          th:action="@{/applications/{id}/complete(id=${courseRequest.id})}"
+          method="post">
+
+        <h2>Record attendance</h2>
+
+        <p>The course must have ended before you can mark it as attended.</p>
+
+        <p>
+            <label for="experienceComment">Experience comments</label>
+
+            <textarea id="experienceComment"
+                      name="experienceComment"
+                      rows="4"
+                      required></textarea>
+        </p>
+
+        <button type="submit">Mark as attended</button>
+
+    </form>
+
+</body>
+
+</html>

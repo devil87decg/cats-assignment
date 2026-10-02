@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+
+	<title>Review Application | CATS</title>
+
+</head>
+
+<body>
+
+	<nav>
+		<a href="/manager/applications">Pending applications</a>
+		<a href="/manager/subordinates">Subordinate course history</a>
+		<a href="/">Home</a>
+		<a href="/logout">Logout</a>
+	</nav>
+
+	<h1>Review Course Application</h1>
+
+	<!-- Display each application detail beside its label. -->
+	<table class="detail-table">
+		<tbody>
+			<tr>
+				<th scope="row">Employee</th>
+				<td th:text="${courseRequest.employee.name}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Course title</th>
+				<td th:text="${courseRequest.courseTitle}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Category</th>
+				<td th:text="${courseRequest.category}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Training provider</th>
+				<td th:text="${courseRequest.trainingProvider}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Start date</th>
+				<td th:text="${courseRequest.startDate}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">End date</th>
+				<td th:text="${courseRequest.endDate}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Training days</th>
+				<td th:text="${courseRequest.durationDays}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Half-day session</th>
+				<td th:text="${courseRequest.halfDay ? 'Yes' : 'No'}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Course fee (S$)</th>
+				<td th:text="${courseRequest.fee}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Justification</th>
+				<td th:text="${courseRequest.justification}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Work dissemination during the course</th>
+				<td th:text="${courseRequest.workDissemination}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Status</th>
+				<td th:text="${courseRequest.status}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- Keep annual usage outside the conditional decision form. -->
+	<h2>Annual Training Usage</h2>
+
+	<p>
+		<strong>Year:</strong>
+		<span th:text="${courseYear}"></span>
+	</p>
+
+	<p>
+		<strong>Training days reserved and used:</strong>
+		<span th:text="${usedDays}"></span>
+	</p>
+
+	<p>
+		<strong>External course and certification fees reserved and used ($):</strong>
+		<span th:text="${usedFees}"></span>
+	</p>
+
+	<p>
+		These totals include pending, approved, and completed applications,
+		including this application when it has one of those statuses.
+	</p>
+
+	<!-- Show other staff who have approved courses during this period -->
+	<h2>Other staff attending training during this period</h2>
+
+	<!-- Display this message when no matching courses were found -->
+	<p th:if="${#lists.isEmpty(otherApprovedApplications)}">
+	    No other subordinates have approved courses during this period.
+	</p>
+
+	<!-- Display the table only when matching courses exist -->
+	<table th:if="${!#lists.isEmpty(otherApprovedApplications)}">
+	    <thead>
+	        <tr>
+	            <th>Employee ID</th>
+	            <th>Employee</th>
+	            <th>Course title</th>
+	            <th>Start date</th>
+	            <th>End date</th>
+	        </tr>
+	    </thead>
+
+	    <tbody>
+	        <!-- Display one row for each matching approved course -->
+	        <tr th:each="approvedCourse : ${otherApprovedApplications}">
+	            <td th:text="${approvedCourse.employee.id}"></td>
+	            <td th:text="${approvedCourse.employee.name}"></td>
+	            <td th:text="${approvedCourse.courseTitle}"></td>
+	            <td th:text="${approvedCourse.startDate}"></td>
+	            <td th:text="${approvedCourse.endDate}"></td>
+	        </tr>
+	    </tbody>
+	</table>
+	
+	<!-- Display decision controls only for pending applications -->
+	<form th:if="${courseRequest.status.name() == 'APPLIED'
+            or courseRequest.status.name() == 'UPDATED'}"
+		th:action="@{/manager/applications/{id}/decide(id=${courseRequest.id})}" method="post">
+
+		<p>
+			<label for="reason">Reason for decision</label>
+			<textarea id="reason" name="reason" rows="4" required></textarea>
+		</p>
+
+		<button type="submit" name="approved" value="true">
+			Approve application
+		</button>
+
+		<button type="submit" name="approved" value="false">
+			Reject application
+		</button>
+
+	</form>
+
+</body>
+
+</html>

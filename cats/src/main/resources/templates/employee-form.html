@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head> 
+	
+	<meta charset="UTF-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+	
+	<title>Create Employee Profile | CATS</title>
+
+</head>
+
+<body>
+	
+	<nav>
+		<a href="/admin">Adminstration</a>
+	</nav>
+	
+	<h1>Create Employee Profile</h1>
+	<p>Link a login account to a staff profile</p>
+	
+	<!-- Display the success message when one is available. -->
+	<p th:if="${success}" th:text="${success}"></p>
+	
+	<!-- Display the error message when one is available. -->
+	<p th:if="${error}" th:text="${error}"></p>
+	
+	<!-- Send the entered employee profile details to /admin/employees using POST when the form is submitted. -->
+	<form action="/admin/employees" method="post">
+	
+	<!-- Enter the ID of the existing login account to link to this profile. -->
+	<p>
+		<label for="userId">Login account ID</label>
+		<input type="number" id="userId" name="userId" min="1" required>
+	</p>	
+	
+	<!-- Enter the staff member's name for the employee profile. -->
+	<p>
+		<label for="name">Employee name</label>
+		<input type="text" id="name" name="name" required>
+	</p>
+	
+	<p>
+		<label for="designation">Desgination (optional)</label>
+		<input type="text" id="designation" name="designation">
+	</p>
+	
+	<p>
+		<label for="department">Department (optional)</label>
+		<input type="text" id="department" name="department"></input>
+	</p>
+	
+	<!-- Show the staff category choices supplied by the controller. -->
+	<p>
+		<label for="staffCategory">Staff category</label>
+		<select id="staffCategory" name="staffCategory" required>
+			<option value ="">Select a staff category</option>
+			<option th:each="category : ${staffCategories}"
+				th:value="${category}"
+				th:text="${category}">
+			</option>
+		</select>
+	</p>
+	
+	<p>
+		<label for="supervisorId">Supervisor employee ID (optional)</label>
+		<input type="number" id="supervisorId" name="supervisorId" min="1">
+	</p>
+	
+	<button type="submit">Create employee profile</button>
+		
+	</form>
+	
+</body>
+</html>

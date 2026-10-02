@@ -189,4 +189,25 @@ public class EmployeeService {
 	public List<Employee> findManagers() {
 		return employees.findByUserRole(Role.MANAGER);
 	}
+	
+	// Delete an existing employee profile
+	public void deleteEmployee(Long employeeId) {
+		
+		// Find the employee first
+		Employee employee = employees.findById(employeeId)
+				.orElseThrow(() ->
+					new IllegalArgumentException("Employee not found"));
+		
+		// Check whether other employees report to this employee
+		List<Employee> subordinates =
+				employees.findBySupervisorId(employeeId);
+		
+		if (!subordinates.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Cannot delete employee because they are currently assigned as a supervisor");
+		}
+		
+		// Delete the employee profile
+		employees.delete(employee);
+	}
 }

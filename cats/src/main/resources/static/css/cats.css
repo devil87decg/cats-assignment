@@ -1,0 +1,468 @@
+/* CATS stylesheet
+   Save as src/main/resources/static/css/cats.css.
+   Same plain CSS approach as Choppee: colours, elements, classes,
+   forms, buttons, tables and one responsive section.
+   CATS colours and class names match our wireframe and setup guide. */
+
+/* CATS shared stylesheet. Place in src/main/resources/static/css/cats.css.
+   Works with current nav, form, p and table tags. Optional classes below
+   reproduce the two-column forms, cards and status badges in the wireframe. */
+:root {
+    --navy: #193b50;
+    --teal: #17778e;
+    --teal-hover: #105c70;
+    --background: #f3f7fa;
+    --surface: #ffffff;
+    --text: #243f50;
+    --muted: #627585;
+    --border: #cbdde7;
+    --tint: #e8f1f5;
+    --success: #176244;
+    --danger: #a73232;
+    --radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 28px auto;
+    padding: 0 24px 40px;
+    max-width: 1180px;
+    background: var(--background);
+    color: var(--text);
+    font: 16px/1.6 Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3 {
+    color: var(--navy);
+    line-height: 1.25;
+}
+
+h1 {
+    font-size: 32px;
+    margin: 28px 0 16px;
+}
+
+h2 {
+    font-size: 23px;
+    margin: 30px 0 16px;
+}
+
+h3 {
+    font-size: 18px;
+    margin: 0 0 12px;
+}
+
+p {
+    margin: 0 0 18px;
+}
+
+a {
+    color: var(--teal);
+    text-underline-offset: 3px;
+}
+
+a:hover {
+    color: var(--teal-hover);
+}
+
+nav, .site-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    padding: 16px 22px;
+    background: var(--navy);
+    border-radius: var(--radius);
+    color: white;
+    margin-bottom: 24px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 0;
+}
+
+nav a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+nav .brand {
+    font-size: 19px;
+    font-weight: 700;
+    margin-right: auto;
+    letter-spacing: .04em;
+}
+
+nav a[aria-current="page"] {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+main, .panel, .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px;
+}
+
+main h1:first-child {
+    margin-top: 0;
+}
+
+.panel, .card {
+    margin-bottom: 20px;
+}
+
+.card h2:first-child, .panel h2:first-child {
+    margin-top: 0;
+}
+
+.muted, .help-text {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.grid-two, .details-grid, .form-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.grid-three, .admin-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Flexbox arranges the fields or cards beside each other. */
+.form-grid > p, .grid-two > *, .details-grid > * {
+    flex: 1 1 45%;
+}
+
+.grid-three > *, .admin-grid > * {
+    flex: 1 1 30%;
+}
+
+.form-grid > .full-width {
+    flex-basis: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 20px 0;
+}
+
+form p {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0 0 7px;
+    color: var(--navy);
+}
+
+input, select, textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    background: white;
+    font: inherit;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 105px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: 3px solid #b7dde6;
+    outline-offset: 1px;
+    border-color: var(--teal);
+}
+
+input[type="checkbox"], input[type="radio"] {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    vertical-align: middle;
+    accent-color: var(--teal);
+}
+
+input[type="checkbox"] + label, input[type="radio"] + label {
+    display: inline;
+    margin-left: 7px;
+}
+
+input[type="file"] {
+    padding: 9px;
+}
+
+input[readonly], input:disabled, select:disabled, textarea:disabled {
+    background: #edf2f5;
+}
+
+button, .button {
+    display: inline-block;
+    text-align: center;
+    min-height: 42px;
+    padding: 10px 18px;
+    border: 1px solid var(--teal);
+    border-radius: 6px;
+    background: var(--teal);
+    color: white;
+    font: 700 14px/1.4 Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    margin: 4px 8px 4px 0;
+}
+
+button:hover, .button:hover {
+    background: var(--teal-hover);
+    color: white;
+}
+
+button:focus, a:focus {
+    outline: 3px solid #79bdcd;
+    outline-offset: 3px;
+}
+
+.button-secondary {
+    background: white;
+    color: var(--teal);
+}
+
+.button-secondary:hover {
+    background: var(--tint);
+    color: var(--teal-hover);
+}
+
+.button-danger, button[name="approved"][value="false"] {
+    background: white;
+    color: var(--danger);
+    border-color: #c88181;
+}
+
+.button-danger:hover, button[name="approved"][value="false"]:hover {
+    background: #fff0f0;
+    color: var(--danger);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 22px 0;
+    overflow: hidden;
+}
+
+th, td {
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+th {
+    background: var(--tint);
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+td {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+tbody tr:hover {
+    background: #f7fafc;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.table-scroll table {
+    min-width: 720px;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--tint);
+}
+
+.status-approved, .status-completed {
+    color: var(--success);
+    background: #e9f5ef;
+}
+
+.status-applied, .status-updated {
+    color: #76581c;
+    background: #fff7df;
+}
+
+.status-rejected {
+    color: var(--danger);
+    background: #fceeee;
+}
+
+.status-deleted, .status-cancelled {
+    color: #596775;
+    background: #edf0f3;
+}
+
+.message {
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 18px 0;
+}
+
+.message-success {
+    color: var(--success);
+    background: #edf8f1;
+    border-color: #b9dbc8;
+}
+
+.message-error {
+    color: var(--danger);
+    background: #fff0f0;
+    border-color: #e6bcbc;
+}
+
+.usage {
+    background: var(--tint);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 24px 0;
+}
+
+.usage h2 {
+    margin-top: 0;
+}
+
+.login-page {
+    max-width: 520px;
+    padding-top: 50px;
+}
+
+.login-page main, .login-card {
+    padding: 30px;
+}
+
+.login-page form {
+    border: 0;
+    padding: 0;
+}
+
+.login-page button {
+    width: 100%;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 22px 0;
+}
+
+footer {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 20px 0;
+}
+
+
+@media (max-width: 760px) {
+
+body {
+    margin-top: 12px;
+    padding: 0 12px 28px;
+}
+
+nav {
+    gap: 10px 18px;
+    padding: 14px 16px;
+}
+
+main, .panel, .card, form {
+    padding: 18px;
+}
+
+.grid-two, .details-grid, .form-grid, .grid-three, .admin-grid, .filter-row {
+    flex-direction: column;
+}
+
+.page-header {
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+th, td {
+    padding: 10px;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+}
+
+.detail-table th {
+    width: 30%;
+}
+
+.detail-table td {
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+
+}

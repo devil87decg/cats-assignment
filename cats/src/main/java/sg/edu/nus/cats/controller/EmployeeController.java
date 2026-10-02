@@ -231,4 +231,45 @@ public class EmployeeController {
 			return "redirect:/admin/employees/" + id + "/edit";
 		}
 	}
+	
+	// Delete employee
+	@PostMapping("/admin/employees/{id}/delete")
+	public String deleteEmployee(
+			@PathVariable Long id,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		if (userId == null) {
+			return "redirect:/login";
+		}
+		
+		User user = users.findById(userId).orElse(null);
+		
+		if (user == null) {
+			return "redirect:/login";
+		}
+		
+		if (!user.isActive() || user.getRole() != Role.ADMIN) {
+			return "redirect:/";
+		}
+		
+		try {
+			
+			employeeService.deleteEmployee(id);
+			
+			redirectAttributes.addFlashAttribute(
+					"success",
+					"Employee profile deleted successfully");
+			
+		} catch (IllegalArgumentException e) {
+			
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+		}
+		
+		return "redirect:/admin/employees";
+	}
 }

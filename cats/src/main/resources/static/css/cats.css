@@ -464,5 +464,20 @@ table {
     white-space: pre-wrap;
 }
 
+} /* End the small-screen styles. */
 
+/* Style the history filters on all screen sizes. */
+.history-filter a {
+    display: inline-block;
+    margin-right: 12px;
+    margin-bottom: 8px;
+    padding: 8px 16px;
+    background-color: #193d50;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.history-filter a:hover {
+    background-color: #286078;
 }

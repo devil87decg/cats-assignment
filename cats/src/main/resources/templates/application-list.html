@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	
+<head>
+	
+	<meta charset="UTF-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+	
+	<title>My Applications | CATS</title>
+	
+</head>
+		
+<body>
+	
+		<!-- Provide links to the home page, application form, and logout -->
+		<nav>
+			<a href="/">Home</a>
+			<a href="/applications/new">New application</a>
+			<a href="/logout">Logout</a>
+		</nav>
+	
+		<h1>My Applications</h1>
+			
+		<p th:if="${success}" th:text="${success}"></p>
+		
+		<!-- Display an error carried here after a redirect. -->
+		<p th:if="${error}" th:text="${error}"></p>
+			
+		<!-- Display the year supplied by the controller -->
+		<p th:text="'Applications for ' + ${currentYear}"></p>
+		
+		<!-- Show this message only when the application list is empty -->
+		<p th:if="${#lists.isEmpty(applications)}">You have no course application for this year.</p>
+
+		<!-- Define the column headings -->
+		<table th:if="${!#lists.isEmpty(applications)}">
+			<thead>
+				<tr>
+					<th>Course title</th>
+					<th>Category</th>
+					<th>Start date</th>
+					<th>End date</th>
+					<th>Training days</th>
+					<th>Fee ($)</th>
+					<th>Status</th>
+					<th>Details</th>
+				</tr>
+			</thead>
+			<!-- Repeat this row for each application in the list -->
+			<tbody>
+				<tr th:each="courseRequest : ${applications}">
+					<td th:text="${courseRequest.courseTitle}"></td>
+					<td th:text="${courseRequest.category}"></td>	
+					<td th:text="${courseRequest.startDate}"></td>	
+					<td th:text="${courseRequest.endDate}"></td>
+					<td th:text="${courseRequest.durationDays}"></td>
+					<td th:text="${courseRequest.fee}"></td>
+					<td th:text="${courseRequest.status}"></td>
+					<td>
+						<a th:href="@{/applications/{id}(id=${courseRequest.id})}">View details</a>
+					</td>																					
+				</tr>
+				
+			</tbody>
+			
+		</table>
+		
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head> 
+	
+	<meta charset="UTF-8">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+	
+	<title>Subordinate Course History | CATS</title> 
+	
+</head>
+
+<body>
+	
+	<nav>
+		<a href="/">Home</a>
+		<a href="/manager/applications">Review applications</a>
+		<a href="/logout">Logout</a>
+	</nav>
+	
+	<h1>Subordinate Course History</h1>
+	
+	<p>Select an employee to view their course application history.</p>
+	
+	<!-- Show a message when the manager has no direct subordinates.-->
+	<p th:if="${#lists.isEmpty(subordinates)}">
+	    No employees are currently assigned to you.
+	</p>
+
+	<!-- Show the employee table when subordinates exist -->
+	<table th:if="${!#lists.isEmpty(subordinates)}">
+	    <thead>
+	        <tr>
+	            <th>Employee ID</th>
+	            <th>Employee name</th>
+	            <th>Staff category</th>
+				<th>History</th>
+	        </tr>
+	    </thead>
+
+	    <tbody>
+	        <!-- Display one row for each subordinate supplied by the controller -->
+	        <tr th:each="employee : ${subordinates}">
+	            <td th:text="${employee.id}"></td>
+	            <td th:text="${employee.name}"></td>
+	            <td th:text="${employee.staffCategory}"></td>
+				<td>
+					<a th:href="@{/manager/subordinates/{id}/history(id=${employee.id})}">View course history</a>
+				</td>
+	        </tr>
+	    </tbody>
+	</table>
+	
+</body>
+
+
+</html>

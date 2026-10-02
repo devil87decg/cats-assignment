@@ -463,9 +463,291 @@ table {
     overflow-wrap: break-word;
     white-space: pre-wrap;
 }
+}
 
-} /* End the small-screen styles. */
+/* ---------- General ---------- */
 
+* {
+	box-sizing: border-box;
+}
+
+body {
+	/*margin: 0; */
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: #f4f7f9;
+	color: #1f2933;
+}
+
+.container {
+	width: 90%;
+	max-width: 1100px;
+	margin: 40px auto;
+}
+
+h1 {
+	color: #173f55;
+	margin-bottom: 8px;
+}
+
+.page-description {
+	color: #667784;
+	margin-top: 0;
+	margin-bottom: 28px;
+}
+
+
+/* ---------- Navigation ---------- */
+
+.navbar {
+	background-color: #173f55;
+	padding: 18px 22px;
+	border-radius: 8px;
+	margin-bottom: 30px;
+}
+
+.navbar a {
+	color: white;
+	text-decoration: none;
+	margin-right: 25px;
+	font-size: 14px;
+}
+
+.navbar a:hover {
+	text-decoration: underline;
+}
+
+
+/* ---------- Cards ---------- */
+
+.card {
+	background-color: white;
+	border-radius: 8px;
+	padding: 24px;
+	margin-bottom: 24px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ---------- Tables ---------- */
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+.table th,
+.table td {
+	padding: 12px 14px;
+	text-align: left;
+	border-bottom: 1px solid #dce3e8;
+}
+
+.table th {
+	background-color: #173f55;
+	color: white;
+	font-weight: 600;
+}
+
+.table tbody tr:hover {
+	background-color: #f2f6f8;
+}
+
+
+/* ---------- Forms ---------- */
+
+.form-group {
+	margin-bottom: 18px;
+}
+
+.form-group label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+.form-control {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid #cbd5dc;
+	border-radius: 5px;
+	font-size: 14px;
+}
+
+.form-control:focus {
+	outline: none;
+	border-color: #287ca3;
+}
+
+
+/* ---------- Buttons ---------- */
+
+.btn {
+	display: inline-block;
+	padding: 10px 16px;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.btn-primary {
+	background-color: #173f55;
+	color: white;
+}
+
+.btn-primary:hover {
+	background-color: #245d79;
+}
+
+.btn-secondary {
+	background-color: #e7edf1;
+	color: #263943;
+}
+
+.btn-secondary:hover {
+	background-color: #d8e1e6;
+}
+
+.btn-small {
+	padding: 6px 10px;
+}
+
+
+/* ---------- Messages ---------- */
+
+.alert {
+	padding: 12px 16px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+}
+
+.alert-success {
+	background-color: #e7f5ec;
+	color: #27643b;
+	border: 1px solid #b9dfc5;
+}
+
+.alert-error {
+	background-color: #fdeaea;
+	color: #9b2c2c;
+	border: 1px solid #f1bbbb;
+}
+
+
+/* ---------- Actions ---------- */
+
+.page-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+/* ---------- Page Header ---------- */
+
+.app-header {
+	margin-bottom: 30px;
+}
+
+.app-title {
+	margin: 0;
+	color: #173f55;
+	font-size: 32px;
+}
+
+.app-subtitle {
+	margin-top: 6px;
+	color: #667784;
+}
+
+
+/* ---------- Dashboard ---------- */
+
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+}
+
+.dashboard-card {
+	background-color: white;
+	border-radius: 8px;
+	padding: 24px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h2 {
+	margin-top: 0;
+	color: #173f55;
+	font-size: 20px;
+}
+
+.dashboard-card p {
+	color: #667784;
+	line-height: 1.5;
+	min-height: 48px;
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+
+	.dashboard-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.page-actions {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+}
+
+/* ---------- Action Buttons ---------- */
+
+.action-buttons {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.action-buttons form {
+	margin: 0;
+}
+
+
+/* ---------- Danger Button ---------- */
+
+.btn-danger {
+	background-color: #b42318;
+	color: white;
+}
+
+.btn-danger:hover {
+	background-color: #8f1c13;
+}
+
+
+.action-column {
+	width: 160px;
+	min-width: 160px;
+}
+
+.employee-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.employee-actions form {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
 /* Style the history filters on all screen sizes. */
 .history-filter a {
     display: inline-block;

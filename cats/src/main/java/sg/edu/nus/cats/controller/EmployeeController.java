@@ -2,18 +2,19 @@ package sg.edu.nus.cats.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
+import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.EmployeeService;
-
-import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class EmployeeController {
@@ -116,4 +117,159 @@ public class EmployeeController {
 		return "redirect:/admin/employees/new";
 	}
 	
+	@GetMapping("/admin/employees")
+	public String showEmployees(HttpSession session, Model model) {
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		if (userId == null) {
+			return "redirect:/login";
+		}
+		
+		User user = users.findById(userId).orElse(null);
+		
+		if (user == null) {
+			return "redirect:/login";
+		}
+		
+		if (!user.isActive() || user.getRole() != Role.ADMIN) {
+			return "redirect:/";
+		}
+		
+		model.addAttribute("employees", employeeService.findAllEmployees());
+		
+		return "employee-list";
+	}
+	
+	//Edit employee
+	@GetMapping("/admin/employees/{id}/edit")
+	public String showEditEmployeeForm(
+			@PathVariable Long id,
+			HttpSession session,
+			Model model) {
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		if (userId == null) {
+			return "redirect:/login";
+		}
+		
+		User user = users.findById(userId).orElse(null);
+		
+		if (user == null) {
+			return "redirect:/login";
+		}
+		
+		if (!user.isActive() || user.getRole() != Role.ADMIN) {
+			return "redirect:/";
+		}
+		
+		try {
+			
+			Employee employee = employeeService.findEmployeeById(id);
+			
+			model.addAttribute("employee", employee);
+			model.addAttribute("staffCategories", StaffCategory.values());
+			model.addAttribute("supervisors", employeeService.findManagers());
+			
+			return "employee-edit";
+			
+		} catch (IllegalArgumentException e) {
+			return "redirect:/admin/employees";
+		}
+	}
+	
+	@PostMapping("/admin/employees/{id}")
+	public String updateEmployee(
+			@PathVariable Long id,
+			@RequestParam String name,
+			@RequestParam(required = false) String designation,
+			@RequestParam(required = false) String department,
+			@RequestParam StaffCategory staffCategory,
+			@RequestParam(required = false) Long supervisorId,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		if (userId == null) {
+			return "redirect:/login";
+		}
+		
+		User user = users.findById(userId).orElse(null);
+		
+		if (user == null) {
+			return "redirect:/login";
+		}
+		
+		if (!user.isActive() || user.getRole() != Role.ADMIN) {
+			return "redirect:/";
+		}
+		
+		try {
+			
+			employeeService.updateEmployee(
+					id,
+					name,
+					designation,
+					department,
+					staffCategory,
+					supervisorId);
+			
+			redirectAttributes.addFlashAttribute(
+					"success",
+					"Employee profile updated successfully");
+			
+			return "redirect:/admin/employees";
+			
+		} catch (IllegalArgumentException e) {
+			
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+			
+			return "redirect:/admin/employees/" + id + "/edit";
+		}
+	}
+	
+	// Delete employee
+	@PostMapping("/admin/employees/{id}/delete")
+	public String deleteEmployee(
+			@PathVariable Long id,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		if (userId == null) {
+			return "redirect:/login";
+		}
+		
+		User user = users.findById(userId).orElse(null);
+		
+		if (user == null) {
+			return "redirect:/login";
+		}
+		
+		if (!user.isActive() || user.getRole() != Role.ADMIN) {
+			return "redirect:/";
+		}
+		
+		try {
+			
+			employeeService.deleteEmployee(id);
+			
+			redirectAttributes.addFlashAttribute(
+					"success",
+					"Employee profile deleted successfully");
+			
+		} catch (IllegalArgumentException e) {
+			
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+		}
+		
+		return "redirect:/admin/employees";
+	}
 }

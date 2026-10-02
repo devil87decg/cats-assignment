@@ -87,6 +87,19 @@
 				<th scope="row">Status</th>
 				<td th:text="${courseRequest.status}"></td>
 			</tr>
+			
+			<!-- Show the saved decision reason when one exists -->
+			<tr th:if="${courseRequest.managerReason != null}">
+			    <th scope="row">Manager's decision reason</th>
+			    <td th:text="${courseRequest.managerReason}"></td>
+			</tr>
+			
+			<!-- Show the employee's saved comments when they exist -->
+			<tr th:if="${courseRequest.experienceComment != null}">
+			    <th scope="row">Experience comments</th>
+			    <td th:text="${courseRequest.experienceComment}"></td>
+			</tr>
+			
 		</tbody>
 	</table>
 
@@ -97,10 +110,34 @@
 		<strong>Year:</strong>
 		<span th:text="${courseYear}"></span>
 	</p>
+	
+	<!-- Display days from courses marked completed -->
+	<p>
+	    <strong>Completed training days:</strong>
+	    <span th:text="${completedDays}"></span>
+	</p>
+
+	<!-- Display days reserved by pending or approved applications -->
+	<p>
+	    <strong>Reserved training days:</strong>
+	    <span th:text="${reservedDays}"></span>
+	</p>
 
 	<p>
 		<strong>Training days reserved and used:</strong>
 		<span th:text="${usedDays}"></span>
+	</p>
+	
+	<!-- Display external course and certification fees for completed courses -->
+	<p>
+	    <strong>Completed-course fees (S$):</strong>
+	    <span th:text="${completedFees}"></span>
+	</p>
+
+	<!-- Display external course and certification fees for pending or approved courses -->
+	<p>
+	    <strong>Reserved course fees (S$):</strong>
+	    <span th:text="${reservedFees}"></span>
 	</p>
 
 	<p>

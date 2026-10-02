@@ -68,14 +68,16 @@ These administrator functions are listed separately from the core employee/manag
 
 ### 1. Get the correct branch
 
-The code and SQL export were verified on `dominic-cats-mvp`. A rename to `SA63-Team8-CATS` was requested, but its push has not yet been confirmed in this guide.
+The application code, demo database and README are available on
+the `SA63-Team8-CATS` branch.
 
 ```bash
-git clone --branch dominic-cats-mvp https://github.com/devil87decg/cats-assignment.git
+git clone --branch SA63-Team8-CATS https://github.com/devil87decg/cats-assignment.git
 cd cats-assignment
 ```
 
-If the renamed branch is available, substitute `SA63-Team8-CATS` in the clone command. After the contribution is merged into main, teammates can use main instead.
+After this contribution is merged into main, teammates can use main instead.
+
 
 ### 2. Install prerequisites
 

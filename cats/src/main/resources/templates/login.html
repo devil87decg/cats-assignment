@@ -15,7 +15,7 @@
 </head>
 
 <body>
-	
+
 	<!-- Show the supplied heading, or the default for the shared login URL -->
 	<h1 th:text="${loginTitle != null ? loginTitle : 'CATS Login'}">CATS Login</h1>
 	
@@ -92,7 +92,7 @@
 	        </tr>
 	    </tbody>
 	</table>
-	
+	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

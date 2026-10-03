@@ -1,41 +1,39 @@
 <!DOCTYPE html>
 
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	
+
 <head>
-	
+
 	<meta charset="UTF-8">
-	
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="stylesheet" th:href="@{/css/cats.css}">
-	
+
 	<title>Home | CATS</title>
 </head>
 
 <body>
-	
+
 	<h1>Course Application Tracking System</h1>
-	
-	<p>Weclome to CATS.</p>
-	
+
+	<p>Welcome to CATS.</p>
+
 	<p th:if="${error}" th:text="${error}"></p>
-	
+
 	<nav>
 		<a href="/applications">My application(s)</a>
 		<a href="/applications/new">New application</a>
-		
-		<a th:if="${isManager == true}"
-			th:href="@{/manager/applications}">Review applications
+
+		<a th:if="${isManager == true}" th:href="@{/manager/applications}">Review applications
 		</a>
-		
-		<a th:if="${isManager == true}"
-			th:href="@{/manager/subordinates}">Subordinate course history
+
+		<a th:if="${isManager == true}" th:href="@{/manager/subordinates}">Subordinate course history
 		</a>
-		
+
 		<a href="/logout">Logout</a>
 	</nav>
-	
+	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

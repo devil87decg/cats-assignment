@@ -57,4 +57,90 @@ public class AccountService {
 			// saves the new User record in MySQL
 			return users.save(user); 
 		}
+		
+		public void resetPassword(Long userId, String newPassword) {
+			
+			if (newPassword == null || newPassword.isBlank()) {
+				throw new IllegalArgumentException(
+						"New password is required");
+			}
+			
+			User user = users.findById(userId)
+					.orElseThrow(() ->
+						new IllegalArgumentException(
+								"Login account not found"));
+			
+			user.setPasswordHash(
+					passwordEncoder.encode(newPassword));
+			
+			users.save(user);
+		}
+		
+		public void changePassword(
+				Long userId,
+				String currentPassword,
+				String newPassword,
+				String confirmPassword) {
+			
+			if (currentPassword == null || currentPassword.isBlank()) {
+				throw new IllegalArgumentException(
+						"Current password is required");
+			}
+			
+			if (newPassword == null || newPassword.isBlank()) {
+				throw new IllegalArgumentException(
+						"New password is required");
+			}
+			
+			if (!newPassword.equals(confirmPassword)) {
+				throw new IllegalArgumentException(
+						"New passwords do not match");
+			}
+			
+			User user = users.findById(userId)
+					.orElseThrow(() ->
+						new IllegalArgumentException(
+								"Login account not found"));
+			
+			if (!passwordEncoder.matches(
+					currentPassword,
+					user.getPasswordHash())) {
+				
+				throw new IllegalArgumentException(
+						"Current password is incorrect");
+			}
+			
+			//Important
+			user.setPasswordHash(
+					passwordEncoder.encode(newPassword));
+			
+			users.save(user);
+		}
+		
+		// Reset another user's password
+		public void resetPassword(
+				Long userId,
+				String newPassword,
+				String confirmPassword) {
+			
+			if (newPassword == null || newPassword.isBlank()) {
+				throw new IllegalArgumentException(
+						"New password is required");
+			}
+			
+			if (!newPassword.equals(confirmPassword)) {
+				throw new IllegalArgumentException(
+						"New passwords do not match");
+			}
+			
+			User user = users.findById(userId)
+					.orElseThrow(() ->
+						new IllegalArgumentException(
+								"Login account not found"));
+			
+			user.setPasswordHash(
+					passwordEncoder.encode(newPassword));
+			
+			users.save(user);
+		}
 }

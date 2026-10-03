@@ -14,6 +14,7 @@ import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
+import sg.edu.nus.cats.service.AccountService;
 import sg.edu.nus.cats.service.EmployeeService;
 
 @Controller
@@ -25,10 +26,13 @@ public class EmployeeController {
 	// Keep a reference to the repository used to check the logged-in user's role.
 	private final UserRepository users;
 	
-	public EmployeeController(EmployeeService employeeService, UserRepository users) {
+	private final AccountService accountService;
+	
+	public EmployeeController(EmployeeService employeeService, UserRepository users, AccountService accountService) {
 		
 		this.employeeService = employeeService;
 		this.users = users;
+		this.accountService = accountService;
 		
 	}
 	
@@ -282,11 +286,20 @@ public class EmployeeController {
 		
 		try {
 			
-			employeeService.deleteEmployee(id);
+			boolean deleted = employeeService.deleteEmployee(id);
 			
-			redirectAttributes.addFlashAttribute(
-					"success",
-					"Employee profile deleted successfully");
+			if (deleted) {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Employee and login account deleted successfully");
+
+			} else {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Employee has application history and was deactivated instead of deleted");
+			}
 			
 		} catch (IllegalArgumentException e) {
 			
@@ -296,5 +309,57 @@ public class EmployeeController {
 		}
 		
 		return "redirect:/admin/employees";
+	}
+	
+	@PostMapping("/admin/employees/{id}/password")
+	public String resetEmployeePassword(
+			@PathVariable Long id,
+			@RequestParam String newPassword,
+			@RequestParam String confirmPassword,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		
+		Long loggedInUserId =
+				(Long) session.getAttribute("userId");
+		
+		if (loggedInUserId == null) {
+			return "redirect:/login";
+		}
+		
+		User loggedInUser =
+				users.findById(loggedInUserId).orElse(null);
+		
+		if (loggedInUser == null) {
+			return "redirect:/login";
+		}
+		
+		if (!loggedInUser.isActive()
+				|| loggedInUser.getRole() != Role.ADMIN) {
+			
+			return "redirect:/";
+		}
+		
+		try {
+			
+			Employee employee =
+					employeeService.findEmployeeById(id);
+			
+			accountService.resetPassword(
+					employee.getUser().getId(),
+					newPassword,
+					confirmPassword);
+			
+			redirectAttributes.addFlashAttribute(
+					"success",
+					"Password reset successfully");
+			
+		} catch (IllegalArgumentException e) {
+			
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+		}
+		
+		return "redirect:/admin/employees/" + id + "/edit";
 	}
 }

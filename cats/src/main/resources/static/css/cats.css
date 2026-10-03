@@ -11,6 +11,9 @@
     --navy: #193b50;
     --teal: #17778e;
     --teal-hover: #105c70;
+	--white: #ffffff;
+	--blue: #2563a8;
+	--shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
     --background: #f3f7fa;
     --surface: #ffffff;
     --text: #243f50;
@@ -20,6 +23,8 @@
     --success: #176244;
     --danger: #a73232;
     --radius: 8px;
+	--max-width: 960px;
+	--three-quarters-width: 720px;
 }
 
 * {
@@ -465,6 +470,70 @@ table {
 }
 
 
+}
+
+/* --- Cards grid ------------------------------------------ */
+.cards {
+	display: grid;
+	/* Dynamically fits items cleanly across rows based on space available */
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 20px;
+	margin-top: 24px;
+}
+
+.number-card {
+	background: var(--white);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding: 28px 24px;
+	/* FIX: Allow card to stretch and fit fluidly inside grid layout cell */
+	width: 100%;
+}
+
+.form-card {
+	background: var(--blue);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding: 28px 24px;
+	/* FIX: Ensure maximum width responsivity */
+	width: 100%;
+	max-width: 100%;
+}
+
+.card-title {
+	font-size: 18px;
+	color: var(--muted);
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.card-value {
+	font-size: 48px;
+	font-weight: 700;
+	text-align: center;
+	line-height: 1.1;
+}
+
+.card-note {
+	margin-top: 10px;
+	font-size: 14px;
+	color: var(--muted);
+	text-align: center;
+}
+
+/* --- Page Wrapper ------------------------------------------ */
+.page-wrapper {
+	max-width: var(--max-width);
+	margin: 0 auto;
+	padding: 0 24px;
+}
+
+.page-wrapper-home {
+	max-width: var(--three-quarters-width);
+	margin: 0 auto;
+	padding: 0 24px;
 }
 
 

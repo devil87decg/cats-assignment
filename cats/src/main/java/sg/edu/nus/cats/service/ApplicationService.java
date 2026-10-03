@@ -613,6 +613,17 @@ public class ApplicationService {
 		return usedDays;
 	}
 	
+	// Calculate an employee's remaining training days for the selected year
+	public BigDecimal balanceDays(Employee emp, int year) {
+
+		Long employeeId = emp.getId();
+
+		Optional<TrainingAllowance> dayLimit = allowances.findByEmployeeIdAndYear(employeeId, year);
+		BigDecimal maxDays = dayLimit.map(TrainingAllowance::getDayLimit).orElse(BigDecimal.ZERO);
+
+		return maxDays.subtract(calculateUsedDays(emp, year));
+	}
+
 	// Calculate an employee's reserved and used course fees for a year
 	public BigDecimal calculateUsedFees(Employee applicant, int year) {
 		
@@ -644,5 +655,17 @@ public class ApplicationService {
 		}
 		
 		return usedFees;
+	}
+
+	// Calculate an employee's remaining budget for the selected year
+	public BigDecimal balanceBudget(Employee emp, int year) {
+
+		Long employeeId = emp.getId();
+
+		Optional<TrainingAllowance> feeBudget = allowances.findByEmployeeIdAndYear(employeeId, year);
+		BigDecimal maxBudget = feeBudget.map(TrainingAllowance::getFeeBudget).orElse(BigDecimal.ZERO);
+
+		return maxBudget.subtract(calculateUsedFees(emp, year));
+
 	}
 }

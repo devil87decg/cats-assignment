@@ -33,6 +33,29 @@
 
 		<a href="/logout">Logout</a>
 	</nav>
+	<!-- Stats Cards -->
+	<div class="page-wrapper">
+		<section class="cards">
+			<div class="number-card">
+				<div class="card-title">Training Days Remaining</div>
+				<div class="card-value">
+					<span th:text="${remainingDays}">0</span>
+				</div>
+			</div>
+
+			<div class="number-card">
+				<div class="card-title">Training Budget Remaining</div>
+				<div class="card-value">
+					$<span th:text="${remainingFees}">0.00</span>
+
+
+				</div>
+				<div class="question-bubble">
+
+				</div>
+			</div>
+		</section>
+	</div>
 	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 

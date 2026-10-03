@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<th:block th:fragment="header">
+
+		<!-- Top Navigation Bar -->
+		<nav class="topbar">
+			<a class="site-title" th:href="@{/}">🙀 T8CATS </a>
+
+			<div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+
+				<!-- <span th:if="${loggedInUser == null}" class="user-info">
+                <a th:href="@{/login}"    class="logout-link">Login</a>&nbsp;/&nbsp;<a th:href="@{/register}" class="logout-link">Register</a>
+			
+            </span>-->
+				<a th:href="@{/}" style="color:#c8d8ec; text-decoration:none; font-size:0.92rem;">Home</a>
+				<span th:if="${loggedInUser != null}" class="user-info">
+					Hello, <strong th:text="${loggedInUser}">User</strong>
+					&nbsp;|&nbsp;<a th:href="@{/employees/profile}" class="logout-link">Profile</a>
+					&nbsp;|&nbsp;<a th:href="@{/logout}" class="logout-link">Logout</a>
+				</span>
+			</div>
+		</nav>
+
+		<!-- Flash messages (inside page-wrapper so they align) -->
+		<div class="page-wrapper">
+			<div th:if="${success}" class="alert alert-success" th:text="${success}">OK</div>
+			<div th:if="${error}" class="alert alert-error" th:text="${error}">Error</div>
+		</div>
+
+	</th:block>
+
+</body>
+
+</html>

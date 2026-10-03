@@ -46,54 +46,42 @@
 	</form>
 	
 	<!-- Show test accounts for local demo. -->
-	<h2>Demo accounts</h2>
+	<h2>Available Test Accounts</h2>
 
 	<table>
 	    <thead>
 	        <tr>
 	            <th>Username</th>
-	            <th>Password</th>
 	            <th>Role</th>
-	            <th>What to try</th>
+	            <th>Status</th>
 	        </tr>
 	    </thead>
 
-	    <tbody>
-	        <tr>
-	            <td>admin</td>
-	            <td>CatsDemo123!</td>
-	            <td>Administrator</td>
-	            <td>Create accounts, employee profiles and allowances.</td>
-	        </tr>
+		<tbody>
 
-	        <tr>
-	            <td>manager1</td>
-	            <td>ManagerTest123!</td>
-	            <td>Manager</td>
-	            <td>Review Xiang Xuan's and Ratbert's applications and history.</td>
-	        </tr>
+			<tr th:each="user : ${users}">
 
-	        <tr>
-	            <td>manager2</td>
-	            <td>ManagerTest456!</td>
-	            <td>Manager</td>
-	            <td>Test a manager with no assigned subordinates.</td>
-	        </tr>
-			
-			<tr>
-			    <td>xiang xuan</td>
-			    <td>CatsDemo123@</td>
-			    <td>Employee — xiang xuan</td>
-			    <td>Submit and manage personal course applications.</td>
+				<td th:text="${user.username}">
+				</td>
+
+				<td th:text="${user.role}">
+				</td>
+
+				<td>
+					<span th:if="${user.active}"
+						  class="status status-approved">
+						Active
+					</span>
+
+					<span th:unless="${user.active}"
+						  class="status status-deleted">
+						Inactive
+					</span>
+				</td>
+
 			</tr>
 
-	        <tr>
-	            <td>employee2</td>
-	            <td>EmployeeTest123!</td>
-	            <td>Employee — Ratbert</td>
-	            <td>Submit and manage personal course applications.</td>
-	        </tr>
-	    </tbody>
+		</tbody>
 	</table>
 	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>

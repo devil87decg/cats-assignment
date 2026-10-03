@@ -193,6 +193,7 @@ public class EmployeeController {
 			model.addAttribute("employee", employee);
 			model.addAttribute("staffCategories", StaffCategory.values());
 			model.addAttribute("supervisors", employeeService.findManagers());
+			model.addAttribute("roles", Role.values());
 			
 			return "employee-edit";
 			
@@ -205,6 +206,7 @@ public class EmployeeController {
 	public String updateEmployee(
 			@PathVariable Long id,
 			@RequestParam String name,
+			@RequestParam Role role,
 			@RequestParam(required = false) String designation,
 			@RequestParam(required = false) String department,
 			@RequestParam StaffCategory staffCategory,
@@ -233,6 +235,7 @@ public class EmployeeController {
 			employeeService.updateEmployee(
 					id,
 					name,
+					role,
 					designation,
 					department,
 					staffCategory,

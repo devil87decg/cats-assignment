@@ -68,6 +68,7 @@ public class LoginController {
 		}
 		
 		session.setAttribute("userId", user.getId());
+		session.setAttribute("loggedInName", user.getUsername());
 		
 		// if the user is an admin -> browser to open /admin
 		if (user.getRole() == Role.ADMIN) {

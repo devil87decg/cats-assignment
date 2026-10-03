@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Edit Employee</title>
+
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1>Edit Employee</h1>
+
+		<p class="page-description">
+			Update employee profile and reporting information.
+		</p>
+
+
+		<div class="navbar">
+			<a th:href="@{/admin}">Administration</a>
+			<a th:href="@{/admin/employees}">Employees</a>
+			<a th:href="@{/logout}">Logout</a>
+		</div>
+		
+		<div th:if="${success}"
+			 class="alert alert-success"
+			 th:text="${success}">
+		</div>
+
+		<div th:if="${error}"
+			 class="alert alert-error"
+			 th:text="${error}">
+		</div>
+
+
+		<div class="card">
+
+			<form th:action="@{/admin/employees/{id}(id=${employee.id})}"
+				  method="post">
+
+
+				<div class="form-group">
+
+					<label>Name</label>
+
+					<input type="text"
+						   name="name"
+						   th:value="${employee.name}"
+						   class="form-control"
+						   required>
+
+				</div>
+				
+				<div class="form-group">
+
+					<label for="role">Role</label>
+
+					<select id="role"
+							name="role"
+							class="form-control"
+							required>
+
+						<option th:each="role : ${roles}"
+								th:value="${role}"
+								th:text="${role}"
+								th:selected="${role == employee.user.role}">
+						</option>
+
+					</select>
+
+				</div>
+
+				<div class="form-group">
+
+					<label>Department</label>
+
+					<input type="text"
+						   name="department"
+						   th:value="${employee.department}"
+						   class="form-control">
+
+				</div>
+
+
+				<div class="form-group">
+
+					<label>Designation</label>
+
+					<input type="text"
+						   name="designation"
+						   th:value="${employee.designation}"
+						   class="form-control">
+
+				</div>
+
+
+				<div class="form-group">
+
+					<label>Staff Category</label>
+
+					<select name="staffCategory"
+							class="form-control"
+							required>
+
+						<option th:each="category : ${staffCategories}"
+								th:value="${category}"
+								th:text="${category}"
+								th:selected="${category == employee.staffCategory}">
+						</option>
+
+					</select>
+
+				</div>
+
+
+				<div class="form-group">
+
+					<label>Supervisor</label>
+
+					<select name="supervisorId"
+							class="form-control">
+
+						<option value="">No Supervisor</option>
+
+						<option th:each="supervisor : ${supervisors}"
+							th:if="${supervisor.id != employee.id}"
+								th:value="${supervisor.id}"
+								th:text="${supervisor.name}"
+								th:selected="${employee.supervisor != null
+									&& employee.supervisor.id == supervisor.id}">
+						</option>
+
+					</select>
+
+				</div>
+
+
+				<button type="submit"
+						class="btn btn-primary">
+					Save Changes
+				</button>
+
+				<a th:href="@{/admin/employees}"
+				   class="btn btn-secondary">
+					Cancel
+				</a>
+
+			</form>
+			
+			<div class="card">
+
+				<h2>Reset Password</h2>
+
+				<p class="page-description">
+					Set a new login password for this employee.
+				</p>
+
+				<form th:action="@{/admin/employees/{id}/password(id=${employee.id})}"
+					  method="post">
+
+					<div class="form-group">
+						<label for="newPassword">New Password</label>
+
+						<input type="password"
+							   id="newPassword"
+							   name="newPassword"
+							   class="form-control"
+							   required>
+					</div>
+
+					<div class="form-group">
+						<label for="confirmPassword">
+							Confirm New Password
+						</label>
+
+						<input type="password"
+							   id="confirmPassword"
+							   name="confirmPassword"
+							   class="form-control"
+							   required>
+					</div>
+
+					<button type="submit"
+							class="btn btn-primary">
+						Reset Password
+					</button>
+
+				</form>
+
+			</div>
+		</div> <!--CARD-->
+
+	</div> <!--CONTAINER-->
+
+</body>
+
+</html>

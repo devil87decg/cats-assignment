@@ -55,13 +55,15 @@ public class LoginController {
 		if (user.getPasswordHash() == null || !passwordEncoder.matches(
 				password, user.getPasswordHash())) {
 			
-			model.addAttribute("error", "Username or passwod is incorrect");
+			model.addAttribute("error", "Username or password is incorrect");
 			
 			return "login";
 		}	
 		
 		if (!user.isActive()) {
-			
+			model.addAttribute(
+					"error",
+					"This account is inactive. Please contact an administrator.");
 			return "login";
 		}
 		

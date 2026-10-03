@@ -10,6 +10,7 @@ import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.UserRepository;
+import sg.edu.nus.cats.repository.ApplicationRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -22,13 +23,16 @@ public class EmployeeService {
 	private final UserRepository users;
 	
 	private final AccountService accounts;
+	private final ApplicationRepository applications;
 	
 	// Receive the repositories from Spring and store their references.
-	public EmployeeService(EmployeeRepository employees, UserRepository users, AccountService accounts) {
+	public EmployeeService(EmployeeRepository employees, UserRepository users, AccountService accounts,
+			ApplicationRepository applications) {
 		
 		this.employees = employees;
 		this.users = users;
 		this.accounts = accounts;
+		this.applications = applications;
 	}
 	
 	// paramters supply the profile details required 
@@ -216,8 +220,9 @@ public class EmployeeService {
 		return employees.findByUserRole(Role.MANAGER);
 	}
 	
-	// Delete an existing employee profile
-	public void deleteEmployee(Long employeeId) {
+	// Delete an existing employee profile together with its login account
+	@Transactional
+	public boolean deleteEmployee(Long employeeId) {
 		
 		// Find the employee first
 		Employee employee = employees.findById(employeeId)
@@ -230,11 +235,33 @@ public class EmployeeService {
 		
 		if (!subordinates.isEmpty()) {
 			throw new IllegalArgumentException(
-					"Cannot delete employee because they are currently assigned as a supervisor");
+					"Cannot remove employee because they currently have subordinates. "
+							+ "Reassign the subordinates first.");
 		}
 		
-		// Delete the employee profile
-		employees.delete(employee);
+		// Keep the linked user so it can be deleted after the employee
+		User user = employee.getUser();
+		
+		// Preserve employees that form part of application history.
+		boolean hasApplications =
+				applications.existsByEmployeeId(employeeId);
+
+		boolean hasDecisions =
+				applications.existsByDecidedById(employeeId);
+
+		if (hasApplications || hasDecisions) {
+
+			user.setActive(false);
+			users.save(user);
+
+			return false;
+		}
+		
+		// No historical records exist, so both records can safely be removed.
+		employees.delete(employee);		
+		users.delete(user);
+		
+		return true;
 	}
 	
 	@Transactional

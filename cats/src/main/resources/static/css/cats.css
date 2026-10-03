@@ -587,3 +587,27 @@ table {
 .history-filter a:hover {
     background-color: #286078;
 }
+
+/* Employee management actions */
+
+.employee-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.employee-delete-form {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.employee-action-btn {
+	min-width: 70px;
+	min-height: 36px;
+	padding: 7px 12px;
+	margin: 0;
+	text-align: center;
+}

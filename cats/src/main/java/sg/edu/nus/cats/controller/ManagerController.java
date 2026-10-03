@@ -1,6 +1,7 @@
 package sg.edu.nus.cats.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -131,15 +132,32 @@ public class ManagerController {
 			Employee applicant = courseRequest.getEmployee();
 			int courseYear = courseRequest.getStartDate().getYear();
 			
+			// establish first and last dates variables of the course year
+			LocalDate firstDay = LocalDate.of(courseYear, 1, 1);
+			LocalDate lastDay = LocalDate.of(courseYear, 12, 31);
+			
 			// Calculate the applicant's reserved and used training days and fees
 			BigDecimal usedDays = applicationService.calculateUsedDays(applicant, courseYear);
 			
 			BigDecimal usedFees = applicationService.calculateUsedFees(applicant, courseYear);
 			
+			BigDecimal completedDays = applicationService.calculateCompletedDays(
+					courseRequest.getEmployee().getId(), firstDay, lastDay);
+			
+			BigDecimal reservedDays = usedDays.subtract(completedDays);
+			
+			BigDecimal completedFees = applicationService.calculateCompletedFees(applicant.getId(), firstDay, lastDay);
+			
+			BigDecimal reservedFees = usedFees.subtract(completedFees);
+			
 			// Make the year and annual usage totals available to the HTML page
 			model.addAttribute("courseYear", courseYear);
 			model.addAttribute("usedDays", usedDays);
 			model.addAttribute("usedFees", usedFees);
+			model.addAttribute("completedDays", completedDays);
+			model.addAttribute("reservedDays", reservedDays);
+			model.addAttribute("completedFees", completedFees);
+			model.addAttribute("reservedFees", reservedFees);
 			
 			// Make the application available to the review page
 			model.addAttribute("courseRequest", courseRequest);
@@ -266,6 +284,10 @@ public class ManagerController {
 	@GetMapping("/manager/subordinates/{id}/history")
 	
 	public String showSubordinateHistory(@PathVariable("id") Long employeeId,
+			
+			// defaultValue = "false" -> manager has not requested all years, 
+			// so default show all employee's application for current year
+			@RequestParam(name = "allYears", defaultValue = "false") boolean allYears,
 			HttpSession session,
 			Model model) {
 	
@@ -307,12 +329,33 @@ public class ManagerController {
 				// Find the selected employee and check that they report to this manager
 				Employee subordinate = employeeService.findSubordinate(employeeId, manager);
 				
-				// Retrieve the employee's saved course applications
-				List<CourseApplication> courseHistory = applicationService.findEmployeeHistory(subordinate);
+				// get current year and its first and last dates
+				int currentYear = LocalDate.now().getYear();
+				LocalDate firstDay = LocalDate.of(currentYear, 1, 12);
+				LocalDate lastDay = LocalDate.of(currentYear, 12, 31);
+				
+				// Declare the list that will hold the selected course history
+				List<CourseApplication> courseHistory;
+				
+				// if allYears is true -> retrieve all saved history
+				if (allYears) {
+					courseHistory = applicationService.findEmployeeHistory(subordinate);
+					
+				// else -> retrieve applications whose start dates fall within the current year	
+				} else {
+					
+					courseHistory =applicationService.findMyApplications(subordinate.getId(), firstDay, lastDay);
+				}
 				
 				// supply the employee profile and course history to HTML
 				model.addAttribute("subordinate", subordinate);
 				model.addAttribute("courseHistory", courseHistory);
+				
+				// supply the current year for page heading
+				model.addAttribute("currentYear", currentYear);
+				
+				// tell the page whether it is displaying history from all years
+				model.addAttribute("allYears", allYears);
 				
 			} catch (IllegalArgumentException validationError) {
 				

@@ -21,12 +21,16 @@
 	</p>
 	
 	<p>
-		<a href="/admin/accounts/new">Create login account</a>
-	
-	<p>
 		<a href="/admin/employees/new">Create employee profile</a>
 	</p>	
-	
+	<p>
+		<a th:href="@{/admin/employees}">Manage employees</a>
+	</p>
+	<p>
+		<a th:href="@{/account/password}">
+			Change password
+		</a>
+	</p>
 	<p>
 		<a href="/logout">Logout</a>
 	</p>	

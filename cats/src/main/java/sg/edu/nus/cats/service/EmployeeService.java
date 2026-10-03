@@ -10,6 +10,8 @@ import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.UserRepository;
+import sg.edu.nus.cats.repository.ApplicationRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
@@ -20,12 +22,17 @@ public class EmployeeService {
 	// Keep a reference to the repository used to find the employee's login account.
 	private final UserRepository users;
 	
+	private final AccountService accounts;
+	private final ApplicationRepository applications;
+	
 	// Receive the repositories from Spring and store their references.
-	public EmployeeService(EmployeeRepository employees, UserRepository users) {
+	public EmployeeService(EmployeeRepository employees, UserRepository users, AccountService accounts,
+			ApplicationRepository applications) {
 		
 		this.employees = employees;
 		this.users = users;
-		
+		this.accounts = accounts;
+		this.applications = applications;
 	}
 	
 	// paramters supply the profile details required 
@@ -112,8 +119,175 @@ public class EmployeeService {
 		}
 		
 		return subordinate;
-		
 	}
 	
+	// Find all employee profiles
+	public List<Employee> findAllEmployees() {
+		return employees.findAll();
+	}
 	
+	// Find an employee profile by employee ID
+	public Employee findEmployeeById(Long employeeId) {
+		return employees.findById(employeeId)
+				.orElseThrow(() -> 
+					new IllegalArgumentException("Employee not found"));
+	}
+	
+	// Update an existing employee profile
+	@Transactional
+	public Employee updateEmployee(
+			Long employeeId,
+			String name,
+			Role role,
+			String designation,
+			String department,
+			StaffCategory staffCategory,
+			Long supervisorId) {
+		
+		// Find the existing employee
+		Employee employee = employees.findById(employeeId)
+				.orElseThrow(() ->
+					new IllegalArgumentException("Employee not found"));
+		
+		// Validate required fields
+		if (name == null || name.isBlank()) {
+			throw new IllegalArgumentException("Employee name is required");
+		}
+		
+		if (role == null) {
+			throw new IllegalArgumentException("Role is required");
+		}
+		
+		if (staffCategory == null) {
+			throw new IllegalArgumentException("Staff category is required");
+		}
+		
+		User user = employee.getUser();
+
+		if (user.getRole() == Role.MANAGER
+				&& role != Role.MANAGER) {
+			
+			List<Employee> subordinates =
+					employees.findBySupervisorId(employeeId);
+			
+			if (!subordinates.isEmpty()) {
+				throw new IllegalArgumentException(
+						"Cannot change manager role because this employee has subordinates");
+			}
+		}
+
+		user.setRole(role);
+		users.save(user);
+		
+		// Update the existing employee object
+		employee.setName(name);
+		employee.setDesignation(designation);
+		employee.setDepartment(department);
+		employee.setStaffCategory(staffCategory);
+		
+		// Remove supervisor if none was selected
+		if (supervisorId == null) {
+			
+			employee.setSupervisor(null);
+			
+		} else {
+			
+			// An employee cannot supervise themselves
+			if (employeeId.equals(supervisorId)) {
+				throw new IllegalArgumentException(
+						"Employee cannot be their own supervisor");
+			}
+			
+			Employee supervisor = employees.findById(supervisorId)
+					.orElseThrow(() ->
+						new IllegalArgumentException("Supervisor not found"));
+			
+			// Supervisor must have the MANAGER role
+			if (supervisor.getUser().getRole() != Role.MANAGER) {
+				throw new IllegalArgumentException(
+						"Supervisor must have the manager role");
+			}
+			
+			employee.setSupervisor(supervisor);
+		}
+		
+		// Save the changes
+		return employees.save(employee);
+	}
+	
+	// Find employees whose login account has the MANAGER role
+	public List<Employee> findManagers() {
+		return employees.findByUserRole(Role.MANAGER);
+	}
+	
+	// Delete an existing employee profile together with its login account
+	@Transactional
+	public boolean deleteEmployee(Long employeeId) {
+		
+		// Find the employee first
+		Employee employee = employees.findById(employeeId)
+				.orElseThrow(() ->
+					new IllegalArgumentException("Employee not found"));
+		
+		// Check whether other employees report to this employee
+		List<Employee> subordinates =
+				employees.findBySupervisorId(employeeId);
+		
+		if (!subordinates.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Cannot remove employee because they currently have subordinates. "
+							+ "Reassign the subordinates first.");
+		}
+		
+		// Keep the linked user so it can be deleted after the employee
+		User user = employee.getUser();
+		
+		// Preserve employees that form part of application history.
+		boolean hasApplications =
+				applications.existsByEmployeeId(employeeId);
+
+		boolean hasDecisions =
+				applications.existsByDecidedById(employeeId);
+
+		if (hasApplications || hasDecisions) {
+
+			user.setActive(false);
+			users.save(user);
+
+			return false;
+		}
+		
+		// No historical records exist, so both records can safely be removed.
+		employees.delete(employee);		
+		users.delete(user);
+		
+		return true;
+	}
+	
+	@Transactional
+	public Employee createEmployeeWithAccount(
+			String username,
+			String password,
+			Role role,
+			String name,
+			String designation,
+			String department,
+			StaffCategory staffCategory,
+			Long supervisorId) {
+
+		// Create the login account first.
+		User user = accounts.createAccount(
+				username,
+				password,
+				role);
+
+		// Create the employee profile linked to that account.
+		return createProfile(
+				user.getId(),
+				name,
+				designation,
+				department,
+				staffCategory,
+				supervisorId);
+	}
 }

@@ -613,6 +613,7 @@ public class ApplicationService {
 		return usedDays;
 	}
 	
+
 	// Calculate an employee's remaining training days for the selected year
 	public BigDecimal balanceDays(Employee emp, int year) {
 
@@ -623,6 +624,53 @@ public class ApplicationService {
 
 		return maxDays.subtract(calculateUsedDays(emp, year));
 	}
+
+
+	// Count training days from completed courses within the supplied year
+	public BigDecimal calculateCompletedDays(Long employeeId, LocalDate firstDay, LocalDate lastDay) {
+		
+		BigDecimal completedDays = BigDecimal.ZERO;
+		
+		List<CourseApplication> yearlyApplications = applications.findByEmployeeIdAndStartDateBetween(employeeId, firstDay, lastDay);
+		
+		// checks each retrieved application
+		for (CourseApplication application : yearlyApplications) {
+			
+			// includes only courses with status marked completed
+			if (application.getStatus() == ApplicationStatus.COMPLETED) {
+				
+				// add that course's training days to the total
+				completedDays = completedDays.add(application.getDurationDays());
+			}
+		}
+		
+		return completedDays;
+	}
+	
+	// Calculate total external course and certification fees for completed courses
+	public BigDecimal calculateCompletedFees(Long employeeId, LocalDate firstDay, LocalDate lastDay) {
+		
+		BigDecimal completedFees = BigDecimal.ZERO;
+		
+		List<CourseApplication> yearlyApplications = applications.findByEmployeeIdAndStartDateBetween(employeeId, firstDay, lastDay);
+		
+		for(CourseApplication application : yearlyApplications) {
+			
+			// status == completed -> only include status that are completed
+			// category != INTERNAL -> include external courses and certifications
+			// fee != null -> check that a fee value exists before adding it
+			if (application.getStatus() == ApplicationStatus.COMPLETED
+					&& application.getCategory() != CourseCategory.INTERNAL
+					&& application.getFee() != null) {
+				
+				completedFees = completedFees.add(application.getFee());
+			}
+		}
+				
+		return completedFees;
+	
+	}
+	
 
 	// Calculate an employee's reserved and used course fees for a year
 	public BigDecimal calculateUsedFees(Employee applicant, int year) {

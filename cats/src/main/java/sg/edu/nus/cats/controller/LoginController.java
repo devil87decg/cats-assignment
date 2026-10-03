@@ -1,5 +1,7 @@
 package sg.edu.nus.cats.controller;
 
+import java.time.Year;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,8 @@ public class LoginController {
 		// search the users table for the entered username, if no account is found, set user to null
 		User user = users.findByUsername(username).orElse(null);
 		
+		int currentYear = Year.now().getValue(); // Returns 2026 dynamically
+
 		// if no account found -> show login page again
 		if (user == null) {
 			
@@ -67,6 +71,7 @@ public class LoginController {
 		
 		session.setAttribute("userId", user.getId());
 		session.setAttribute("loggedInName", user.getUsername());
+		session.setAttribute("year", currentYear);
 		
 		// if the user is an admin -> browser to open /admin
 		if (user.getRole() == Role.ADMIN) {

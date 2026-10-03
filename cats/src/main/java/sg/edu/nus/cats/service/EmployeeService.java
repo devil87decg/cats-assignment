@@ -130,9 +130,11 @@ public class EmployeeService {
 	}
 	
 	// Update an existing employee profile
+	@Transactional
 	public Employee updateEmployee(
 			Long employeeId,
 			String name,
+			Role role,
 			String designation,
 			String department,
 			StaffCategory staffCategory,
@@ -148,9 +150,30 @@ public class EmployeeService {
 			throw new IllegalArgumentException("Employee name is required");
 		}
 		
+		if (role == null) {
+			throw new IllegalArgumentException("Role is required");
+		}
+		
 		if (staffCategory == null) {
 			throw new IllegalArgumentException("Staff category is required");
 		}
+		
+		User user = employee.getUser();
+
+		if (user.getRole() == Role.MANAGER
+				&& role != Role.MANAGER) {
+			
+			List<Employee> subordinates =
+					employees.findBySupervisorId(employeeId);
+			
+			if (!subordinates.isEmpty()) {
+				throw new IllegalArgumentException(
+						"Cannot change manager role because this employee has subordinates");
+			}
+		}
+
+		user.setRole(role);
+		users.save(user);
 		
 		// Update the existing employee object
 		employee.setName(name);

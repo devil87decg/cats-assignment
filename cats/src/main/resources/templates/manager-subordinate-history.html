@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	
     <meta charset="UTF-8">
-	
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" th:href="@{/css/cats.css}">
+    <link rel="stylesheet" th:href="@{/css/cats.css(v=2)}">
 
     <title>Employee Course History | CATS</title>
-	
 </head>
 
 <body>
-	
+
     <nav>
         <a href="/manager/subordinates">Back to subordinates</a>
         <a href="/manager/applications">Pending applications</a>
@@ -25,59 +21,84 @@
 
     <h1>Employee Course History</h1>
 
+    <!-- Display the employee whose history is being viewed -->
     <p>
         <strong>Employee:</strong>
         <span th:text="${subordinate.name}"></span>
     </p>
 
- 
     <p>
         <strong>Employee ID:</strong>
         <span th:text="${subordinate.id}"></span>
     </p>
-	
-	<!-- Show a message when this employee has no saved applications -->
-	<p th:if="${#lists.isEmpty(courseHistory)}">
-	    This employee has no course application history.
-	</p>
 
-	<!-- Display the history table when applications exist -->
-	<table th:if="${!#lists.isEmpty(courseHistory)}">
-	    <thead>
-	        <tr>
-	            <th>Application ID</th>
-	            <th>Course title</th>
-	            <th>Category</th>
-	            <th>Start date</th>
-	            <th>End date</th>
-	            <th>Training days</th>
-	            <th>Fee (S$)</th>
-	            <th>Status</th>
-				<th>Details</th>
-	        </tr>
-	    </thead>
+    <!-- Show which years are included in the history -->
+    <p th:if="${!allYears}"
+       th:text="'Showing applications for ' + ${currentYear}">
+    </p>
 
-	    <tbody>
-	        <!-- Display one row for each saved course application -->
-	        <tr th:each="courseRequest : ${courseHistory}">
-	            <td th:text="${courseRequest.id}"></td>
-	            <td th:text="${courseRequest.courseTitle}"></td>
-	            <td th:text="${courseRequest.category}"></td>
-	            <td th:text="${courseRequest.startDate}"></td>
-	            <td th:text="${courseRequest.endDate}"></td>
-	            <td th:text="${courseRequest.durationDays}"></td>
-	            <td th:text="${courseRequest.fee}"></td>
-	            <td th:text="${courseRequest.status}"></td>
-				
-				<!-- Open the full details of this course application -->	
-				<td>
-					<a th:href="@{/manager/applications/{id}(id=${courseRequest.id})}">View details</a>
-				</td>
-				
-	        </tr>
-	    </tbody>
-	</table>
-	
+    <p th:if="${allYears}">
+        Showing applications from all years.
+    </p>
+
+    <!-- Switch between current-year and all-year history -->
+    <p class="history-filter">
+        <a th:href="@{/manager/subordinates/{id}/history(id=${subordinate.id})}">
+            Current year
+        </a>
+
+        <a th:href="@{/manager/subordinates/{id}/history(id=${subordinate.id}, allYears=true)}">
+            All years
+        </a>
+    </p>
+
+    <!-- Display a message when the selected history contains no applications -->
+    <p th:if="${#lists.isEmpty(courseHistory)}">
+        No course applications were found for the selected period.
+    </p>
+
+    <!-- Allow the history table to scroll horizontally on smaller screens -->
+    <div class="table-scroll"
+         th:if="${!#lists.isEmpty(courseHistory)}">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Course title</th>
+                    <th>Category</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Training days</th>
+                    <th>Fee (S$)</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- Display one row for each saved application -->
+                <tr th:each="courseRequest : ${courseHistory}">
+                    <td th:text="${courseRequest.id}"></td>
+                    <td th:text="${courseRequest.courseTitle}"></td>
+                    <td th:text="${courseRequest.category}"></td>
+                    <td th:text="${courseRequest.startDate}"></td>
+                    <td th:text="${courseRequest.endDate}"></td>
+                    <td th:text="${courseRequest.durationDays}"></td>
+                    <td th:text="${courseRequest.fee}"></td>
+                    <td th:text="${courseRequest.status}"></td>
+
+                    <td>
+                        <!-- Open the manager's detail page for this application -->
+                        <a th:href="@{/manager/applications/{id}(id=${courseRequest.id})}">
+                            View details
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </body>
 
 </html>

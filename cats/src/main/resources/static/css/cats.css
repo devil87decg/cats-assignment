@@ -537,3 +537,146 @@ table {
 }
 
 
+
+/* ---------- Page Header ---------- */
+
+.app-header {
+	margin-bottom: 30px;
+}
+
+.app-title {
+	margin: 0;
+	color: #173f55;
+	font-size: 32px;
+}
+
+.app-subtitle {
+	margin-top: 6px;
+	color: #667784;
+}
+
+
+/* ---------- Dashboard ---------- */
+
+.dashboard-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+}
+
+.dashboard-card {
+	background-color: white;
+	border-radius: 8px;
+	padding: 24px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h2 {
+	margin-top: 0;
+	color: #173f55;
+	font-size: 20px;
+}
+
+.dashboard-card p {
+	color: #667784;
+	line-height: 1.5;
+	min-height: 48px;
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+
+	.dashboard-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.page-actions {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+}
+
+/* ---------- Action Buttons ---------- */
+
+.action-buttons {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.action-buttons form {
+	margin: 0;
+}
+
+
+/* ---------- Danger Button ---------- */
+
+.btn-danger {
+	background-color: #b42318;
+	color: white;
+}
+
+.btn-danger:hover {
+	background-color: #8f1c13;
+}
+
+
+.action-column {
+	width: 160px;
+	min-width: 160px;
+}
+
+.employee-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.employee-actions form {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+/* Style the history filters on all screen sizes. */
+.history-filter a {
+    display: inline-block;
+    margin-right: 12px;
+    margin-bottom: 8px;
+    padding: 8px 16px;
+    background-color: #193d50;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.history-filter a:hover {
+    background-color: #286078;
+}
+
+/* Employee management actions */
+
+.employee-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.employee-delete-form {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.employee-action-btn {
+	min-width: 70px;
+	min-height: 36px;
+	padding: 7px 12px;
+	margin: 0;
+	text-align: center;
+}

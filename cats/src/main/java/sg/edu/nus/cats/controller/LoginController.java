@@ -3,6 +3,7 @@ package sg.edu.nus.cats.controller;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,15 +22,22 @@ public class LoginController {
 	// create one BCrypt password-checking object for this controller
 	private final BCryptPasswordEncoder passwordEncoder =  new BCryptPasswordEncoder();
 	
-	public LoginController(UserRepository users) {
-		
+	public LoginController(UserRepository users) {	
 		this.users = users;
+	}
+	
+	@ModelAttribute
+	private void addUsersToModel(Model model) {	
+		model.addAttribute(
+				"users",
+				users.findAll());
 	}
 	
 	@GetMapping("/login")
 	
-	public String showLoginForm() {
-		
+	public String showLoginForm(Model model) {
+		addUsersToModel(model);
+
 		return "login";
 	}
 	
@@ -98,6 +106,7 @@ public class LoginController {
 		model.addAttribute("loginTitle", "Employee Login");
 		model.addAttribute("loginDescription",
 				"Sign in to manage your course application");
+		addUsersToModel(model);
 		
 		return "login";
 		
@@ -112,6 +121,7 @@ public class LoginController {
 		model.addAttribute("loginDescription",
 				"Sign in to manage accounts, employee profiles and allowances.");
 		
+		addUsersToModel(model);
 		
 		return "login";
 	}

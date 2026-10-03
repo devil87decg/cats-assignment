@@ -16,8 +16,8 @@
 			
             </span>-->
 				<a th:href="@{/}" style="color:#c8d8ec; text-decoration:none; font-size:0.92rem;">Home</a>
-				<span th:if="${loggedInUser != null}" class="user-info">
-					Hello, <strong th:text="${loggedInUser}">User</strong>
+				<span th:if="${userId != null}" class="user-info">
+					Hello, <strong th:text="${loggedInName}">Xiang Xuan</strong>
 					&nbsp;|&nbsp;<a th:href="@{/employees/profile}" class="logout-link">Profile</a>
 					&nbsp;|&nbsp;<a th:href="@{/logout}" class="logout-link">Logout</a>
 				</span>

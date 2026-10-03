@@ -10,6 +10,7 @@ import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
@@ -20,12 +21,14 @@ public class EmployeeService {
 	// Keep a reference to the repository used to find the employee's login account.
 	private final UserRepository users;
 	
+	private final AccountService accounts;
+	
 	// Receive the repositories from Spring and store their references.
-	public EmployeeService(EmployeeRepository employees, UserRepository users) {
+	public EmployeeService(EmployeeRepository employees, UserRepository users, AccountService accounts) {
 		
 		this.employees = employees;
 		this.users = users;
-		
+		this.accounts = accounts;
 	}
 	
 	// paramters supply the profile details required 
@@ -127,9 +130,11 @@ public class EmployeeService {
 	}
 	
 	// Update an existing employee profile
+	@Transactional
 	public Employee updateEmployee(
 			Long employeeId,
 			String name,
+			Role role,
 			String designation,
 			String department,
 			StaffCategory staffCategory,
@@ -145,9 +150,30 @@ public class EmployeeService {
 			throw new IllegalArgumentException("Employee name is required");
 		}
 		
+		if (role == null) {
+			throw new IllegalArgumentException("Role is required");
+		}
+		
 		if (staffCategory == null) {
 			throw new IllegalArgumentException("Staff category is required");
 		}
+		
+		User user = employee.getUser();
+
+		if (user.getRole() == Role.MANAGER
+				&& role != Role.MANAGER) {
+			
+			List<Employee> subordinates =
+					employees.findBySupervisorId(employeeId);
+			
+			if (!subordinates.isEmpty()) {
+				throw new IllegalArgumentException(
+						"Cannot change manager role because this employee has subordinates");
+			}
+		}
+
+		user.setRole(role);
+		users.save(user);
 		
 		// Update the existing employee object
 		employee.setName(name);
@@ -209,5 +235,32 @@ public class EmployeeService {
 		
 		// Delete the employee profile
 		employees.delete(employee);
+	}
+	
+	@Transactional
+	public Employee createEmployeeWithAccount(
+			String username,
+			String password,
+			Role role,
+			String name,
+			String designation,
+			String department,
+			StaffCategory staffCategory,
+			Long supervisorId) {
+
+		// Create the login account first.
+		User user = accounts.createAccount(
+				username,
+				password,
+				role);
+
+		// Create the employee profile linked to that account.
+		return createProfile(
+				user.getId(),
+				name,
+				designation,
+				department,
+				staffCategory,
+				supervisorId);
 	}
 }

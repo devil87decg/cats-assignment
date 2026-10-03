@@ -62,17 +62,31 @@ public class EmployeeController {
 		// make the staff category choices available to HTML form
 		model.addAttribute("staffCategories", StaffCategory.values());
 		
+		//Allow admin to choose user roles when creating employee
+		model.addAttribute(
+				"roles",
+				Role.values());
+
+		//Allow admin to select supervisor
+		model.addAttribute(
+				"supervisors",
+				employeeService.findManagers());
+		
 		return "employee-form";
 	}
 	
 	// recieve the login account ID submitted by the employee profile form
 	@PostMapping("/admin/employees")
 	
-	public String saveEmployee(@RequestParam Long userId, @RequestParam String name,
+	public String saveEmployee(
+			@RequestParam String username,
+			@RequestParam String password,
+			@RequestParam Role role,
+			@RequestParam String name,
 			@RequestParam(required = false) String designation,
 			@RequestParam(required = false) String department,
 			@RequestParam StaffCategory staffCategory,
-			@RequestParam (required = false) Long supervisorId,
+			@RequestParam(required = false) Long supervisorId,
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 		
@@ -100,12 +114,20 @@ public class EmployeeController {
 		}
 		
 		try {
-		// ask the service to check the submitted details and save the employee profile
-		employeeService.createProfile(userId, name, designation, department, staffCategory, supervisorId);
+		//Create a login details, then employee in one transaction.
+			employeeService.createEmployeeWithAccount(
+					username,
+					password,
+					role,
+					name,
+					designation,
+					department,
+					staffCategory,
+					supervisorId);
 		
 		// display a success message to the next page if saving succeeds
 		redirectAttributes.addFlashAttribute(
-				"success", "Employee profile created successfully");
+				"success", "Employee account and profile created successfully");
 		
 		} catch (IllegalArgumentException validationError) {
 			

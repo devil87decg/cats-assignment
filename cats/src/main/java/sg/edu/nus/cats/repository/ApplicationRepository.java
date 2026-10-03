@@ -33,4 +33,9 @@ public interface ApplicationRepository extends JpaRepository<CourseApplication, 
 	// Find this manager's subordinates applications with its status
 	List<CourseApplication> findByEmployeeSupervisorIdAndStatus(Long managerId, ApplicationStatus status);
 	
+	// Check whether this employee has submitted any course applications
+	boolean existsByEmployeeId(Long employeeId);
+	
+	// Check whether this employee has decided any course applications
+	boolean existsByDecidedById(Long employeeId);
 }

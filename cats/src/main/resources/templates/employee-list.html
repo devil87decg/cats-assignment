@@ -9,21 +9,18 @@
 </head>
 
 <body>
-
-	<div class="container">
-
 		<h1>Employee Management</h1>
 
 		<p class="page-description">
 			Manage employee profiles and reporting relationships.
 		</p>
 
-		<div class="navbar">
+		<nav>
 			<a th:href="@{/admin}">Administration</a>
 			<a th:href="@{/admin/employees}">Employees</a>
 			<a th:href="@{/logout}">Logout</a>
-		</div>
-
+		</nav>
+	
 
 		<div th:if="${success}"
 			 class="alert alert-success"

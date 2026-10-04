@@ -184,6 +184,18 @@ form p {
     margin-bottom: 20px;
 }
 
+/* Compact forms used for table actions */
+form.compact-form {
+	display: inline-flex;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
 label {
     display: block;
     font-weight: 700;
@@ -789,4 +801,69 @@ div.message.message-error {
     color: #a73232 !important;            /* Forces the crisp, dark red text color */
     border: 1px solid #e6bcbc !important;  /* Forces the light red border line */
     display: block !important;            /* Ensures it handles structural layouts perfectly */
+}
+
+/* ---------- Training Provider Actions ---------- */
+
+.provider-action-column {
+	width: 220px;
+	min-width: 220px;
+}
+
+.provider-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+.provider-edit-btn,
+.provider-deactivate-btn,
+.provider-reactivate-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	height: 36px;
+	min-height: 36px;
+	margin: 0;
+	padding: 0 12px;
+
+	border-radius: 6px;
+	font: 700 14px/1 Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+.provider-edit-btn {
+	width: 70px;
+	background: #e8f1f5;
+	color: #193b50;
+	border: 1px solid #cbdde7;
+}
+
+.provider-edit-btn:hover {
+	background: #dce9ef;
+	color: #193b50;
+}
+
+button.provider-deactivate-btn {
+	width: 110px;
+	background: white;
+	color: #a73232;
+	border: 1px solid #c88181;
+}
+
+button.provider-deactivate-btn:hover {
+	background: #fff0f0;
+	color: #a73232;
+}
+
+button.provider-reactivate-btn {
+	width: 110px;
+	background: #17778e;
+	color: white;
+	border: 1px solid #17778e;
 }

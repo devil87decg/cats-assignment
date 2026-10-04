@@ -14,19 +14,21 @@ import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.CourseCategoryService;
+import sg.edu.nus.cats.utils.AdminAuthHelper;
 
 @AllArgsConstructor
 @Controller
 public class CourseCategoryController {
 	private final CourseCategoryService categoryService;
 	private final UserRepository users;
+	private final AdminAuthHelper adminAuth;
 	
 	@GetMapping("/admin/course-categories")
 	public String showCategories(
 			HttpSession session,
 			Model model) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";
@@ -44,7 +46,7 @@ public class CourseCategoryController {
 	public String showCreateForm(
 			HttpSession session) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";
@@ -64,7 +66,7 @@ public class CourseCategoryController {
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";
@@ -93,29 +95,6 @@ public class CourseCategoryController {
 
 		return "redirect:/admin/course-categories";
 	}
-
-
-	private User getAdmin(HttpSession session) {
-
-		Long userId =
-				(Long) session.getAttribute("userId");
-
-		if (userId == null) {
-			return null;
-		}
-
-		User user =
-				users.findById(userId).orElse(null);
-
-		if (user == null
-				|| !user.isActive()
-				|| user.getRole() != Role.ADMIN) {
-
-			return null;
-		}
-
-		return user;
-	}
 	
 	@GetMapping("/admin/course-categories/{id}/edit")
 	public String showEditForm(
@@ -123,7 +102,7 @@ public class CourseCategoryController {
 			HttpSession session,
 			Model model) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";
@@ -154,7 +133,7 @@ public class CourseCategoryController {
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";
@@ -192,7 +171,7 @@ public class CourseCategoryController {
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";
@@ -222,7 +201,7 @@ public class CourseCategoryController {
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 
-		User admin = getAdmin(session);
+		User admin = adminAuth.getAdmin(session);
 
 		if (admin == null) {
 			return "redirect:/";

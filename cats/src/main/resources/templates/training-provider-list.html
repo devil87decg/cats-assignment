@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Training Providers | CATS</title>
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<h1>Training Providers</h1>
+
+	<p>
+		Manage training providers available in the course catalogue.
+	</p>
+
+	<nav>
+		<a th:href="@{/admin}">Administration</a>
+		<a th:href="@{/admin/training-providers}">
+			Training Providers
+		</a>
+		<a th:href="@{/logout}">Logout</a>
+	</nav>
+
+
+	<div th:if="${success}"
+		 class="message message-success"
+		 th:text="${success}">
+	</div>
+
+	<div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+	</div>
+
+
+	<main>
+
+		<div class="page-header">
+
+			<h2>Providers</h2>
+
+			<a th:href="@{/admin/training-providers/new}"
+			   class="button">
+				Add Provider
+			</a>
+
+		</div>
+
+
+		<table>
+
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Status</th>
+					<th class="provider-action-column">Action</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				<tr th:each="provider : ${providers}">
+
+					<td th:text="${provider.name}"></td>
+
+					<td th:text="${provider.description}"></td>
+
+					<td>
+						<span th:if="${provider.active}"
+							  class="status status-approved">
+							Active
+						</span>
+
+						<span th:unless="${provider.active}"
+							  class="status status-deleted">
+							Inactive
+						</span>
+					</td>
+
+					<td class="provider-action-column">
+
+						<div class="provider-actions">
+
+							<a th:href="@{/admin/training-providers/{id}/edit(id=${provider.id})}"
+							   class="provider-edit-btn">
+								Edit
+							</a>
+
+							<form th:if="${provider.active}"
+								  th:action="@{/admin/training-providers/{id}/deactivate(id=${provider.id})}"
+								  method="post"
+								  class="compact-form"
+								  onsubmit="return confirm('Deactivate this training provider?');">
+
+								<button type="submit"
+										class="provider-deactivate-btn">
+									Deactivate
+								</button>
+
+							</form>
+
+							<form th:unless="${provider.active}"
+								  th:action="@{/admin/training-providers/{id}/reactivate(id=${provider.id})}"
+								  method="post"
+								  class="compact-form">
+
+								<button type="submit"
+										class="provider-reactivate-btn">
+									Reactivate
+								</button>
+
+							</form>
+
+						</div>
+
+					</td>
+
+				</tr>
+
+			</tbody>
+
+		</table>
+
+	</main>
+
+</body>
+
+</html>

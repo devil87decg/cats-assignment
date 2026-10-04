@@ -40,11 +40,11 @@ public class Course {
 
 	private String location;
 
+	@Column(precision = 10, scale = 2)
 	private BigDecimal fee;
 
+	@Column(precision = 4, scale = 1)
 	private BigDecimal durationDays;
-
-	private boolean internalHalfDay;
 
 	private boolean active = true;
 }

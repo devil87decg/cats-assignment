@@ -10,9 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.User;
-import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.TrainingProviderService;
 import sg.edu.nus.cats.utils.AdminAuthHelper;
 
@@ -20,7 +18,6 @@ import sg.edu.nus.cats.utils.AdminAuthHelper;
 @Controller
 public class TrainingProviderController {
 	private final TrainingProviderService providerService;
-	private final UserRepository users;
 	private final AdminAuthHelper adminAuth;
 	
 	@GetMapping("/admin/training-providers")
@@ -219,4 +216,44 @@ public class TrainingProviderController {
 		return "redirect:/admin/training-providers";
 	}
 
+	@PostMapping("/admin/training-providers/{id}/delete")
+	public String deleteProvider(
+			@PathVariable Long id,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+
+		User admin = adminAuth.getAdmin(session);
+
+		if (admin == null) {
+			return "redirect:/";
+		}
+
+		try {
+
+			boolean deleted =
+					providerService.delete(id);
+
+			if (deleted) {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Training provider deleted successfully");
+
+			} else {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Training provider is used by the course catalogue "
+						+ "and was deactivated instead of deleted");
+			}
+
+		} catch (IllegalArgumentException e) {
+
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+		}
+
+		return "redirect:/admin/training-providers";
+	}
 }

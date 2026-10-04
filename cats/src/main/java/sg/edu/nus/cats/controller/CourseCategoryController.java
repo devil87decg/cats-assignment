@@ -10,9 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.User;
-import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.CourseCategoryService;
 import sg.edu.nus.cats.utils.AdminAuthHelper;
 
@@ -20,7 +18,6 @@ import sg.edu.nus.cats.utils.AdminAuthHelper;
 @Controller
 public class CourseCategoryController {
 	private final CourseCategoryService categoryService;
-	private final UserRepository users;
 	private final AdminAuthHelper adminAuth;
 	
 	@GetMapping("/admin/course-categories")
@@ -214,6 +211,47 @@ public class CourseCategoryController {
 			redirectAttributes.addFlashAttribute(
 					"success",
 					"Course category reactivated successfully");
+
+		} catch (IllegalArgumentException e) {
+
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+		}
+
+		return "redirect:/admin/course-categories";
+	}
+	
+	@PostMapping("/admin/course-categories/{id}/delete")
+	public String deleteCategory(
+			@PathVariable Long id,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+
+		User admin = adminAuth.getAdmin(session);
+
+		if (admin == null) {
+			return "redirect:/";
+		}
+
+		try {
+
+			boolean deleted =
+					categoryService.delete(id);
+
+			if (deleted) {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Course category deleted successfully");
+
+			} else {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Course category is used by the course catalogue "
+						+ "and was deactivated instead of deleted");
+			}
 
 		} catch (IllegalArgumentException e) {
 

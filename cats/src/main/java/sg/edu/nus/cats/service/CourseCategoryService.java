@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import sg.edu.nus.cats.model.CourseCategoryMaster;
 import sg.edu.nus.cats.repository.CourseCategoryRepository;
+import sg.edu.nus.cats.repository.CourseRepository;
 
 @Service
 @AllArgsConstructor
 public class CourseCategoryService {
 	private final CourseCategoryRepository categories;
+	private final CourseRepository courses;
 	
 	public List<CourseCategoryMaster> findAll() {
 		return categories.findAll();
@@ -158,5 +160,22 @@ public class CourseCategoryService {
 		category.setActive(true);
 
 		categories.save(category);
+	}
+	
+	public boolean delete(Long id) {
+
+		CourseCategoryMaster category = findById(id);
+
+		if (courses.existsByCategoryId(id)) {
+
+			category.setActive(false);
+			categories.save(category);
+
+			return false;
+		}
+
+		categories.delete(category);
+
+		return true;
 	}
 }

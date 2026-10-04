@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import sg.edu.nus.cats.model.ApplicationStatus;
 import sg.edu.nus.cats.model.CourseApplication;
 import sg.edu.nus.cats.model.CourseCategory;
@@ -17,6 +18,7 @@ import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.TrainingAllowance;
 import sg.edu.nus.cats.repository.AllowanceRepository;
 import sg.edu.nus.cats.repository.ApplicationRepository;
+import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.HolidayRepository;
 
 @Service
@@ -36,14 +38,18 @@ public class ApplicationService {
 	// check whether a new course overlaps another active application
 	// check whether employee has already used part of their yearly allowance
 	private final ApplicationRepository applications;
-
+	private final EmployeeRepository employees;
+	private final EmailService emailService;
+	
 	public ApplicationService(TrainingDayService dayService, HolidayRepository holidays, AllowanceRepository allowances,
-			ApplicationRepository applications) {
+			ApplicationRepository applications, EmployeeRepository employees, EmailService emailService) {
 		
 		this.dayService = dayService;
 		this.holidays = holidays;
 		this.allowances = allowances;
 		this.applications = applications;
+		this.employees = employees;
+		this.emailService = emailService;
 	}
 	
 	// Type -> CourseApplication, Parameter -> application
@@ -268,14 +274,30 @@ public class ApplicationService {
 	// Run the checks built. null means this is new, so there is no application ID to skip
 	// if validation passes, save it and return the saved application. if error -> save(...) is not reached
 	// submit is for creating a new application
+	//Transactional makes the whole thing fail and succeed together
+	@Transactional
 	public CourseApplication submit(CourseApplication application, Employee applicant) {
 		
+		//Retrieve the applicant from inside the transaction for Hibernate to manage.
+		Employee managedApplicant = employees.findById(applicant.getId()).orElseThrow(() ->
+		new IllegalArgumentException("Employee not found"));
+		
+		Employee manager = managedApplicant.getSupervisor();
 		// if it already has an ID, this method rejects it instead of treating it as a new request
 		if (application.getId() != null) {
 			throw new IllegalArgumentException("New application must not have an ID");
 		}
 		
-		application.setEmployee(applicant);
+		if (manager == null ||
+		        manager.getEmail() == null ||
+		        manager.getEmail().isBlank()) {
+
+		        throw new IllegalStateException(
+		            "Employee's manager email address cannot be found"
+		        );
+		    }
+		
+		application.setEmployee(managedApplicant);
 		application.setStatus(ApplicationStatus.APPLIED);
 		
 		// each line clears one manager-decision field on a newly submitted application
@@ -289,7 +311,11 @@ public class ApplicationService {
 		// clear post-course experience comment on a new submission
 		application.setExperienceComment(null);
 		
-		validate(application, applicant, null);
+		//send email to notify manager of submission
+		
+		
+		validate(application, managedApplicant, null);
+		emailService.notifyManagerOfSubmission(manager.getEmail(), manager.getName(), applicant.getName());
 		return applications.save(application);
 		
 	}
@@ -426,23 +452,29 @@ public class ApplicationService {
 		
 	}
 	
+	@Transactional
 	public CourseApplication decide(Long id, Employee manager, boolean approve, String reason) {
 		
-		CourseApplication existing = applications.findById(id).orElseThrow(() -> new IllegalArgumentException(
-				"Application not found"));
+		Employee managedManager = employees.findById(manager.getId()).orElseThrow(() ->
+		new IllegalArgumentException("Manager not found"));
 		
+		CourseApplication existing = applications.findById(id).orElseThrow(() -> new IllegalArgumentException(
+				"Application not found"));		
+			
 		// gets the applicant supervisor
-		Employee supervisor = existing.getEmployee().getSupervisor();
+		Employee applicant = existing.getEmployee();
+		Employee supervisor = applicant.getSupervisor();
+		
 		
 		// reject if applicant has no recorded supervisor or;
 		// the recorded supervisor's ID does not match the ID of the employee
-		if (supervisor == null || !supervisor.getId().equals(manager.getId())) {
+		if (supervisor == null || !supervisor.getId().equals(managedManager.getId())) {
 			
 			throw new IllegalArgumentException("Only the applicant's supervisor can decide this application");
 		}
 		
 		// check decision marker's account has the MANAGER role
-		if (manager.getUser().getRole() != Role.MANAGER) {
+		if (managedManager.getUser().getRole() != Role.MANAGER) {
 			
 			throw new IllegalArgumentException("Manager role is required to decide applications");
 		}
@@ -462,7 +494,7 @@ public class ApplicationService {
 		// stores the explanation
 		existing.setManagerReason(reason);
 		// links the application to the employee who made the decision
-		existing.setDecidedBy(manager);
+		existing.setDecidedBy(managedManager);
 		// record when the manager made the decision
 		existing.setDecisionDate(LocalDateTime.now());
 		
@@ -475,7 +507,11 @@ public class ApplicationService {
 			existing.setStatus(ApplicationStatus.REJECTED);
 		}
 		
-		return applications.save(existing);
+		CourseApplication saved = applications.save(existing);
+		
+		emailService.notifyEmployeeOfDecision(saved.getStatus(), saved.getManagerReason(), applicant.getName(), applicant.getEmail());
+		return saved;
+		
 	}
 	
 	// returns true only if 
@@ -715,5 +751,6 @@ public class ApplicationService {
 
 		return maxBudget.subtract(calculateUsedFees(emp, year));
 
-	}
+	}	
+	
 }

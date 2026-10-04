@@ -5,5 +5,4 @@ public enum CourseCategory {
 	INTERNAL,
 	EXTERNAL,
 	CERTIFICATION
-	
 }

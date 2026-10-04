@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Create Training Provider | CATS</title>
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<h1>Create Training Provider</h1>
+
+	<p>
+		Add a training provider to the course catalogue.
+	</p>
+
+	<nav>
+		<a th:href="@{/admin}">Administration</a>
+		<a th:href="@{/admin/training-providers}">
+			Training Providers
+		</a>
+		<a th:href="@{/logout}">Logout</a>
+	</nav>
+
+
+	<div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+	</div>
+
+
+	<form th:action="@{/admin/training-providers}"
+		  method="post">
+
+		<p>
+			<label for="name">Provider Name</label>
+
+			<input type="text"
+				   id="name"
+				   name="name"
+				   required>
+		</p>
+
+
+		<p>
+			<label for="description">Description</label>
+
+			<textarea id="description"
+					  name="description"
+					  rows="4"></textarea>
+		</p>
+
+
+		<div class="actions">
+
+			<button type="submit">
+				Create Provider
+			</button>
+
+			<a th:href="@{/admin/training-providers}"
+			   class="button button-secondary">
+				Cancel
+			</a>
+
+		</div>
+
+	</form>
+
+</body>
+
+</html>

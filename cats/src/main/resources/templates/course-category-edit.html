@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Edit Course Category | CATS</title>
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<h1>Edit Course Category</h1>
+
+	<p>
+		Update this course category.
+	</p>
+
+	<nav>
+		<a th:href="@{/admin}">Administration</a>
+		<a th:href="@{/admin/course-categories}">
+			Course Categories
+		</a>
+		<a th:href="@{/logout}">Logout</a>
+	</nav>
+
+
+	<div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+	</div>
+
+
+	<form th:action="@{/admin/course-categories/{id}(id=${category.id})}"
+		  method="post">
+
+		<p>
+			<label for="code">Category Code</label>
+
+			<input type="text"
+				   id="code"
+				   name="code"
+				   th:value="${category.code}"
+				   required>
+		</p>
+
+
+		<p>
+			<label for="name">Category Name</label>
+
+			<input type="text"
+				   id="name"
+				   name="name"
+				   th:value="${category.name}"
+				   required>
+		</p>
+
+
+		<p>
+			<label for="description">Description</label>
+
+			<textarea id="description"
+					  name="description"
+					  rows="4"
+					  th:text="${category.description}">
+			</textarea>
+		</p>
+
+
+		<p>
+			<input type="checkbox"
+				   id="internalTraining"
+				   name="internalTraining"
+				   value="true"
+				   th:checked="${category.internalTraining}">
+
+			<label for="internalTraining">
+				Internal training
+			</label>
+		</p>
+
+
+		<div class="actions">
+
+			<button type="submit">
+				Save Changes
+			</button>
+
+			<a th:href="@{/admin/course-categories}"
+			   class="button button-secondary">
+				Cancel
+			</a>
+
+		</div>
+
+	</form>
+
+</body>
+
+</html>

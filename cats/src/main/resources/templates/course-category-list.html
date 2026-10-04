@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Course Categories | CATS</title>
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<h1>Course Categories</h1>
+
+	<p>
+		Manage the course categories available in CATS.
+	</p>
+
+	<nav>
+		<a th:href="@{/admin}">Administration</a>
+		<a th:href="@{/admin/course-categories}">Course Categories</a>
+		<a th:href="@{/logout}">Logout</a>
+	</nav>
+
+
+	<div th:if="${success}"
+		 class="message message-success"
+		 th:text="${success}">
+	</div>
+
+	<div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+	</div>
+
+
+	<main>
+
+		<div class="page-header">
+
+			<h2>Categories</h2>
+
+			<a th:href="@{/admin/course-categories/new}"
+			   class="button">
+				Add Category
+			</a>
+
+		</div>
+
+
+		<table>
+
+			<thead>
+				<tr>
+					<th class="category-code-column">Code</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Internal Training</th>
+					<th class="category-status-column">Status</th>
+					<th class="category-action-column">Action</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				<tr th:each="category : ${categories}">
+
+					<td class="category-code-column"
+						th:text="${category.code}">
+					</td>
+
+					<td th:text="${category.name}"></td>
+
+					<td th:text="${category.description}"></td>
+
+					<td th:text="${category.internalTraining ? 'Yes' : 'No'}"></td>
+
+					<td class="category-status-column">
+
+						<span th:if="${category.active}"
+							  class="status status-approved">
+							Active
+						</span>
+
+						<span th:unless="${category.active}"
+							  class="status status-deleted">
+							Inactive
+						</span>
+
+					</td>
+
+					<td class="category-action-column">
+
+						<div class="category-actions">
+
+							<a th:href="@{/admin/course-categories/{id}/edit(id=${category.id})}">
+								Edit
+							</a>
+
+							<form th:if="${category.active}"
+								  th:action="@{/admin/course-categories/{id}/deactivate(id=${category.id})}"
+								  method="post"
+								  class="category-action-form"
+								  onsubmit="return confirm('Deactivate this course category?');">
+
+								<button type="submit"
+										class="button-danger category-action-btn">
+									Deactivate
+								</button>
+
+							</form>
+
+
+							<form th:unless="${category.active}"
+								  th:action="@{/admin/course-categories/{id}/reactivate(id=${category.id})}"
+								  method="post"
+								  class="category-action-form">
+
+								<button type="submit"
+										class="category-action-btn">
+									Reactivate
+								</button>
+
+							</form>
+
+						</div>
+
+					</td>
+
+				</tr>
+
+			</tbody>
+
+		</table>
+
+	</main>
+
+</body>
+
+</html>

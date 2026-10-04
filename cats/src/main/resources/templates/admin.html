@@ -9,12 +9,12 @@
 
 	<link rel="stylesheet" th:href="@{/css/cats.css}">
 	
-	<title>Adminstration | CATS</title>
+	<title>Administration | CATS</title>
 </head>	
 
 <body>
 	
-	<h1>Adminstration</h1>
+	<h1>Administration</h1>
 	
 	<p>
 		<a href="/admin/allowances/new">Annual allowances</a>
@@ -39,7 +39,7 @@
 	<p>
 		<a href="/logout">Logout</a>
 	</p>	
-	
+	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

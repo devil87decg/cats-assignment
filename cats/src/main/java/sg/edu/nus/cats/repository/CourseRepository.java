@@ -15,4 +15,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 	boolean existsByCategoryId(Long categoryId);
 
 	boolean existsByProviderId(Long providerId);
+	
+	List<Course> findByProviderId(Long providerId);
 }

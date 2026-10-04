@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Create Course | CATS</title>
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<h1>Edit Course</h1>
+
+	<p>
+		Add a commonly attended course to the CATS catalogue.
+	</p>
+
+	<nav>
+		<a th:href="@{/admin}">Administration</a>
+		<a th:href="@{/admin/courses}">Course Catalogue</a>
+		<a th:href="@{/logout}">Logout</a>
+	</nav>
+
+
+	<div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+	</div>
+
+
+	<form th:action="@{/admin/courses/{id}(id=${course.id})}" method="post">
+
+		<div class="form-grid">
+
+			<p>
+				<label for="code">Course Code</label>
+
+				<input type="text"
+					id="code"
+					name="code"
+					th:value="${course.code}"
+					required>
+			</p>
+
+
+			<p>
+				<label for="title">Course Title</label>
+
+				<input type="text"
+					id="title"
+					name="title"
+					th:value="${course.title}"
+					required>
+			</p>
+
+
+			<p class="full-width">
+				<label for="description">Description</label>
+
+				<textarea id="description"
+					name="description"
+					rows="4"
+					th:text="${course.description}">
+				</textarea>
+			</p>
+
+
+			<p>
+				<label for="categoryId">Course Category</label>
+
+				<select id="categoryId"
+						name="categoryId"
+						required>
+
+					<option th:each="category : ${categories}"
+							th:value="${category.id}"
+							th:text="${category.name}"
+							th:selected="${category.id == course.category.id}">
+					</option>
+
+				</select>
+			</p>
+
+
+			<p>
+				<label for="providerId">
+					Training Provider
+				</label>
+
+				<select id="providerId"
+						name="providerId"
+						required>
+
+					<option th:each="provider : ${providers}"
+							th:value="${provider.id}"
+							th:text="${provider.name}"
+							th:selected="${provider.id == course.provider.id}">
+					</option>
+
+				</select>
+			</p>
+
+
+			<p>
+				<label for="location">Location</label>
+
+				<input type="text"
+					id="location"
+					name="location"
+					th:value="${course.location}">
+			</p>
+
+
+			<p>
+				<label for="fee">Course Fee</label>
+
+				<input type="number"
+					id="fee"
+					name="fee"
+					min="0"
+					step="0.01"
+					th:value="${course.fee}">
+			</p>
+
+
+			<p>
+				<label for="durationDays">
+					Duration (days)
+				</label>
+
+				<input type="number"
+					id="durationDays"
+					name="durationDays"
+					min="0.5"
+					step="0.5"
+					th:value="${course.durationDays}"
+					required>
+			</p>
+		</div>
+
+
+		<div class="actions">
+
+			<button type="submit">
+				Save Changes
+			</button>
+
+			<a th:href="@{/admin/courses}"
+			   class="button button-secondary">
+				Cancel
+			</a>
+
+		</div>
+
+	</form>
+
+</body>
+
+</html>

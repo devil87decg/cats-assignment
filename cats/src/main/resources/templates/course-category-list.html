@@ -121,6 +121,18 @@
 								</button>
 
 							</form>
+							
+							<form th:action="@{/admin/course-categories/{id}/delete(id=${category.id})}"
+								  method="post"
+								  class="compact-form"
+								  onsubmit="return confirm('Permanently delete this course category if it is not in use?');">
+
+								<button type="submit"
+										class="table-action-btn table-action-delete">
+									Delete
+								</button>
+
+							</form>
 
 						</div>
 

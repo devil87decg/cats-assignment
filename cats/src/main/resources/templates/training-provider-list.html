@@ -55,7 +55,7 @@
 				<tr>
 					<th>Name</th>
 					<th>Description</th>
-					<th>Status</th>
+					<th class="table-status-column">Status</th>
 					<th class="provider-action-column">Action</th>
 				</tr>
 			</thead>
@@ -68,7 +68,7 @@
 
 					<td th:text="${provider.description}"></td>
 
-					<td>
+					<td class="table-status-column">
 						<span th:if="${provider.active}"
 							  class="status status-approved">
 							Active
@@ -110,6 +110,18 @@
 								<button type="submit"
 										class="provider-reactivate-btn">
 									Reactivate
+								</button>
+
+							</form>
+							
+							<form th:action="@{/admin/training-providers/{id}/delete(id=${provider.id})}"
+								  method="post"
+								  class="compact-form"
+								  onsubmit="return confirm('Permanently delete this training provider if it is not in use?');">
+
+								<button type="submit"
+										class="table-action-btn table-action-delete">
+									Delete
 								</button>
 
 							</form>

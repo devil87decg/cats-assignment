@@ -3,15 +3,19 @@ package sg.edu.nus.cats.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import sg.edu.nus.cats.model.Course;
 import sg.edu.nus.cats.model.TrainingProvider;
+import sg.edu.nus.cats.repository.CourseRepository;
 import sg.edu.nus.cats.repository.TrainingProviderRepository;
 
 @AllArgsConstructor
 @Service
 public class TrainingProviderService {
 	private final TrainingProviderRepository providers;
+	private final CourseRepository courses;
 	
 	public List<TrainingProvider> findAll() {
 		return providers.findAll();
@@ -88,14 +92,19 @@ public class TrainingProviderService {
 		return providers.save(provider);
 	}
 
-
+	@Transactional
 	public void deactivate(Long id) {
 
 		TrainingProvider provider = findById(id);
+		
+		if (!provider.isActive()) {
+			throw new IllegalArgumentException(
+					"Training provider is already inactive");
+		}
 
 		provider.setActive(false);
-
 		providers.save(provider);
+		deactivateProviderCourses(id);
 	}
 
 
@@ -106,5 +115,39 @@ public class TrainingProviderService {
 		provider.setActive(true);
 
 		providers.save(provider);
+	}
+	
+	@Transactional
+	public boolean delete(Long id) {
+
+		TrainingProvider provider = findById(id);
+
+		if (courses.existsByProviderId(id)) {
+
+			provider.setActive(false);
+			providers.save(provider);
+			deactivateProviderCourses(id);
+
+			return false;
+		}
+
+		providers.delete(provider);
+
+		return true;
+	}
+	
+	private void deactivateProviderCourses(Long providerId) {
+
+		List<Course> providerCourses =
+				courses.findByProviderId(providerId);
+
+		for (Course course : providerCourses) {
+
+			if (course.isActive()) {
+				course.setActive(false);
+			}
+		}
+
+		courses.saveAll(providerCourses);
 	}
 }

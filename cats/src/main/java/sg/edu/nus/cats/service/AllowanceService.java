@@ -1,17 +1,16 @@
 package sg.edu.nus.cats.service;
 
 import java.math.BigDecimal;
-
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import sg.edu.nus.cats.model.Employee;
+import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.TrainingAllowance;
 import sg.edu.nus.cats.repository.AllowanceRepository;
 import sg.edu.nus.cats.repository.EmployeeRepository;
-
-import sg.edu.nus.cats.model.StaffCategory;
 
 @Service
 public class AllowanceService {
@@ -26,6 +25,7 @@ public class AllowanceService {
 		this.allowances = allowances;
 	}
 	
+	// Only admin able to set the allowance to override the default allowance
 	public TrainingAllowance setAllowance(Long employeeId, int year, BigDecimal dayLimit, BigDecimal feeBudget) {
 		
 		if (year <2000) {
@@ -54,27 +54,7 @@ public class AllowanceService {
 			
 			throw new IllegalArgumentException("Set the employee's staff category first");
 		}
-		
-		// determine the annual training day limit based on staff category
-		BigDecimal categoryDayLimit; 
-		
-		// check whether they are administrative staff 
-		if (employee.getStaffCategory() == StaffCategory.ADMINISTRATIVE) {
 			
-			categoryDayLimit = new BigDecimal("5");
-			
-		} else {
-			
-			categoryDayLimit = new BigDecimal("10");
-			
-		}
-		
-		// dayLimit -> limit entered by administrator
-		if (dayLimit.compareTo(categoryDayLimit) != 0) {
-			
-			throw new IllegalArgumentException("Training day limit must be " + categoryDayLimit + " days for this staff category");
-		}
-		
 		// ask AllowanceRepository for this employee's allowance for this year
 		Optional<TrainingAllowance> existingAllowance = allowances.findByEmployeeIdAndYear(employeeId, year);
 		
@@ -100,4 +80,52 @@ public class AllowanceService {
 		return allowances.save(allowance);
 	}
 	
+	// default allowance when creating a new employee
+	public TrainingAllowance createDefaultAllowance(Employee employee) {
+		if(employee == null) {
+			throw new IllegalArgumentException("Employee is required");
+		}
+		
+		if(employee.getStaffCategory() == null) {
+			throw new IllegalArgumentException("Staff category is reuired");
+		}
+		
+		int currentYear = getCurrentYear();
+		
+		// determine the default annual training day limit based on staff category
+		BigDecimal defaultDayLimit; 
+		
+		// check whether they are administrative staff 
+		if (employee.getStaffCategory() == StaffCategory.ADMINISTRATIVE) {
+			defaultDayLimit = new BigDecimal("5");
+		} else if (employee.getStaffCategory() == StaffCategory.PROFESSIONAL){
+			defaultDayLimit = new BigDecimal("10");
+		} else {
+			throw new IllegalArgumentException("Unsupported staff category");
+		}
+		
+		TrainingAllowance allowance = new TrainingAllowance();
+		allowance.setEmployee(employee);
+		allowance.setYear(currentYear);
+		allowance.setDayLimit(defaultDayLimit);
+		allowance.setFeeBudget(new BigDecimal("2000.00"));
+		
+		return allowances.save(allowance);
+		
+	}
+	
+	// get the current year allowance by employeeId
+	public TrainingAllowance getCurrentYearAllowance(Long employeeId) {
+		if(employeeId == null) {
+			throw new IllegalArgumentException("Employee is required");
+		}
+		
+		int currentYear = getCurrentYear();
+		
+		return allowances.findByEmployeeIdAndYear(employeeId, currentYear).orElse(null);
+	}
+	
+	public int getCurrentYear() {
+		return LocalDate.now().getYear();
+	}
 }

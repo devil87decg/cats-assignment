@@ -264,4 +264,45 @@ public class CourseController {
 
 		return "redirect:/admin/courses";
 	}
+	
+	@PostMapping("/admin/courses/{id}/delete")
+	public String deleteCourse(
+			@PathVariable Long id,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+
+		User admin = adminAuth.getAdmin(session);
+
+		if (admin == null) {
+			return "redirect:/";
+		}
+
+		try {
+
+			boolean deleted =
+					courseService.delete(id);
+
+			if (deleted) {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Course deleted successfully");
+
+			} else {
+
+				redirectAttributes.addFlashAttribute(
+						"success",
+						"Course has application history and was deactivated instead of deleted");
+			}
+
+		} catch (IllegalArgumentException e) {
+
+			redirectAttributes.addFlashAttribute(
+					"error",
+					e.getMessage());
+		}
+
+		return "redirect:/admin/courses";
+	}
 }
+

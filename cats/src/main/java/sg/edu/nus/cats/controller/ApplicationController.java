@@ -1,5 +1,6 @@
 package sg.edu.nus.cats.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -144,7 +145,7 @@ public class ApplicationController {
 			
 			//Link this application to that Course
 			courseForm.setCourse(selectedCourse);
-			
+						
 			courseForm.setCourseTitle(
 					selectedCourse.getTitle());
 

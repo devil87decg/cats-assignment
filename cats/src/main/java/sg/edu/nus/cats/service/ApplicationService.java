@@ -109,16 +109,16 @@ public class ApplicationService {
 					"Course start and end dates must be working days");
 		}
 		
-		// if half day was requested AND the category is not INTERNAL, reject it 
-		if (application.isHalfDay()
-				&& !isInternalTraining(application)) {
-
-			throw new IllegalArgumentException(
-					"Half-day is allowed for internal training only");
-		}
-		
 		// sends the start date, end date, and half-day choice to the calculator built in TrainingDayService
-		BigDecimal days = dayService.count(application.getStartDate(), application.getEndDate(), application.isHalfDay());
+		//BigDecimal days = dayService.count(application.getStartDate(), application.getEndDate(), application.isHalfDay());
+		
+
+		// TODO: Confirm duration/date calculation rule with team.
+		// See JIRA: Clarify course duration and application date business rules.
+		BigDecimal days =
+				application.getCourse().getDurationDays();
+
+		application.setDurationDays(days);
 		
 		// rejects a course period with no working days
 		if (days.compareTo(BigDecimal.ZERO) == 0) {
@@ -328,7 +328,6 @@ public class ApplicationService {
 		existing.setStartDate(changes.getStartDate());
 		existing.setEndDate(changes.getEndDate());
 		existing.setFee(changes.getFee());
-		existing.setHalfDay(changes.isHalfDay());
 		existing.setJustification(changes.getJustification());
 		existing.setWorkDissemination(changes.getWorkDissemination());
 		existing.setDurationDays(changes.getDurationDays());

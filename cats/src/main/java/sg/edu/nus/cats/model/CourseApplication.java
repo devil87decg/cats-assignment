@@ -41,9 +41,7 @@ public class CourseApplication {
 	private LocalDate endDate;
 	
 	private BigDecimal durationDays;
-	private BigDecimal fee;
-	
-	private boolean halfDay;
+	private BigDecimal fee;	
 	private String justification;
 	private String workDissemination;
 	

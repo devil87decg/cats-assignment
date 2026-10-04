@@ -65,14 +65,14 @@ public class ApplicationService {
 		
 		// returns the selected CourseCategory, such as INTERNAL, EXTERNAL etc, 
 		// returns null, none was selected
-		if (application.getCategory() == null) {
-			
-			throw new IllegalArgumentException("Course category is required");
+		if (application.getCourse() == null
+				&& application.getCategory() == null) {
+
+			throw new IllegalArgumentException(
+					"Course category is required");
 		}
 		
-		// Internal training is free, so replace any entered fee with zero
-		if (application.getCategory() == CourseCategory.INTERNAL) {
-			
+		if (isInternalTraining(application)) {
 			application.setFee(BigDecimal.ZERO);
 		}
 		
@@ -119,8 +119,9 @@ public class ApplicationService {
 		}
 		
 		// if half day was requested AND the category is not INTERNAL, reject it 
-		if (application.isHalfDay() && application.getCategory() != CourseCategory.INTERNAL) {
-			
+		if (application.isHalfDay()
+				&& !isInternalTraining(application)) {
+
 			throw new IllegalArgumentException(
 					"Half-day is allowed for internal training only");
 		}
@@ -192,8 +193,9 @@ public class ApplicationService {
 			usedDays = usedDays.add(existing.getDurationDays());
 			
 			// adds the fee when the saved application is an external course or certification
-			if (existing.getCategory() != CourseCategory.INTERNAL && existing.getFee() != null) {
-				
+			if (!isInternalTraining(existing)
+					&& existing.getFee() != null) {
+
 				usedFees = usedFees.add(existing.getFee());
 			}
 		}
@@ -220,52 +222,55 @@ public class ApplicationService {
 		}
 		
 		// for an external course or certification, CATS checks whether the employee has a fee budget recorded for that year 
-		if (application.getCategory() != CourseCategory.INTERNAL 
-				&& application.getFee().signum() > 0 
-				&& limit.getFeeBudget() == null) {
-			
-			throw new IllegalArgumentException("Set the applicant's annual fee budget first");
-		}
-		
-		// if this is a paid external course/certification, and adding its fee would exceed the annual budget, reject it 
-		if (application.getCategory() != CourseCategory.INTERNAL 
+		if (!isInternalTraining(application)
 				&& application.getFee().signum() > 0
-				&& usedFees.add(application.getFee()).compareTo(limit.getFeeBudget()) > 0) {
-			
-			throw new IllegalArgumentException("Course fees exceeds the anuual fee budget");
+				&& limit.getFeeBudget() == null) {
+			throw new IllegalArgumentException(
+		            "Set the applicant's annual fee budget first");
+		
 		}
 		
-		// asks the repository for all saved course applications belonging to this applicant
-		List<CourseApplication> allApplications = applications.findByEmployeeId(applicant.getId());
+		// if this is a paid external course/certification, and adding its fee would exceed the annual budget, 
+		//	reject it 
+		if (!isInternalTraining(application)
+				&& application.getFee().signum() > 0
+				&& usedFees.add(application.getFee())
+						.compareTo(limit.getFeeBudget()) > 0) {
+			throw new IllegalArgumentException(
+		            "Course fees exceeds the annual fee budget");
+		}
 		
-		// look at each saved application for this employee, one at a time
-		// current saved record is called existing
-		for (CourseApplication existing : allApplications) {
+			// asks the repository for all saved course applications belonging to this applicant
+			List<CourseApplication> allApplications = applications.findByEmployeeId(applicant.getId());
 			
-			if (editingId != null && editingId.equals(existing.getId())) {
-				continue;
-			}
-			
-			// Only applied, updated, and approved applications go on to the date-clash check
-			if (existing.getStatus() != ApplicationStatus.APPLIED
-					&& existing.getStatus() != ApplicationStatus.UPDATED
-					&& existing.getStatus() != ApplicationStatus.APPROVED) {
-				continue;
-			}
-			
-			// The existing course does not end before the new course starts, 
-			// and the existing course does not start after the new course ends
-			// if both are true -> the periods share at least one date -> overlaps -> true
-			boolean overlaps = !existing.getEndDate().isBefore(application.getStartDate())
-					&& !existing.getStartDate().isAfter(application.getEndDate());
-			
-			// overlaps compares the dates; this if rejects a clash 
-			if (overlaps) {
+			// look at each saved application for this employee, one at a time
+			// current saved record is called existing
+			for (CourseApplication existing : allApplications) {
 				
-				throw new IllegalArgumentException("Course period overlaps another application");
+				if (editingId != null && editingId.equals(existing.getId())) {
+					continue;
+				}
+				
+				// Only applied, updated, and approved applications go on to the date-clash check
+				if (existing.getStatus() != ApplicationStatus.APPLIED
+						&& existing.getStatus() != ApplicationStatus.UPDATED
+						&& existing.getStatus() != ApplicationStatus.APPROVED) {
+					continue;
+				}
+				
+				// The existing course does not end before the new course starts, 
+				// and the existing course does not start after the new course ends
+				// if both are true -> the periods share at least one date -> overlaps -> true
+				boolean overlaps = !existing.getEndDate().isBefore(application.getStartDate())
+						&& !existing.getStartDate().isAfter(application.getEndDate());
+				
+				// overlaps compares the dates; this if rejects a clash 
+				if (overlaps) {
+					
+					throw new IllegalArgumentException("Course period overlaps another application");
+				}
+				
 			}
-			
-		}
 		
 	}
 	
@@ -315,7 +320,7 @@ public class ApplicationService {
 		
 		
 		validate(application, managedApplicant, null);
-		emailService.notifyManagerOfSubmission(manager.getEmail(), manager.getName(), applicant.getName());
+		//emailService.notifyManagerOfSubmission(manager.getEmail(), manager.getName(), applicant.getName());
 		return applications.save(application);
 		
 	}
@@ -509,7 +514,7 @@ public class ApplicationService {
 		
 		CourseApplication saved = applications.save(existing);
 		
-		emailService.notifyEmployeeOfDecision(saved.getStatus(), saved.getManagerReason(), applicant.getName(), applicant.getEmail());
+		//emailService.notifyEmployeeOfDecision(saved.getStatus(), saved.getManagerReason(), applicant.getName(), applicant.getEmail());
 		return saved;
 		
 	}
@@ -696,7 +701,7 @@ public class ApplicationService {
 			// category != INTERNAL -> include external courses and certifications
 			// fee != null -> check that a fee value exists before adding it
 			if (application.getStatus() == ApplicationStatus.COMPLETED
-					&& application.getCategory() != CourseCategory.INTERNAL
+					&& !isInternalTraining(application)
 					&& application.getFee() != null) {
 				
 				completedFees = completedFees.add(application.getFee());
@@ -728,9 +733,9 @@ public class ApplicationService {
 					existing.getStatus() == ApplicationStatus.APPROVED || existing.getStatus() == ApplicationStatus.COMPLETED) {
 				
 				// Count external course and certification fees when a fee is recorded
-				if (existing.getCategory() != CourseCategory.INTERNAL && existing.getFee() != null) {
-					
-					// store the new total
+				if (!isInternalTraining(existing)
+						&& existing.getFee() != null) {
+
 					usedFees = usedFees.add(existing.getFee());
 				}
 				
@@ -753,4 +758,18 @@ public class ApplicationService {
 
 	}	
 	
+	private boolean isInternalTraining(CourseApplication application) {
+
+		// New catalogue-based applications
+		if (application.getCourse() != null
+				&& application.getCourse().getCategory() != null) {
+
+			return application.getCourse()
+					.getCategory()
+					.isInternalTraining();
+		}
+
+		// Old historical applications created before Course Catalogue
+		return application.getCategory() == CourseCategory.INTERNAL;
+	}
 }

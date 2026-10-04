@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import sg.edu.nus.cats.model.ApplicationStatus;
+import sg.edu.nus.cats.model.Course;
 import sg.edu.nus.cats.model.CourseApplication;
 import sg.edu.nus.cats.model.CourseCategory;
 import sg.edu.nus.cats.model.Employee;
@@ -21,7 +23,9 @@ import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.ApplicationService;
+import sg.edu.nus.cats.service.CourseService;
 
+@AllArgsConstructor
 @Controller
 public class ApplicationController {
 
@@ -32,15 +36,7 @@ public class ApplicationController {
 	private final EmployeeRepository employees;
 	
 	private final UserRepository users;
-	
-	public ApplicationController( ApplicationService applicationService, EmployeeRepository employees,
-			UserRepository users) {
-		
-		this.applicationService = applicationService;
-		this.employees = employees;
-		this.users = users;
-		
-	}
+	private final CourseService courseService;
 	
 	// open the form for submitting a new course application
 	@GetMapping("/applications/new")
@@ -90,6 +86,10 @@ public class ApplicationController {
 		// make all course categories available to the form's dropdown
 		model.addAttribute("categories", CourseCategory.values());
 		
+		model.addAttribute(
+				"courses",
+				courseService.findActive());
+		
 		return "application-form";
 	}
 	
@@ -97,7 +97,8 @@ public class ApplicationController {
 	@PostMapping("/applications")
 	
 	public String submitApplication(
-			@ModelAttribute("courseForm") CourseApplication courseForm, 
+			@ModelAttribute("courseForm") CourseApplication courseForm,
+			@RequestParam Long courseId,
 			HttpSession session,
 			Model model,
 			RedirectAttributes redirectAttributes) {
@@ -137,15 +138,36 @@ public class ApplicationController {
 		}
 		
 		try {
+			Course selectedCourse =
+					courseService.findById(courseId);
+
+			if (!selectedCourse.isActive()) {
+				throw new IllegalArgumentException(
+						"Selected course is no longer available");
+			}
 			
-		// Ask the service to validate and save the applicant's course request
-		applicationService.submit(courseForm, applicant);
+			//Link this application to that Course
+			courseForm.setCourse(selectedCourse);
+			
+			courseForm.setCourseTitle(
+					selectedCourse.getTitle());
+
+			courseForm.setTrainingProvider(
+					selectedCourse.getProvider().getName());
+
+			courseForm.setFee(
+					selectedCourse.getFee());
+			
+			// Ask the service to validate and save the applicant's course request
+			applicationService.submit(courseForm, applicant);
 		
 		} catch (IllegalArgumentException validationError) {
 			
 			model.addAttribute("error", validationError.getMessage());
-			
 			model.addAttribute("categories", CourseCategory.values());
+			model.addAttribute(
+			        "courses",
+			        courseService.findActive());
 			
 			return "application-form";
 		}

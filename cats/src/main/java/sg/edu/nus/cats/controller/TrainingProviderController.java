@@ -13,18 +13,18 @@ import lombok.AllArgsConstructor;
 import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
-import sg.edu.nus.cats.service.CourseCategoryService;
+import sg.edu.nus.cats.service.TrainingProviderService;
 import sg.edu.nus.cats.utils.AdminAuthHelper;
 
 @AllArgsConstructor
 @Controller
-public class CourseCategoryController {
-	private final CourseCategoryService categoryService;
+public class TrainingProviderController {
+	private final TrainingProviderService providerService;
 	private final UserRepository users;
 	private final AdminAuthHelper adminAuth;
 	
-	@GetMapping("/admin/course-categories")
-	public String showCategories(
+	@GetMapping("/admin/training-providers")
+	public String showProviders(
 			HttpSession session,
 			Model model) {
 
@@ -35,14 +35,14 @@ public class CourseCategoryController {
 		}
 
 		model.addAttribute(
-				"categories",
-				categoryService.findAll());
+				"providers",
+				providerService.findAll());
 
-		return "course-category-list";
+		return "training-provider-list";
 	}
 
 
-	@GetMapping("/admin/course-categories/new")
+	@GetMapping("/admin/training-providers/new")
 	public String showCreateForm(
 			HttpSession session) {
 
@@ -52,17 +52,14 @@ public class CourseCategoryController {
 			return "redirect:/";
 		}
 
-		return "course-category-form";
+		return "training-provider-form";
 	}
 
 
-	@PostMapping("/admin/course-categories")
-	public String createCategory(
-			@RequestParam String code,
+	@PostMapping("/admin/training-providers")
+	public String createProvider(
 			@RequestParam String name,
 			@RequestParam(required = false) String description,
-			@RequestParam(defaultValue = "false")
-				boolean internalTraining,
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 
@@ -74,15 +71,13 @@ public class CourseCategoryController {
 
 		try {
 
-			categoryService.create(
-					code,
+			providerService.create(
 					name,
-					description,
-					internalTraining);
+					description);
 
 			redirectAttributes.addFlashAttribute(
 					"success",
-					"Course category created successfully");
+					"Training provider created successfully");
 
 		} catch (IllegalArgumentException e) {
 
@@ -90,13 +85,14 @@ public class CourseCategoryController {
 					"error",
 					e.getMessage());
 
-			return "redirect:/admin/course-categories/new";
+			return "redirect:/admin/training-providers/new";
 		}
 
-		return "redirect:/admin/course-categories";
+		return "redirect:/admin/training-providers";
 	}
-	
-	@GetMapping("/admin/course-categories/{id}/edit")
+
+
+	@GetMapping("/admin/training-providers/{id}/edit")
 	public String showEditForm(
 			@PathVariable Long id,
 			HttpSession session,
@@ -111,25 +107,23 @@ public class CourseCategoryController {
 		try {
 
 			model.addAttribute(
-					"category",
-					categoryService.findById(id));
+					"provider",
+					providerService.findById(id));
 
-			return "course-category-edit";
+			return "training-provider-edit";
 
 		} catch (IllegalArgumentException e) {
 
-			return "redirect:/admin/course-categories";
+			return "redirect:/admin/training-providers";
 		}
 	}
-	
-	@PostMapping("/admin/course-categories/{id}")
-	public String updateCategory(
+
+
+	@PostMapping("/admin/training-providers/{id}")
+	public String updateProvider(
 			@PathVariable Long id,
-			@RequestParam String code,
 			@RequestParam String name,
 			@RequestParam(required = false) String description,
-			@RequestParam(defaultValue = "false")
-				boolean internalTraining,
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
 
@@ -141,18 +135,16 @@ public class CourseCategoryController {
 
 		try {
 
-			categoryService.update(
+			providerService.update(
 					id,
-					code,
 					name,
-					description,
-					internalTraining);
+					description);
 
 			redirectAttributes.addFlashAttribute(
 					"success",
-					"Course category updated successfully");
+					"Training provider updated successfully");
 
-			return "redirect:/admin/course-categories";
+			return "redirect:/admin/training-providers";
 
 		} catch (IllegalArgumentException e) {
 
@@ -160,13 +152,14 @@ public class CourseCategoryController {
 					"error",
 					e.getMessage());
 
-			return "redirect:/admin/course-categories/"
+			return "redirect:/admin/training-providers/"
 					+ id + "/edit";
 		}
 	}
-	
-	@PostMapping("/admin/course-categories/{id}/deactivate")
-	public String deactivateCategory(
+
+
+	@PostMapping("/admin/training-providers/{id}/deactivate")
+	public String deactivateProvider(
 			@PathVariable Long id,
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
@@ -179,11 +172,11 @@ public class CourseCategoryController {
 
 		try {
 
-			categoryService.deactivate(id);
+			providerService.deactivate(id);
 
 			redirectAttributes.addFlashAttribute(
 					"success",
-					"Course category deactivated successfully");
+					"Training provider deactivated successfully");
 
 		} catch (IllegalArgumentException e) {
 
@@ -192,11 +185,12 @@ public class CourseCategoryController {
 					e.getMessage());
 		}
 
-		return "redirect:/admin/course-categories";
+		return "redirect:/admin/training-providers";
 	}
-	
-	@PostMapping("/admin/course-categories/{id}/reactivate")
-	public String reactivateCategory(
+
+
+	@PostMapping("/admin/training-providers/{id}/reactivate")
+	public String reactivateProvider(
 			@PathVariable Long id,
 			HttpSession session,
 			RedirectAttributes redirectAttributes) {
@@ -209,11 +203,11 @@ public class CourseCategoryController {
 
 		try {
 
-			categoryService.reactivate(id);
+			providerService.reactivate(id);
 
 			redirectAttributes.addFlashAttribute(
 					"success",
-					"Course category reactivated successfully");
+					"Training provider reactivated successfully");
 
 		} catch (IllegalArgumentException e) {
 
@@ -222,6 +216,7 @@ public class CourseCategoryController {
 					e.getMessage());
 		}
 
-		return "redirect:/admin/course-categories";
+		return "redirect:/admin/training-providers";
 	}
+
 }

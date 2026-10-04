@@ -3,11 +3,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	
 <head>
-	
 	<meta charset="UTF-8">
-	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 	<link rel="stylesheet" th:href="@{/css/cats.css}">
 	
 	<title>New Course Application | CATS</title>
@@ -28,7 +25,10 @@
 	
 	<p th:if="${error}" th:text="${error}"></p>
 		
-	<p th:text="${'Application ID: ' + courseForm.id}"></p>
+	<p th:if="${courseForm.id != null}">
+		Application ID:
+		<span th:text="${courseForm.id}"></span>
+	</p>
 	
 	<!-- Submit to the create URL / update URL depending on whether an ID exists  -->
 	<form th:action="${courseForm.id == null}
@@ -37,26 +37,63 @@
 			method="post" 
 			th:object="${courseForm}">
 	
-		<p>
-			<label for="courseTitle">Course title</label>
-			<input type="text" id="courseTitle" th:field="*{courseTitle}" required>
-		</p>	
-		
-		<p>
-			<label for="category">Course category</label>
-			<select id="category" th:field="*{category}" required>
-				<option value="">Select a course category</option>
-				<option th:each="category : ${categories}"
-					th:value="${category}"
-					th:text="${category}">
-				</option>
-			</select>
-		</p>
-		
-		<p>
-			<label for="trainingProvider">Training provider</label>
-			<input type="text" id="trainingProvider" th:field="*{trainingProvider}">
-		</p>
+			<p>
+				<label for="courseId">
+					Course
+				</label>
+
+				<select id="courseId"
+						name="courseId"
+						required>
+
+					<option value="">
+						Select a course
+					</option>
+
+					<option th:each="course : ${courses}"
+							th:value="${course.id}"
+							th:text="${course.code + ' - ' + course.title}"
+							th:attr="
+								data-category=${course.category.name},
+								data-provider=${course.provider.name},
+								data-duration=${course.durationDays},
+								data-fee=${course.fee}">
+					</option>
+
+				</select>
+				
+				<div id="courseDetails"
+					 class="course-details"
+					 style="display: none;">
+
+					<h3>Course Details</h3>
+
+					<div class="details-grid">
+
+						<p>
+							<strong>Category</strong><br>
+							<span id="courseCategory"></span>
+						</p>
+
+						<p>
+							<strong>Training Provider</strong><br>
+							<span id="courseProvider"></span>
+						</p>
+
+						<p>
+							<strong>Duration</strong><br>
+							<span id="courseDuration"></span> day(s)
+						</p>
+
+						<p>
+							<strong>Fee</strong><br>
+							$<span id="courseFee"></span>
+						</p>
+
+					</div>
+
+				</div>
+			</p>	
 		
 		<!-- Select the first date of the course. -->
 		<p>
@@ -67,16 +104,6 @@
 		<p>
 			<label for="endDate">End date</label>
 			<input type="date" id="endDate" th:field="*{endDate}" required>
-		</p>
-		
-		<p>
-			<input type="checkbox" id="halfDay" th:field="*{halfDay}">
-			<label for="halfDay">Half-day session (internal training only)</label>
-		</p>
-		
-		<p>
-			<label for="fee">Course fee ($)</label>
-			<input type="number" id="fee" th:field="*{fee}" min="0" step="0.01">
 		</p>
 		
 		<p>
@@ -94,6 +121,39 @@
 		
 	</form>
 	<div th:replace="~{fragments/footer :: footer}"></div>
+	
+	<script>
+		const courseSelect =
+				document.getElementById("courseId");
+
+		const courseDetails =
+				document.getElementById("courseDetails");
+
+		courseSelect.addEventListener("change", function () {
+
+			const selected =
+					this.options[this.selectedIndex];
+
+			if (!selected.value) {
+				courseDetails.style.display = "none";
+				return;
+			}
+
+			document.getElementById("courseCategory").textContent =
+					selected.dataset.category;
+
+			document.getElementById("courseProvider").textContent =
+					selected.dataset.provider;
+
+			document.getElementById("courseDuration").textContent =
+					selected.dataset.duration;
+
+			document.getElementById("courseFee").textContent =
+					selected.dataset.fee;
+
+			courseDetails.style.display = "block";
+		});
+	</script>
 </body>
 
 </html>

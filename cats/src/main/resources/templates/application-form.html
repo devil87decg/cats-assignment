@@ -17,9 +17,15 @@
 		<a href="/logout">Logout</a>
 	</nav>
 	
-	<h1>New Course Application</h1>
+	<h1 th:text="${courseForm.id == null
+	        ? 'New Course Application'
+	        : 'Edit Course Application'}">
+	</h1>
 	
-	<p>Enter the course details to submit an application for approval.</p>
+	<p th:text="${courseForm.id == null
+	        ? 'Enter the course details to submit an application for approval.'
+	        : 'Update your course application details.'}">
+	</p>
 	
 	<p th:if="${success}" th:text="${success}"></p>
 	
@@ -53,6 +59,8 @@
 					<option th:each="course : ${courses}"
 							th:value="${course.id}"
 							th:text="${course.code + ' - ' + course.title}"
+							th:selected="${courseForm.course != null
+											and courseForm.course.id.equals(course.id)}"
 							th:attr="
 								data-category=${course.category.name},
 								data-provider=${course.provider.name},

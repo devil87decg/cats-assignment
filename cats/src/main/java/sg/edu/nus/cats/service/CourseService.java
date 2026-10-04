@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 import sg.edu.nus.cats.model.Course;
 import sg.edu.nus.cats.model.CourseCategoryMaster;
 import sg.edu.nus.cats.model.TrainingProvider;
+import sg.edu.nus.cats.repository.ApplicationRepository;
 import sg.edu.nus.cats.repository.CourseCategoryRepository;
 import sg.edu.nus.cats.repository.CourseRepository;
 import sg.edu.nus.cats.repository.TrainingProviderRepository;
@@ -19,6 +21,7 @@ public class CourseService {
 	private final CourseRepository courses;
 	private final CourseCategoryRepository categories;
 	private final TrainingProviderRepository providers;
+	private final ApplicationRepository applications;
 	
 	public List<Course> findAll() {
 		return courses.findAll();
@@ -329,5 +332,26 @@ public class CourseService {
 		course.setActive(true);
 
 		courses.save(course);
+	}
+	
+	@Transactional
+	public boolean delete(Long id) {
+
+		Course course = findById(id);
+
+		// Course already has application/history.
+		// Preserve it and deactivate instead.
+		if (applications.existsByCourseId(id)) {
+
+			course.setActive(false);
+			courses.save(course);
+
+			return false;
+		}
+
+		// Never used: safe to physically delete.
+		courses.delete(course);
+
+		return true;
 	}
 }

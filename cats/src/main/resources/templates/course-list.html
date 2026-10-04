@@ -127,6 +127,18 @@
 									</button>
 
 								</form>
+								
+								<form th:action="@{/admin/courses/{id}/delete(id=${course.id})}"
+									  method="post"
+									  class="compact-form"
+									  onsubmit="return confirm('Permanently delete this course if it has no application history?');">
+
+									<button type="submit"
+											class="table-action-btn table-action-delete">
+										Delete
+									</button>
+
+								</form>
 
 							</div>
 

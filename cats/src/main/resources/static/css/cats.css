@@ -603,18 +603,6 @@ table {
 	}
 }
 
-/* ---------- Action Buttons ---------- */
-
-.action-buttons {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.action-buttons form {
-	margin: 0;
-}
-
 
 /* ---------- Danger Button ---------- */
 
@@ -627,24 +615,6 @@ table {
 	background-color: #8f1c13;
 }
 
-
-.action-column {
-	width: 160px;
-	min-width: 160px;
-}
-
-.employee-actions {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.employee-actions form {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	background: none;
-}
 /* Style the history filters on all screen sizes. */
 .history-filter a {
     display: inline-block;
@@ -659,6 +629,128 @@ table {
 
 .history-filter a:hover {
     background-color: #286078;
+}
+
+/* ---------- Employee Management Actions ---------- */
+
+.action-column {
+	width: 180px;
+	min-width: 180px;
+}
+
+.employee-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+.employee-delete-form {
+	display: inline-flex;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.employee-action-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 72px;
+	height: 36px;
+	padding: 0;
+	margin: 0;
+
+	border-radius: 6px;
+	font: 700 14px/1 Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.employee-edit-btn {
+	background: #e8f1f5;
+	color: #193b50;
+	border: 1px solid #cbdde7;
+}
+
+.employee-edit-btn:hover {
+	background: #dce9ef;
+	color: #193b50;
+}
+
+button.employee-delete-btn {
+	width: 72px;
+	height: 36px;
+	min-height: 36px;
+	padding: 0;
+	margin: 0;
+
+	background: #b42318;
+	color: white;
+	border: 1px solid #b42318;
+}
+
+button.employee-delete-btn:hover {
+	background: #8f1c13;
+	color: white;
+}
+
+/* ---------- Course Category Management ---------- */
+
+.category-status-column {
+	width: 100px;
+	min-width: 100px;
+	white-space: nowrap;
+}
+
+.category-status-column .status {
+	white-space: nowrap;
+}
+
+.category-action-column {
+	width: 190px;
+	min-width: 190px;
+}
+
+.category-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	white-space: nowrap;
+}
+
+.category-action-form {
+	display: inline-flex;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+button.category-action-btn {
+	width: 105px;
+	height: 36px;
+	min-height: 36px;
+	padding: 0 12px;
+	margin: 0;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	font-size: 14px;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.category-code-column {
+	width: 150px;
+	min-width: 150px;
+	white-space: nowrap;
 }
 
 /* Employee management actions */

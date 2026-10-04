@@ -33,10 +33,6 @@ public class CourseApplication {
 	private Employee employee;
 	
 	private String courseTitle;
-	
-	@Enumerated(EnumType.STRING)
-	private CourseCategory category;
-	
 	private String trainingProvider;
 	
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

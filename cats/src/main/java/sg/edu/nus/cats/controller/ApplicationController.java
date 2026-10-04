@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import sg.edu.nus.cats.model.ApplicationStatus;
 import sg.edu.nus.cats.model.Course;
 import sg.edu.nus.cats.model.CourseApplication;
-import sg.edu.nus.cats.model.CourseCategory;
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
@@ -82,9 +81,6 @@ public class ApplicationController {
 		
 		// make the application object available to the HTML form
 		model.addAttribute("courseForm", courseForm);
-		
-		// make all course categories available to the form's dropdown
-		model.addAttribute("categories", CourseCategory.values());
 		
 		model.addAttribute(
 				"courses",
@@ -164,7 +160,7 @@ public class ApplicationController {
 		} catch (IllegalArgumentException validationError) {
 			
 			model.addAttribute("error", validationError.getMessage());
-			model.addAttribute("categories", CourseCategory.values());
+
 			model.addAttribute(
 			        "courses",
 			        courseService.findActive());
@@ -339,7 +335,9 @@ public class ApplicationController {
 			
 			model.addAttribute("courseForm", courseRequest);
 			
-			model.addAttribute("categories", CourseCategory.values());
+			model.addAttribute(
+			        "courses",
+			        courseService.findActive());
 			
 		} catch (IllegalArgumentException validationError) {
 			
@@ -357,6 +355,7 @@ public class ApplicationController {
 	public String updateApplication(
 			@PathVariable("id") Long id,
 			@ModelAttribute("courseForm") CourseApplication changes,
+			@RequestParam Long courseId,
 			HttpSession session,
 			Model model,
 			RedirectAttributes redirectAttributes) {
@@ -392,6 +391,32 @@ public class ApplicationController {
 		}
 		
 		try {
+			Course selectedCourse =
+			        courseService.findById(courseId);
+
+			if (!selectedCourse.isActive()) {
+			    throw new IllegalArgumentException(
+			            "Selected course is no longer available");
+			}
+
+
+			// Populate everything controlled by the catalogue
+			changes.setCourse(selectedCourse);
+
+			changes.setCourseTitle(
+			        selectedCourse.getTitle());
+
+			changes.setTrainingProvider(
+			        selectedCourse.getProvider().getName());
+
+			changes.setFee(
+			        selectedCourse.getFee());
+
+
+			applicationService.update(
+			        id,
+			        changes,
+			        applicant);
 			
 			applicationService.update(id, changes, applicant);
 		
@@ -401,7 +426,10 @@ public class ApplicationController {
 			
 			model.addAttribute("courseForm", changes);
 			model.addAttribute("error", validationError.getMessage());
-			model.addAttribute("categories", CourseCategory.values());
+
+			model.addAttribute(
+		            "courses",
+		            courseService.findActive());
 			
 			return "application-form";
 		}

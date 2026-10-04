@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import sg.edu.nus.cats.model.ApplicationStatus;
 import sg.edu.nus.cats.model.CourseApplication;
-import sg.edu.nus.cats.model.CourseCategory;
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.TrainingAllowance;
@@ -57,13 +56,11 @@ public class ApplicationService {
 			throw new IllegalArgumentException("Course title is required");
 		}
 		
-		// returns the selected CourseCategory, such as INTERNAL, EXTERNAL etc, 
 		// returns null, none was selected
-		if (application.getCourse() == null
-				&& application.getCategory() == null) {
+		if (application.getCourse() == null) {
 
 			throw new IllegalArgumentException(
-					"Course category is required");
+					"Course is required");
 		}
 		
 		if (isInternalTraining(application)) {
@@ -325,26 +322,15 @@ public class ApplicationService {
 		// check the employee's proposed edits before putting them onto the saved application
 		validate(changes, applicant, id);
 		
-		// changes.getCourseTitle() reads the title the employee submitted
-		// existing.setCourseTitle(...) puts that title on the saved CourseApplication object we looked up
+		existing.setCourse(changes.getCourse());
 		existing.setCourseTitle(changes.getCourseTitle());
-		
-		existing.setCategory(changes.getCategory());
-		
 		existing.setTrainingProvider(changes.getTrainingProvider());
-		
 		existing.setStartDate(changes.getStartDate());
-		
 		existing.setEndDate(changes.getEndDate());
-		
 		existing.setFee(changes.getFee());
-		
 		existing.setHalfDay(changes.isHalfDay());
-		
 		existing.setJustification(changes.getJustification());
-		
 		existing.setWorkDissemination(changes.getWorkDissemination());
-		
 		existing.setDurationDays(changes.getDurationDays());
 		
 		// changes the application's status from APPLIED to UPDATED after its proposed changes have passed validation
@@ -703,7 +689,6 @@ public class ApplicationService {
 
 					usedFees = usedFees.add(existing.getFee());
 				}
-				
 			}
 		
 		}
@@ -725,17 +710,8 @@ public class ApplicationService {
 	
 	private boolean isInternalTraining(CourseApplication application) {
 
-		// New catalogue-based applications
-		if (application.getCourse() != null
-				&& application.getCourse().getCategory() != null) {
-
-			return application.getCourse()
-					.getCategory()
-					.isInternalTraining();
-		}
-
-		// Old historical applications created before Course Catalogue
-		return application.getCategory() == CourseCategory.INTERNAL;
-
+		return application.getCourse()
+				.getCategory()
+				.isInternalTraining();
 	}
 }

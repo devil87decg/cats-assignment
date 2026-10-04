@@ -94,6 +94,18 @@
 			    <td th:text="${courseRequest.managerReason}"></td>
 			</tr>
 			
+			<!-- Display when the manager made the decision -->
+			<tr th:if="${courseRequest.decisionDate != null}">
+			    <th scope="row">Decision date</th>
+			    <td th:text="${courseRequest.decisionDate}"></td>
+			</tr>
+
+			<!-- Display the name of the manager who made the decision -->
+			<tr th:if="${courseRequest.decidedBy != null}">
+			    <th scope="row">Decided by</th>
+			    <td th:text="${courseRequest.decidedBy.name}"></td>
+			</tr>
+			
 			<!-- Show the employee's saved comments when they exist -->
 			<tr th:if="${courseRequest.experienceComment != null}">
 			    <th scope="row">Experience comments</th>

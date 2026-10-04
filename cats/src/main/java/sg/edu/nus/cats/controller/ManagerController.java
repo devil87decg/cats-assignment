@@ -331,7 +331,7 @@ public class ManagerController {
 				
 				// get current year and its first and last dates
 				int currentYear = LocalDate.now().getYear();
-				LocalDate firstDay = LocalDate.of(currentYear, 1, 12);
+				LocalDate firstDay = LocalDate.of(currentYear, 1, 1);
 				LocalDate lastDay = LocalDate.of(currentYear, 12, 31);
 				
 				// Declare the list that will hold the selected course history

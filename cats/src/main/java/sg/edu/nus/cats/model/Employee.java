@@ -34,7 +34,6 @@ public class Employee {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supervisor_id")
 	private Employee supervisor;
-	private String email;
 	
 	public Employee() {
 		
@@ -90,14 +89,6 @@ public class Employee {
 
 	public void setStaffCategory(StaffCategory staffCategory) {
 		this.staffCategory = staffCategory;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	
 	

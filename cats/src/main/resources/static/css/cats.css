@@ -38,6 +38,9 @@ body {
     background: var(--background);
     color: var(--text);
     font: 16px/1.6 Arial, Helvetica, sans-serif;
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - 56px);
 }
 
 h1, h2, h3 {
@@ -423,6 +426,7 @@ footer {
     color: var(--muted);
     font-size: 12px;
     padding: 20px 0;
+	margin-top: auto;
 }
 
 
@@ -679,4 +683,18 @@ table {
 	padding: 7px 12px;
 	margin: 0;
 	text-align: center;
+}
+
+.page-wrapper {
+    width: 100%;
+    flex-grow: 1; /* Allows the wrapper to expand and keep the footer at the bottom */
+    display: flex;
+    flex-direction: column;
+}
+
+div.message.message-error {
+    background-color: #fff0f0 !important; /* Forces the light red background */
+    color: #a73232 !important;            /* Forces the crisp, dark red text color */
+    border: 1px solid #e6bcbc !important;  /* Forces the light red border line */
+    display: block !important;            /* Ensures it handles structural layouts perfectly */
 }

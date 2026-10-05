@@ -16,24 +16,18 @@
 	
 	<h1>Administration</h1>
 	
-	<p>
-		<a href="/admin/allowances/new">Annual allowances</a>
-	</p>
+	<nav>
+	    <a href="/admin/allowances/new">Annual Allowances</a>
+	    <a href="/admin/employees/new">Create Employee</a>
+	    <a th:href="@{/admin/employees}">Manage Employees</a>
+	    <a th:href="@{/admin/holidays}">Public Holidays</a>
+	    <a th:href="@{/admin/course-categories}"> Course Categories </a>
+	    <a th:href="@{/admin/training-providers}"> Training Providers </a>
+		<a th:href="@{/admin/courses}"> Course Catalogue </a>
+	    <a th:href="@{/account/password}"> Change Password</a>
+	    <a href="/logout">Logout</a>
+	</nav>
 	
-	<p>
-		<a href="/admin/employees/new">Create employee profile</a>
-	</p>	
-	<p>
-		<a th:href="@{/admin/employees}">Manage employees</a>
-	</p>
-	<p>
-		<a th:href="@{/account/password}">
-			Change password
-		</a>
-	</p>
-	<p>
-		<a href="/logout">Logout</a>
-	</p>	
 	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 

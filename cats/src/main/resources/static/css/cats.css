@@ -38,6 +38,9 @@ body {
     background: var(--background);
     color: var(--text);
     font: 16px/1.6 Arial, Helvetica, sans-serif;
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - 56px);
 }
 
 h1, h2, h3 {
@@ -179,6 +182,18 @@ form {
 
 form p {
     margin-bottom: 20px;
+}
+
+/* Compact forms used for table actions */
+form.compact-form {
+	display: inline-flex;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
 }
 
 label {
@@ -423,6 +438,7 @@ footer {
     color: var(--muted);
     font-size: 12px;
     padding: 20px 0;
+	margin-top: auto;
 }
 
 
@@ -599,18 +615,6 @@ table {
 	}
 }
 
-/* ---------- Action Buttons ---------- */
-
-.action-buttons {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.action-buttons form {
-	margin: 0;
-}
-
 
 /* ---------- Danger Button ---------- */
 
@@ -623,24 +627,6 @@ table {
 	background-color: #8f1c13;
 }
 
-
-.action-column {
-	width: 160px;
-	min-width: 160px;
-}
-
-.employee-actions {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.employee-actions form {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	background: none;
-}
 /* Style the history filters on all screen sizes. */
 .history-filter a {
     display: inline-block;
@@ -655,6 +641,128 @@ table {
 
 .history-filter a:hover {
     background-color: #286078;
+}
+
+/* ---------- Employee Management Actions ---------- */
+
+.action-column {
+	width: 180px;
+	min-width: 180px;
+}
+
+.employee-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+.employee-delete-form {
+	display: inline-flex;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.employee-action-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 72px;
+	height: 36px;
+	padding: 0;
+	margin: 0;
+
+	border-radius: 6px;
+	font: 700 14px/1 Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.employee-edit-btn {
+	background: #e8f1f5;
+	color: #193b50;
+	border: 1px solid #cbdde7;
+}
+
+.employee-edit-btn:hover {
+	background: #dce9ef;
+	color: #193b50;
+}
+
+button.employee-delete-btn {
+	width: 72px;
+	height: 36px;
+	min-height: 36px;
+	padding: 0;
+	margin: 0;
+
+	background: #b42318;
+	color: white;
+	border: 1px solid #b42318;
+}
+
+button.employee-delete-btn:hover {
+	background: #8f1c13;
+	color: white;
+}
+
+/* ---------- Course Category Management ---------- */
+
+.category-status-column {
+	width: 100px;
+	min-width: 100px;
+	white-space: nowrap;
+}
+
+.category-status-column .status {
+	white-space: nowrap;
+}
+
+.category-action-column {
+	width: 190px;
+	min-width: 190px; /*Prev 190*/
+}
+
+.category-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	white-space: nowrap;
+}
+
+.category-action-form {
+	display: inline-flex;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+button.category-action-btn {
+	width: 105px;
+	height: 36px;
+	min-height: 36px;
+	padding: 0 12px;
+	margin: 0;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	font-size: 14px;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.category-code-column {
+	width: 150px;
+	min-width: 150px;
+	white-space: nowrap;
 }
 
 /* Employee management actions */
@@ -679,4 +787,253 @@ table {
 	padding: 7px 12px;
 	margin: 0;
 	text-align: center;
+}
+
+.page-wrapper {
+    width: 100%;
+    flex-grow: 1; /* Allows the wrapper to expand and keep the footer at the bottom */
+    display: flex;
+    flex-direction: column;
+}
+
+div.message.message-error {
+    background-color: #fff0f0 !important; /* Forces the light red background */
+    color: #a73232 !important;            /* Forces the crisp, dark red text color */
+    border: 1px solid #e6bcbc !important;  /* Forces the light red border line */
+    display: block !important;            /* Ensures it handles structural layouts perfectly */
+}
+
+/* ---------- Training Provider Actions ---------- */
+
+.provider-action-column {
+	width: 220px;
+	min-width: 220px;
+}
+
+.provider-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+.provider-edit-btn,
+.provider-deactivate-btn,
+.provider-reactivate-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	height: 36px;
+	min-height: 36px;
+	margin: 0;
+	padding: 0 12px;
+
+	border-radius: 6px;
+	font: 700 14px/1 Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+.provider-edit-btn {
+	width: 70px;
+	background: #e8f1f5;
+	color: #193b50;
+	border: 1px solid #cbdde7;
+}
+
+.provider-edit-btn:hover {
+	background: #dce9ef;
+	color: #193b50;
+}
+
+button.provider-deactivate-btn {
+	width: 110px;
+	background: white;
+	color: #a73232;
+	border: 1px solid #c88181;
+}
+
+button.provider-deactivate-btn:hover {
+	background: #fff0f0;
+	color: #a73232;
+}
+
+button.provider-reactivate-btn {
+	width: 110px;
+	background: #17778e;
+	color: white;
+	border: 1px solid #17778e;
+}
+
+.course-action-column {
+	min-width: 190px;
+}
+
+.course-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+/* ---------- Table Action Controls ---------- */
+
+.table-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+}
+
+.table-action-column {
+	width: 330px;
+	min-width: 330px;
+}
+
+.table-action-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	height: 36px;
+	min-height: 36px;
+	padding: 0 12px;
+	margin: 0;
+
+	border-radius: 6px;
+	font: 700 14px/1 Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+/* Edit */
+.table-action-edit {
+	width: 70px;
+	background: #e8f1f5;
+	color: #193b50;
+	border: 1px solid #cbdde7;
+}
+
+.table-action-edit:hover {
+	background: #dce9ef;
+	color: #193b50;
+}
+
+/* Deactivate / destructive secondary action */
+button.table-action-deactivate {
+	width: 110px;
+	background: white;
+	color: #a73232;
+	border: 1px solid #c88181;
+}
+
+button.table-action-deactivate:hover {
+	background: #fff0f0;
+	color: #a73232;
+}
+
+/* Reactivate */
+button.table-action-reactivate {
+	width: 110px;
+	background: #17778e;
+	color: white;
+	border: 1px solid #17778e;
+}
+
+button.table-action-reactivate:hover {
+	background: #105c70;
+	color: white;
+}
+
+button.table-action-delete {
+	width: 80px;
+	background: #b42318;
+	color: white;
+	border: 1px solid #b42318;
+}
+
+button.table-action-delete:hover {
+	background: #8f1c13;
+	color: white;
+}
+
+/* ---------- Table Status Column ---------- */
+
+.table-status-column {
+	width: 120px;
+	min-width: 120px;
+	white-space: nowrap;
+}
+
+.table-status-column .status {
+	white-space: nowrap;
+}
+
+.course-table {
+	min-width: 1200px;
+}
+
+.course-table th,
+.course-table td {
+	overflow-wrap: normal;
+}
+
+.course-table th:nth-child(1),
+.course-table td:nth-child(1),
+.course-table th:nth-child(5),
+.course-table td:nth-child(5),
+.course-table th:nth-child(6),
+.course-table td:nth-child(6),
+.course-table th:nth-child(7),
+.course-table td:nth-child(7) {
+	white-space: nowrap;
+}
+
+.course-code-column {
+	min-width: 120px;
+	white-space: nowrap;
+	overflow-wrap: normal;
+}
+
+.course-fee-column {
+	min-width: 110px;
+	white-space: nowrap;
+	overflow-wrap: normal;
+}
+
+.course-status-column {
+	min-width: 120px;
+	white-space: nowrap;
+	overflow-wrap: normal;
+}
+
+.course-status-column .status {
+	white-space: nowrap;
+}
+
+.course-code-column {
+	min-width: 120px;
+	white-space: nowrap;
+	overflow-wrap: normal;
+}
+
+.course-fee-column {
+	min-width: 110px;
+	white-space: nowrap;
+	overflow-wrap: normal;
+}
+
+.course-status-column {
+	min-width: 120px;
+	white-space: nowrap;
+	overflow-wrap: normal;
+}
+
+.course-status-column .status {
+	white-space: nowrap;
 }

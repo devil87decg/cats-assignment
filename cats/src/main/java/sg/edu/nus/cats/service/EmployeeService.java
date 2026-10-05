@@ -25,14 +25,17 @@ public class EmployeeService {
 	private final AccountService accounts;
 	private final ApplicationRepository applications;
 	
+	private final AllowanceService allowanceService;
+	
 	// Receive the repositories from Spring and store their references.
 	public EmployeeService(EmployeeRepository employees, UserRepository users, AccountService accounts,
-			ApplicationRepository applications) {
+			ApplicationRepository applications, AllowanceService allowanceService) {
 		
 		this.employees = employees;
 		this.users = users;
 		this.accounts = accounts;
 		this.applications = applications;
+		this.allowanceService = allowanceService;
 	}
 	
 	// paramters supply the profile details required 
@@ -282,12 +285,11 @@ public class EmployeeService {
 				role);
 
 		// Create the employee profile linked to that account.
-		return createProfile(
-				user.getId(),
-				name,
-				designation,
-				department,
-				staffCategory,
-				supervisorId);
+		Employee employee = createProfile(user.getId(), name, designation, department, staffCategory, supervisorId);
+		
+		// Set the default allowance for the new employee
+		allowanceService.createDefaultAllowance(employee);
+		
+		return employee;
 	}
 }

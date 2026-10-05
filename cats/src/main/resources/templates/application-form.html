@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	
-<head>
-	
-	<meta charset="UTF-8">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" th:href="@{/css/cats.css}">
-	
+
 	<title>New Course Application | CATS</title>
 </head>
 
@@ -19,81 +16,215 @@
 		<a href="/">Home</a>
 		<a href="/logout">Logout</a>
 	</nav>
-	
-	<h1>New Course Application</h1>
-	
-	<p>Enter the course details to submit an application for approval.</p>
-	
+
+	<h1 th:text="${courseForm.id == null
+	        ? 'New Course Application'
+	        : 'Edit Course Application'}">
+	</h1>
+
+	<p th:text="${courseForm.id == null
+	        ? 'Enter the course details to submit an application for approval.'
+	        : 'Update your course application details.'}">
+	</p>
+
 	<p th:if="${success}" th:text="${success}"></p>
-	
+
 	<p th:if="${error}" th:text="${error}"></p>
-		
-	<p th:text="${'Application ID: ' + courseForm.id}"></p>
-	
+
+	<p th:if="${courseForm.id != null}">
+		Application ID:
+		<span th:text="${courseForm.id}"></span>
+	</p>
+
 	<!-- Submit to the create URL / update URL depending on whether an ID exists  -->
 	<form th:action="${courseForm.id == null}
 			? @{/applications}
-			: @{/applications/{id}/update(id=${courseForm.id})}" 
-			method="post" 
-			th:object="${courseForm}">
-	
+			: @{/applications/{id}/update(id=${courseForm.id})}" method="post" th:object="${courseForm}">
+
 		<p>
-			<label for="courseTitle">Course title</label>
-			<input type="text" id="courseTitle" th:field="*{courseTitle}" required>
-		</p>	
-		
-		<p>
-			<label for="category">Course category</label>
-			<select id="category" th:field="*{category}" required>
-				<option value="">Select a course category</option>
-				<option th:each="category : ${categories}"
-					th:value="${category}"
-					th:text="${category}">
+			<label for="courseId">
+				Course
+			</label>
+
+			<select id="courseId" name="courseId" required>
+
+				<option value="">
+					Select a course
 				</option>
+
+				<option th:each="course : ${courses}" th:value="${course.id}"
+					th:text="${course.code + ' - ' + course.title}" th:selected="${courseForm.course != null
+											and courseForm.course.id.equals(course.id)}" th:attr="
+								data-category=${course.category.name},
+								data-provider=${course.provider.name},
+								data-duration=${course.durationDays},
+								data-fee=${course.fee}">
+				</option>
+
 			</select>
+
+		<div id="courseDetails" class="course-details" style="display: none;">
+
+			<h3>Course Details</h3>
+
+			<div class="details-grid">
+
+				<p>
+					<strong>Category</strong><br>
+					<span id="courseCategory"></span>
+				</p>
+
+				<p>
+					<strong>Training Provider</strong><br>
+					<span id="courseProvider"></span>
+				</p>
+
+				<p>
+					<strong>Duration</strong><br>
+					<span id="courseDuration"></span> day(s)
+				</p>
+
+				<p>
+					<strong>Fee</strong><br>
+					$<span id="courseFee"></span>
+				</p>
+
+			</div>
+
+		</div>
 		</p>
-		
-		<p>
-			<label for="trainingProvider">Training provider</label>
-			<input type="text" id="trainingProvider" th:field="*{trainingProvider}">
-		</p>
-		
+
 		<!-- Select the first date of the course. -->
 		<p>
 			<label for="startDate">Start date</label>
 			<input type="date" id="startDate" th:field="*{startDate}" required>
 		</p>
-		
+
 		<p>
 			<label for="endDate">End date</label>
-			<input type="date" id="endDate" th:field="*{endDate}" required>
+			<input type="date" id="endDate" th:field="*{endDate}" readonly required>
+			<small>
+				End date is calculated automatically from the selected course duration.
+			</small>
 		</p>
-		
-		<p>
-			<input type="checkbox" id="halfDay" th:field="*{halfDay}">
-			<label for="halfDay">Half-day session (internal training only)</label>
-		</p>
-		
-		<p>
-			<label for="fee">Course fee ($)</label>
-			<input type="number" id="fee" th:field="*{fee}" min="0" step="0.01">
-		</p>
-		
+
 		<p>
 			<label for="justification">Justification</label>
 			<textarea id="justification" th:field="*{justification}" rows="4" required></textarea>
-			
+
 		</p>
-		
+
 		<p>
 			<label for="workDissemination">Work dissemination during the course (optional)</label>
 			<textarea id="workDissemination" th:field="*{workDissemination}" rows="3"></textarea>
 		</p>
-		
+
 		<button type="submit">Submit application</button>
-		
+
 	</form>
 	<div th:replace="~{fragments/footer :: footer}"></div>
+
+	<script>
+		const courseSelect =
+			document.getElementById("courseId");
+
+		const courseDetails =
+			document.getElementById("courseDetails");
+
+		const startDate =
+			document.getElementById("startDate");
+
+		const endDate =
+			document.getElementById("endDate");
+
+		// Ask the backend to calculate the end date using the selected course duration, weekends and public holidays.
+		async function calculateEndDate() {
+
+			const courseId = courseSelect.value;
+			const selectedStartDate = startDate.value;
+
+			// We need both values before an end date can be calculated.
+			if (!courseId || !selectedStartDate) {
+				endDate.value = "";
+				return;
+			}
+
+			try {
+
+				const response = await fetch(
+					`/applications/calculate-end-date?courseId=${courseId}&startDate=${selectedStartDate}`
+				);
+
+				const result = await response.text();
+
+				if (!response.ok) {
+					endDate.value = "";
+					alert(result);
+					return;
+				}
+
+				endDate.value = result;
+
+			} catch (error) {
+
+				endDate.value = "";
+				alert("Unable to calculate the course end date.");
+			}
+		}
+
+		function displayCourseDetails() {
+
+			const selected =
+				courseSelect.options[courseSelect.selectedIndex];
+
+			if (!selected || !selected.value) {
+
+				courseDetails.style.display = "none";
+
+				document.getElementById("courseCategory").textContent = "";
+				document.getElementById("courseProvider").textContent = "";
+				document.getElementById("courseDuration").textContent = "";
+				document.getElementById("courseFee").textContent = "";
+
+				return;
+			}
+
+			document.getElementById("courseCategory").textContent =
+				selected.dataset.category;
+
+			document.getElementById("courseProvider").textContent =
+				selected.dataset.provider;
+
+			document.getElementById("courseDuration").textContent =
+				selected.dataset.duration;
+
+			document.getElementById("courseFee").textContent =
+				selected.dataset.fee;
+
+			courseDetails.style.display = "block";
+		}
+
+		// Recalculate the end date when the employee selects a start date.
+		startDate.addEventListener("change", function () {
+			calculateEndDate();
+		});
+
+		courseSelect.addEventListener("change", function () {
+
+			displayCourseDetails();
+
+			if (!courseSelect.value) {
+				endDate.value = "";
+				return;
+			}
+
+			calculateEndDate();
+		});
+
+		if (courseSelect.value) {
+			displayCourseDetails();
+		}
+	</script>
 </body>
 
 </html>

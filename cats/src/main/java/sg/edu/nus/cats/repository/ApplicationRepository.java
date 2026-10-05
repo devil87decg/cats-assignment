@@ -38,4 +38,6 @@ public interface ApplicationRepository extends JpaRepository<CourseApplication, 
 	
 	// Check whether this employee has decided any course applications
 	boolean existsByDecidedById(Long employeeId);
+	
+	boolean existsByCourseId(Long courseId);
 }

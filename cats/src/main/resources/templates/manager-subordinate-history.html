@@ -81,7 +81,7 @@
                 <tr th:each="courseRequest : ${courseHistory}">
                     <td th:text="${courseRequest.id}"></td>
                     <td th:text="${courseRequest.courseTitle}"></td>
-                    <td th:text="${courseRequest.category}"></td>
+                    <td th:text="${courseRequest.course.category.name}"></td>
                     <td th:text="${courseRequest.startDate}"></td>
                     <td th:text="${courseRequest.endDate}"></td>
                     <td th:text="${courseRequest.durationDays}"></td>

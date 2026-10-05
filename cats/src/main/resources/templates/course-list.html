@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Course Catalogue | CATS</title>
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+</head>
+
+<body>
+
+	<h1>Course Catalogue</h1>
+
+	<p>
+		Manage commonly attended courses available in CATS.
+	</p>
+
+	<nav>
+		<a th:href="@{/admin}">Administration</a>
+		<a th:href="@{/admin/courses}">Course Catalogue</a>
+		<a th:href="@{/logout}">Logout</a>
+	</nav>
+
+
+	<div th:if="${success}"
+		 class="message message-success"
+		 th:text="${success}">
+	</div>
+
+	<div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+	</div>
+
+
+	<main>
+
+		<div class="page-header">
+
+			<h2>Courses</h2>
+
+			<a th:href="@{/admin/courses/new}"
+			   class="button">
+				Add Course
+			</a>
+
+		</div>
+
+
+		<div class="table-scroll">
+
+			<table>
+
+				<thead>
+					<tr>
+						<th class="course-code-column">Code</th>
+						<th class="course-course-column">Course</th>
+						<th class="course-category-column">Category</th>
+						<th class="course-provider-column">Provider</th>
+						<th class="course-duration-column">Duration</th>
+						<th class="course-fee-column">Fee</th>
+						<th class="course-status-column">Status</th>
+						<th class="table-action-column">Action</th>
+					</tr>
+				</thead>
+
+				<tbody>
+
+					<tr th:each="course : ${courses}">
+
+						<td class="course-code-column" th:text="${course.code}"></td>
+
+						<td class="course-title-column" th:text="${course.title}"></td>
+
+						<td class="course-category-column" th:text="${course.category.name}"></td>
+
+						<td class="course-provider-column" th:text="${course.provider.name}"></td>
+
+						<td class="course-duration-column" th:text="${course.durationDays}"></td>
+
+						<td class="course-fee-column" th:text="${course.fee}"></td>
+
+						<td class="course-status-column" >
+
+							<span th:if="${course.active}"
+								  class="status status-approved">
+								Active
+							</span>
+
+							<span th:unless="${course.active}"
+								  class="status status-deleted">
+								Inactive
+							</span>
+
+						</td>
+
+						<td class="table-action-column">
+
+							<div class="table-actions">
+
+								<a th:href="@{/admin/courses/{id}/edit(id=${course.id})}"
+								   class="table-action-btn table-action-edit">
+									Edit
+								</a>
+
+								<form th:if="${course.active}"
+									  th:action="@{/admin/courses/{id}/deactivate(id=${course.id})}"
+									  method="post"
+									  class="compact-form"
+									  onsubmit="return confirm('Deactivate this course?');">
+
+									<button type="submit"
+											class="table-action-btn table-action-deactivate">
+										Deactivate
+									</button>
+
+								</form>
+
+								<form th:unless="${course.active}"
+									  th:action="@{/admin/courses/{id}/reactivate(id=${course.id})}"
+									  method="post"
+									  class="compact-form">
+
+									<button type="submit"
+											class="table-action-btn table-action-reactivate">
+										Reactivate
+									</button>
+
+								</form>
+								
+								<form th:action="@{/admin/courses/{id}/delete(id=${course.id})}"
+									  method="post"
+									  class="compact-form"
+									  onsubmit="return confirm('Permanently delete this course if it has no application history?');">
+
+									<button type="submit"
+											class="table-action-btn table-action-delete">
+										Delete
+									</button>
+
+								</form>
+
+							</div>
+
+						</td>
+
+					</tr>
+
+				</tbody>
+
+			</table>
+
+		</div>
+
+	</main>
+
+</body>
+
+</html>

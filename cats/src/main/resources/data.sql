@@ -28,8 +28,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 INSERT INTO `employees` 
 (id, department, designation, name, staff_category, supervisor_id, user_id, email)
 VALUES 
-(1,'','','xiang xuan','PROFESSIONAL',2,2, 'xin.xian.quek@gmail.com'),
-(2,'IT ','Manager','Dogbert','PROFESSIONAL',NULL,3, 'dogbert@example.com'),
+(1,'','','xiang xuan','PROFESSIONAL',2,2, 'devil.87.dec@gmail.com'),
+(2,'IT ','Manager','Dogbert','PROFESSIONAL',NULL,3, 'xin.xian.quek@u.nus.edu'),
 (3,'Admin Staff','Secretary','Ratbert','PROFESSIONAL',2,4, 'ratbert@example.com'),
 (4,'Finance','Accounts Manager','Kuan Yew','PROFESSIONAL',NULL,5, 'kuan_yew@example.com');
 --

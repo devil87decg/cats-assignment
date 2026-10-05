@@ -17,23 +17,29 @@
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- ============================================================
+-- USERS
+-- Preserve the original demo users, IDs, roles and password hashes.
+-- ============================================================
+INSERT IGNORE INTO users (id, username, active, password_hash, role) VALUES
+(1, 'admin',      b'1', '$2a$10$ujWik98HXV4LRhHycVP/QOSG2x9K.M5EElZkuShmWmyYhP18NMcM.', 'ADMIN'),
+(2, 'xiang xuan', b'1', '$2a$10$HSjlB9suCskul1SVJ2l2C.ATwSzgp1bL3tBUof.jd5XSOdmgu5NPC', 'EMPLOYEE'),
+(3, 'manager1',   b'1', '$2a$10$4jL0fqmHITYe2ixzdR2p/eLvHP1i6ee1wyDsAetftch/p/Pb5VtEy', 'MANAGER'),
+(4, 'employee2',  b'1', '$2a$10$k585OedWPUdUdV/3lcHrCeqzjs3rnsbrsZUbk3pJ63TRCRie.6Zy6', 'EMPLOYEE'),
+(5, 'manager2',   b'1', '$2a$10$UaQQjacpa3TmoL29Crfxfe8117Rm6Ouw3Lk9W9LWSnCsnU1Y1YT0u', 'MANAGER');
 
 -- ============================================================
 -- EMPLOYEES
 -- Preserve the original demo employees and reporting structure.
--- Manager/Dogbert is inserted first because other employees reference id 2.
+-- Email addresses are demo values used for application notifications.
 -- ============================================================
-
-INSERT IGNORE INTO `employees` 
+INSERT IGNORE INTO employees
 (id, department, designation, name, staff_category, supervisor_id, user_id, email)
-VALUES 
-(1,'','','xiang xuan','PROFESSIONAL',2,2, 'devil.87.dec@gmail.com'),
-(2,'IT ','Manager','Dogbert','PROFESSIONAL',NULL,3, 'xin.xian.quek@u.nus.edu'),
-(3,'Admin Staff','Secretary','Ratbert','PROFESSIONAL',2,4, 'ratbert@example.com'),
-(4,'Finance','Accounts Manager','Kuan Yew','PROFESSIONAL',NULL,5, 'kuan_yew@example.com');
---
--- Table structure for table `course_application`
---
+VALUES
+(2, 'IT ',         'Manager',          'Dogbert',    'PROFESSIONAL', NULL, 3, 'manager1@example.com'),
+(1, '',            '',                 'xiang xuan', 'PROFESSIONAL', 2,    2, 'employee1@example.com'),
+(3, 'Admin Staff', 'Secretary',        'Ratbert',    'PROFESSIONAL', 2,    4, 'employee2@example.com'),
+(4, 'Finance',     'Accounts Manager', 'Kuan Yew',   'PROFESSIONAL', NULL, 5, 'manager2@example.com');
 
 -- ============================================================
 -- COURSE CATEGORIES
@@ -72,9 +78,9 @@ INSERT IGNORE INTO courses
 (6,  'SQL-BEGINNER',   'SQL for Beginners',              'Introductory SQL training.',                 1, 1, NULL,   0.00, 0.5, b'1'),
 (7,  'ML-ADV',         'Advanced Machine Learning',       'Advanced machine learning training.',        2, 1, NULL,  50.00, 2.0, b'1'),
 (8,  'BREAKDANCE-BEG', 'Breakdance for Beginners',       'Beginner breakdance course.',                3, 2, NULL,  50.00, 3.0, b'1'),
-(9,  'HOLIDAY-TEST',   'Holiday counting test',          'Demo course used for holiday counting.',     1, 1, NULL,   0.00, 2.0, b'1'),
+(9, 'HOLIDAY-TEST', 'Holiday counting test', 			 'Demo course used for holiday counting.',	   1, 1, NULL,   0.00, 0.5, b'1'),
 (10, 'VOCAL-BASIC',    'Basic Vocal Course',             'Basic vocal training.',                      2, 3, NULL, 250.00, 4.0, b'1'),
-(11, 'AI-PROMPT-FUND', 'Fundamentals on AI Prompting',   'Fundamentals of AI prompting.',              1, 1, NULL,   0.00, 1.0, b'1');
+(11, 'AI-PROMPT-FUND', 'Fundamentals on AI Prompting',   'Fundamentals of AI prompting.',              1, 1, NULL,   0.00, 0.5, b'1');
 
 -- ============================================================
 -- COURSE APPLICATIONS
@@ -94,9 +100,9 @@ INSERT IGNORE INTO course_application
 (6,  'SQL for Beginners',            'NUS-ISS',        '2026-11-04', '2026-11-04', 0.50,   0.00, 'Test internal training fee',             '', 'UPDATED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 6),
 (7,  'Advanced Machine Learning',     'NUS-ISS',        '2026-10-29', '2026-10-30', 2.00,  50.00, 'Testingggggggggggggggggg',               '', 'APPLIED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 7),
 (8,  'Breakdance for Beginners',     'NUS SDZ Club',   '2026-11-11', '2026-11-13', 3.00,  50.00, 'Testing part 3',                         '', 'APPLIED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 8),
-(9,  'Holiday counting test',        'NUS-ISS',        '2026-10-20', '2026-10-22', 2.00,   0.00, 'Testing holiday exclusion',              '', 'DELETED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 9),
-(10, 'Basic Vocal Course',           'NUS Music Club', '2026-10-12', '2026-10-15', 4.00, 250.00, 'Interests',                              '', 'APPROVED',  'No conflict of interest',                            NULL,                         '2026-10-02 13:36:21.857825', 2,    3, 10),
-(11, 'Fundamentals on AI Prompting', 'NUS-ISS',        '2026-10-14', '2026-10-14', 1.00,   0.00, 'To understand more on AI prompting',     '', 'APPLIED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 11);
+(9,  'Holiday counting test',        'NUS-ISS',        '2026-10-20', '2026-10-20', 0.50,   0.00, 'Testing holiday exclusion',              '', 'DELETED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 9),
+(10, 'Basic Vocal Course',           'NUS Music Club', '2026-10-12', '2026-10-15', 4.00, 250.00, 'Interests',                              '', 'APPROVED',  'No conflict of intere–st',                            NULL,                         '2026-10-02 13:36:21.857825', 2,    3, 10),
+(11, 'Fundamentals on AI Prompting', 'NUS-ISS',        '2026-10-14', '2026-10-14', 0.50,   0.00, 'To understand more on AI prompting',     '', 'APPLIED',   NULL,                                                 NULL,                         NULL,                         NULL, 1, 11);
 
 -- ============================================================
 -- PUBLIC HOLIDAY

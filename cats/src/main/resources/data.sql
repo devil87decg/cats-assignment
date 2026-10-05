@@ -65,9 +65,9 @@ INSERT IGNORE INTO courses
 (6,  'SQL-BEGINNER',   'SQL for Beginners',              'Introductory SQL training.',                 1, 1, NULL,   0.00, 0.5, b'1'),
 (7,  'ML-ADV',         'Advanced Machine Learning',       'Advanced machine learning training.',        2, 1, NULL,  50.00, 2.0, b'1'),
 (8,  'BREAKDANCE-BEG', 'Breakdance for Beginners',       'Beginner breakdance course.',                3, 2, NULL,  50.00, 3.0, b'1'),
-(9,  'HOLIDAY-TEST',   'Holiday counting test',          'Demo course used for holiday counting.',     1, 1, NULL,   0.00, 2.0, b'1'),
+(9, 'HOLIDAY-TEST', 'Holiday counting test', 			 'Demo course used for holiday counting.',	   1, 1, NULL,   0.00, 0.5, b'1'),
 (10, 'VOCAL-BASIC',    'Basic Vocal Course',             'Basic vocal training.',                      2, 3, NULL, 250.00, 4.0, b'1'),
-(11, 'AI-PROMPT-FUND', 'Fundamentals on AI Prompting',   'Fundamentals of AI prompting.',              1, 1, NULL,   0.00, 1.0, b'1');
+(11, 'AI-PROMPT-FUND', 'Fundamentals on AI Prompting',   'Fundamentals of AI prompting.',              1, 1, NULL,   0.00, 0.5, b'1');
 
 -- ============================================================
 -- COURSE APPLICATIONS

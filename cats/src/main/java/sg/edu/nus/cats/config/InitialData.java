@@ -9,7 +9,7 @@ import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.AccountService;
 
-@Component
+//@Component
 public class InitialData implements CommandLineRunner {
 
 	// A reference lets a variable access an object's methods and data

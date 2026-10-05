@@ -1,32 +1,39 @@
--- CATS demo seed data - aligned with the current Course Catalogue model.
--- IMPORTANT: Use this with a database schema generated from the current JPA entities.
--- Existing legacy databases that still contain the old course_application.category or
--- course_application.half_day columns should be recreated once before using this file.
+-- MySQL dump 10.13  Distrib 9.7.2, for macos15 (arm64)
+--
+-- Host: localhost    Database: cats
+-- ------------------------------------------------------
+-- Server version	9.7.2
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ============================================================
--- USERS
--- Preserve the original demo users, IDs, roles and password hashes.
--- ============================================================
-INSERT IGNORE INTO users (id, username, active, password_hash, role) VALUES
-(1, 'admin',      b'1', '$2a$10$ujWik98HXV4LRhHycVP/QOSG2x9K.M5EElZkuShmWmyYhP18NMcM.', 'ADMIN'),
-(2, 'xiang xuan', b'1', '$2a$10$HSjlB9suCskul1SVJ2l2C.ATwSzgp1bL3tBUof.jd5XSOdmgu5NPC', 'EMPLOYEE'),
-(3, 'manager1',   b'1', '$2a$10$4jL0fqmHITYe2ixzdR2p/eLvHP1i6ee1wyDsAetftch/p/Pb5VtEy', 'MANAGER'),
-(4, 'employee2',  b'1', '$2a$10$k585OedWPUdUdV/3lcHrCeqzjs3rnsbrsZUbk3pJ63TRCRie.6Zy6', 'EMPLOYEE'),
-(5, 'manager2',   b'1', '$2a$10$UaQQjacpa3TmoL29Crfxfe8117Rm6Ouw3Lk9W9LWSnCsnU1Y1YT0u', 'MANAGER');
 
 -- ============================================================
 -- EMPLOYEES
 -- Preserve the original demo employees and reporting structure.
 -- Manager/Dogbert is inserted first because other employees reference id 2.
 -- ============================================================
-INSERT IGNORE INTO employees
-(id, department, designation, name, staff_category, supervisor_id, user_id) VALUES
-(2, 'IT ',         'Manager',          'Dogbert',    'PROFESSIONAL', NULL, 3),
-(1, '',            '',                 'xiang xuan', 'PROFESSIONAL', 2,    2),
-(3, 'Admin Staff', 'Secretary',        'Ratbert',    'PROFESSIONAL', 2,    4),
-(4, 'Finance',     'Accounts Manager', 'Kuan Yew',   'PROFESSIONAL', NULL, 5);
+
+INSERT IGNORE INTO `employees` 
+(id, department, designation, name, staff_category, supervisor_id, user_id, email)
+VALUES 
+(1,'','','xiang xuan','PROFESSIONAL',2,2, 'devil.87.dec@gmail.com'),
+(2,'IT ','Manager','Dogbert','PROFESSIONAL',NULL,3, 'xin.xian.quek@u.nus.edu'),
+(3,'Admin Staff','Secretary','Ratbert','PROFESSIONAL',2,4, 'ratbert@example.com'),
+(4,'Finance','Accounts Manager','Kuan Yew','PROFESSIONAL',NULL,5, 'kuan_yew@example.com');
+--
+-- Table structure for table `course_application`
+--
 
 -- ============================================================
 -- COURSE CATEGORIES

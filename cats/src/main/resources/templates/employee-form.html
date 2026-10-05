@@ -24,10 +24,10 @@
 	<p>Create a login account and employee profile.</p>
 	
 	<!-- Display the success message when one is available. -->
-	<p th:if="${success}" th:text="${success}"></p>
+	<div th:if="${success}" class="message message-success" th:text="${success}"></div>
 	
 	<!-- Display the error message when one is available. -->
-	<p th:if="${error}" th:text="${error}"></p>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 	
 	<!-- Send the entered employee profile details to /admin/employees using POST when the form is submitted. -->
 	<form action="/admin/employees" method="post">

@@ -25,10 +25,10 @@
 	<h1>Pending Course Applications</h1>
 
 	<!-- Display confirmation when a decision was saved -->
-	<p th:if="${success}" th:text="${success}"></p>
+	<div th:if="${success}" class="message message-success" th:text="${success}"></div>
 
 	<!-- Display the reason a decision could not be saved -->
-	<p th:if="${error}" th:text="${error}"></p>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<p>Review course applications submitted by your subordinates.</p>
 

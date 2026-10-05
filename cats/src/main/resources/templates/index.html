@@ -19,7 +19,7 @@
 
 	<p>Welcome to CATS.</p>
 
-	<p th:if="${error}" th:text="${error}"></p>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<nav>
 		<a href="/applications">My application(s)</a>

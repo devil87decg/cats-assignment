@@ -17,8 +17,8 @@
 	<p><a th:href="@{/admin}">Back to Administration</a> | <a th:href="@{/logout}">Logout</a></p>
 	<p><a th:href="@{/admin/holidays/new}">Add public holiday</a></p>
 
-	<div th:if="${success}" class="success-message" th:text="${success}"></div>
-	<div th:if="${error}" class="error-message" th:text="${error}"></div>
+	<div th:if="${success}" class="message message-success" th:text="${success}"></div>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<table>
 		<thead>

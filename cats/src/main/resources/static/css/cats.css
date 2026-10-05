@@ -803,6 +803,13 @@ div.message.message-error {
     display: block !important;            /* Ensures it handles structural layouts perfectly */
 }
 
+message.message-success {
+    background-color: #e9f5ef !important; /* Forces the light green background */
+    color: #176244 !important;            /* Forces the crisp, dark green text color */
+    border: 1px solid #b9dbc8 !important;  /* Forces the light green border line */
+    display: block !important;            /* Ensures it handles structural layouts perfectly */
+}
+
 /* ---------- Training Provider Actions ---------- */
 
 .provider-action-column {

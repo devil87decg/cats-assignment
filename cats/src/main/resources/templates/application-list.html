@@ -24,11 +24,11 @@
 		</nav>
 	
 		<h1>My Applications</h1>
-			
-		<p th:if="${success}" th:text="${success}"></p>
 		
-		<!-- Display an error carried here after a redirect. -->
-		<p th:if="${error}" th:text="${error}"></p>
+		<div th:if="${success}" class="message message-success" th:text="${success}"></div>
+		
+		<!-- Display an error carried here after a redirect. -->		
+		<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 			
 		<!-- Display the year supplied by the controller -->
 		<p th:text="'Applications for ' + ${currentYear}"></p>

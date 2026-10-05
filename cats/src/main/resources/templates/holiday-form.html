@@ -17,7 +17,7 @@
 
 	<p><a th:href="@{/admin/holidays}">Back to Public Holiday</a> | <a th:href="@{/admin}">Administration</a> | <a
 			th:href="@{/logout}">Logout</a></p>
-	<div th:if="${error}" class="error-message" th:text="${error}"></div>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<form th:action="@{/admin/holidays}" method="post">
 		<p>

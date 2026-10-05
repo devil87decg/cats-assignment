@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import sg.edu.nus.cats.model.ApplicationStatus;
 import sg.edu.nus.cats.model.CourseApplication;
 import sg.edu.nus.cats.model.Employee;
@@ -16,6 +17,7 @@ import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.TrainingAllowance;
 import sg.edu.nus.cats.repository.AllowanceRepository;
 import sg.edu.nus.cats.repository.ApplicationRepository;
+import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.HolidayRepository;
 
 @Service
@@ -38,14 +40,18 @@ public class ApplicationService {
 	// check whether a new course overlaps another active application
 	// check whether employee has already used part of their yearly allowance
 	private final ApplicationRepository applications;
+	private final EmployeeRepository employees;
+	private final EmailService emailService;
 
 	public ApplicationService(TrainingDayService dayService, HolidayRepository holidays, AllowanceRepository allowances,
-			ApplicationRepository applications) {
+			ApplicationRepository applications, EmployeeRepository employees, EmailService emailService) {
 
 		this.dayService = dayService;
 		this.holidays = holidays;
 		this.allowances = allowances;
 		this.applications = applications;
+		this.employees = employees;
+		this.emailService = emailService;
 	}
 
 	// Type -> CourseApplication, Parameter -> application
@@ -115,7 +121,7 @@ public class ApplicationService {
 
 		// rejects a course period with no working days
 		if (days.compareTo(BigDecimal.ZERO) == 0) {
-			
+
 			throw new IllegalArgumentException("Course has no working days");
 		}
 
@@ -142,7 +148,6 @@ public class ApplicationService {
 			throw new IllegalArgumentException("Selected course period must match the course duration of "
 					+ courseDuration.stripTrailingZeros().toPlainString() + " training day(s)");
 		}
-
 
 		// store the calculated training days on the course application
 		// if course contains three working days, application will now hold durationDays
@@ -294,6 +299,7 @@ public class ApplicationService {
 	// if validation passes, save it and return the saved application. if error ->
 	// save(...) is not reached
 	// submit is for creating a new application
+	@Transactional
 	public CourseApplication submit(CourseApplication application, Employee applicant) {
 
 		// if it already has an ID, this method rejects it instead of treating it as a
@@ -302,7 +308,18 @@ public class ApplicationService {
 			throw new IllegalArgumentException("New application must not have an ID");
 		}
 
-		application.setEmployee(applicant);
+		// Retrieve the applicant from inside the transaction for Hibernate to manage.
+		Employee managedApplicant = employees.findById(applicant.getId())
+				.orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+		Employee manager = managedApplicant.getSupervisor();
+
+		if (manager == null || manager.getEmail() == null || manager.getEmail().isBlank()) {
+
+			throw new IllegalStateException("Employee's manager email address cannot be found");
+		}
+
+		application.setEmployee(managedApplicant);
 		application.setStatus(ApplicationStatus.APPLIED);
 
 		// each line clears one manager-decision field on a newly submitted application
@@ -316,8 +333,8 @@ public class ApplicationService {
 		// clear post-course experience comment on a new submission
 		application.setExperienceComment(null);
 
-		validate(application, applicant, null);
-
+		validate(application, managedApplicant, null);
+		emailService.notifyManagerOfSubmission(manager.getEmail(), manager.getName(), managedApplicant.getName());
 		return applications.save(application);
 
 	}
@@ -448,23 +465,28 @@ public class ApplicationService {
 
 	}
 
+	@Transactional
 	public CourseApplication decide(Long id, Employee manager, boolean approve, String reason) {
+
+		Employee managedManager = employees.findById(manager.getId())
+				.orElseThrow(() -> new IllegalArgumentException("Manager not found"));
 
 		CourseApplication existing = applications.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Application not found"));
 
 		// gets the applicant supervisor
-		Employee supervisor = existing.getEmployee().getSupervisor();
+		Employee applicant = existing.getEmployee();
+		Employee supervisor = applicant.getSupervisor();
 
 		// reject if applicant has no recorded supervisor or;
 		// the recorded supervisor's ID does not match the ID of the employee
-		if (supervisor == null || !supervisor.getId().equals(manager.getId())) {
+		if (supervisor == null || !supervisor.getId().equals(managedManager.getId())) {
 
 			throw new IllegalArgumentException("Only the applicant's supervisor can decide this application");
 		}
 
 		// check decision marker's account has the MANAGER role
-		if (manager.getUser().getRole() != Role.MANAGER) {
+		if (managedManager.getUser().getRole() != Role.MANAGER) {
 
 			throw new IllegalArgumentException("Manager role is required to decide applications");
 		}
@@ -483,7 +505,7 @@ public class ApplicationService {
 		// stores the explanation
 		existing.setManagerReason(reason);
 		// links the application to the employee who made the decision
-		existing.setDecidedBy(manager);
+		existing.setDecidedBy(managedManager);
 		// record when the manager made the decision
 		existing.setDecisionDate(LocalDateTime.now());
 
@@ -495,8 +517,11 @@ public class ApplicationService {
 
 			existing.setStatus(ApplicationStatus.REJECTED);
 		}
+		CourseApplication saved = applications.save(existing);
 
-		return applications.save(existing);
+		emailService.notifyEmployeeOfDecision(saved.getStatus(), saved.getManagerReason(), applicant.getName(),
+				applicant.getEmail());
+		return saved;
 	}
 
 	// returns true only if

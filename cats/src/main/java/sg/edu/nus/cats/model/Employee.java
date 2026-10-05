@@ -24,7 +24,8 @@ public class Employee {
 	@OneToOne(optional = false)
 	@JoinColumn(name = "user_id", unique = true)
 	private User user;
-	private String name; 
+	private String name;
+	private String email;
 	private String designation;
 	
 	@Enumerated(EnumType.STRING)
@@ -91,5 +92,11 @@ public class Employee {
 		this.staffCategory = staffCategory;
 	}
 	
-	
+	public String getEmail() {
+	    return email;
+	}
+
+	public void setEmail(String email) {
+	    this.email = email;
+	}
 }

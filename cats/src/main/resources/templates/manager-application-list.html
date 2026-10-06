@@ -19,7 +19,10 @@
 	<nav>
 		<a href="/">Home</a>
 		<a href="/manager/subordinates">Subordinate course history</a>
-		<a href="/logout">Logout</a>
+		<form th:action="@{/logout}" method="post"
+		      style="display: inline;">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
 	</nav>
 
 	<h1>Pending Course Applications</h1>
@@ -66,7 +69,12 @@
 					<td th:text="${courseRequest.employee.id}"></td>
 					<td th:text="${courseRequest.employee.name}"></td>
 					<td th:text="${courseRequest.courseTitle}"></td>
-					<td th:text="${courseRequest.course.category.name}"></td>
+					<td th:text="${courseRequest.course != null and courseRequest.course.category != null
+					    ? courseRequest.course.category.name
+					    : (courseRequest.legacyCategory != null
+					        ? courseRequest.legacyCategory
+					        : 'Not specified')}">
+					</td>
 					<td th:text="${courseRequest.startDate}"></td>
 					<td th:text="${courseRequest.endDate}"></td>
 					<td th:text="${courseRequest.status}"></td>

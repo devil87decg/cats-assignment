@@ -1,89 +1,47 @@
 <!DOCTYPE html>
-
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	
+
 <head>
-	
-	<meta charset="UTF-8">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
-	<!-- Load the shared CATS stylesheet -->
-	<link rel="stylesheet" th:href="@{/css/cats.css}">
-	
-	<title>Login | CATS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load the shared CATS stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/cats.css}">
+
+    <title>Login | CATS</title>
 </head>
 
 <body>
+    <!-- Show the supplied heading, or the default heading -->
+    <h1 th:text="${loginTitle != null ? loginTitle : 'CATS Login'}">
+        CATS Login
+    </h1>
 
-	<!-- Show the supplied heading, or the default for the shared login URL -->
-	<h1 th:text="${loginTitle != null ? loginTitle : 'CATS Login'}">CATS Login</h1>
-	
-	<!-- Show the supplied description, or the shared login description -->
-	<p th:text="${loginDescription != null ? loginDescription : 'Sign in to view your course application(s).'}">
-		Sign in to view your course applications
-	</p>
-	
-	<div th:if="${error}"
-		 class="message message-error"
-		 th:text="${error}">
-	</div>
-	
-	<form action="/login" method="post">
-		
-		<p>
-			<label for="username">Username</label>
-			<input type="text" id="username" name="username" required>
-		</p>
-		
-		<p> 
-			<label for="password">Password</label>
-			<input type="password" id="password" name="password" required>
-		</p>
-		
-		<button type="submit">Sign in</button>
-		
-	</form>
-	
-	<!-- Show test accounts for local demo. -->
-	<h2>Available Test Accounts</h2>
+    <!-- Show the supplied description, or the default description -->
+    <p th:text="${loginDescription != null ? loginDescription : 'Sign in to view your course application(s).'}">
+        Sign in to view your course applications
+    </p>
 
-	<table>
-	    <thead>
-	        <tr>
-	            <th>Username</th>
-	            <th>Role</th>
-	            <th>Status</th>
-	        </tr>
-	    </thead>
+	<!-- param.error reads the error parameter from the browser's URL -->
+    <div th:if="${param.error != null}"
+         class="message message-error">Username or password is incorrect</div>
+ 
 
-		<tbody>
+    <form th:action="@{/login}" method="post">
+        <p>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </p>
 
-			<tr th:each="user : ${users}">
+        <p>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </p>
 
-				<td th:text="${user.username}">
-				</td>
+        <button type="submit">Sign in</button>
+    </form>
 
-				<td th:text="${user.role}">
-				</td>
-
-				<td>
-					<span th:if="${user.active}"
-						  class="status status-approved">
-						Active
-					</span>
-
-					<span th:unless="${user.active}"
-						  class="status status-deleted">
-						Inactive
-					</span>
-				</td>
-
-			</tr>
-
-		</tbody>
-	</table>
-	<div th:replace="~{fragments/footer :: footer}"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

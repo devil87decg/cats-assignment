@@ -33,7 +33,10 @@
 		
 		<a th:href="@{/account/password}">Change password</a>
 
-		<a href="/logout">Logout</a>
+		<form th:action="@{/logout}" method="post"
+		      style="display: inline;">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
 	</nav>
 	<!-- Stats Cards -->
 	<div class="page-wrapper">

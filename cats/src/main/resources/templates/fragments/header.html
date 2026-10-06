@@ -19,8 +19,16 @@
 				<span th:if="${userId != null}" class="user-info">
 					Hello, <strong th:text="${loggedInName}">Xiang Xuan</strong>
 					&nbsp;|&nbsp;<a th:href="@{/employees/profile}" class="logout-link">Profile</a>
-					&nbsp;|&nbsp;<a th:href="@{/logout}" class="logout-link">Logout</a>
+					&nbsp;|&nbsp;
 				</span>
+				
+				<form th:if="${userId !=null}"
+					th:action="@{/logout}"
+					method="post"
+					style="display: inline;">
+					<button type="submit" class="logout-link">Logout</button>
+				</form>
+				
 			</div>
 		</nav>
 

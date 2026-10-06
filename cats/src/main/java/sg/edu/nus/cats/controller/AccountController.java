@@ -8,16 +8,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.AccountService;
 
 @Controller
-@AllArgsConstructor
 public class AccountController {
-	private final UserRepository users;
-	private final AccountService accountService;
+
+    private final UserRepository users;
+    private final AccountService accountService;
+
+    public AccountController(UserRepository users,
+                             AccountService accountService) {
+        this.users = users;
+        this.accountService = accountService;
+    }
 	
 	@GetMapping("/account/password")
 	public String showChangePasswordForm(HttpSession session, Model model) {

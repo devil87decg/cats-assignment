@@ -34,10 +34,12 @@
 		<p th:text="'Applications for ' + ${currentYear}"></p>
 		
 		<!-- Show this message only when the application list is empty -->
-		<p th:if="${#lists.isEmpty(applications)}">You have no course application for this year.</p>
-
+		<p th:if="${totalItems == 0}">
+		    You have no course application for this year.
+		</p>
+		
 		<!-- Define the column headings -->
-		<table th:if="${!#lists.isEmpty(applications)}">
+		<table th:if="${totalItems > 0}">
 			<thead>
 				<tr>
 					<th>Course title</th>
@@ -64,10 +66,78 @@
 						<a th:href="@{/applications/{id}(id=${courseRequest.id})}">View details</a>
 					</td>																					
 				</tr>
-				
 			</tbody>
-			
 		</table>
+		
+		<!-- Pagination controls -->
+		<div class="pagination-controls" th:if="${totalItems > 0}">
+
+		    <!-- Allow employee to choose the number of applications per page -->
+		    <form class="pagination-form" th:action="@{/applications}" method="get">
+		        <label for="pageSize">Results per page:</label>
+		        <select id="pageSize" name="size" onchange="this.form.submit()">
+		            <option value="5" th:selected="${pageSize == 5}">5</option>
+		            <option value="10" th:selected="${pageSize == 10}">10</option>
+		            <option value="15" th:selected="${pageSize == 15}">15</option>
+		        </select>
+		    </form>
+
+		    <!-- Show page navigation only when there is more than one page -->
+		    <nav class="pagination-nav" th:if="${totalPages > 1}" aria-label="Application pages">
+
+		        <ul class="pagination">
+
+		            <!-- Previous page -->
+		            <li class="page-item" th:if="${currentPage > 1}">
+		                <a class="page-link"
+		                   th:href="@{/applications(
+		                       page=${currentPage - 1},
+		                       size=${pageSize})}">
+		                    Previous
+		                </a>
+		            </li>
+
+		            <!-- Page numbers -->
+		            <li class="page-item"
+		                th:each="i : ${#numbers.sequence(1, totalPages)}"
+		                th:classappend="${currentPage == i} ? 'active'">
+
+		                <a class="page-link"
+		                   th:href="@{/applications(
+		                       page=${i},
+		                       size=${pageSize})}"
+		                   th:text="${i}">
+		                    1
+		                </a>
+		            </li>
+
+		            <!-- Next page -->
+		            <li class="page-item" th:if="${currentPage < totalPages}">
+		                <a class="page-link"
+		                   th:href="@{/applications(
+		                       page=${currentPage + 1},
+		                       size=${pageSize})}">
+		                    Next
+		                </a>
+		            </li>
+
+		        </ul>
+		    </nav>
+
+		</div>
+		
+		<!-- Display the range of results currently shown -->
+		<p class="pagination-summary" th:if="${totalItems > 0}">
+		    Showing
+		    <span th:text="${((currentPage - 1) * pageSize) + 1}"></span>-<span
+		          th:text="${currentPage * pageSize > totalItems
+		                   ? totalItems
+		                   : currentPage * pageSize}"></span>
+		    of
+		    <span th:text="${totalItems}"></span>
+			results
+		</p>
+		
 		<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 

@@ -2,42 +2,54 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/cats.css}">
 
-	<link rel="stylesheet" th:href="@{/css/cats.css}">
-
-	<title>Add Public Holidays | CATS</title>
+    <title>Add Public Holidays | CATS</title>
 </head>
 
 <body>
-	<h1>Add Public Holiday</h1>
-	<p>Add a public holiday calendar used for training-day calculations.</p>
+    <h1>Add Public Holiday</h1>
+    <p>Add a public holiday calendar used for training-day calculations.</p>
 
-	<p><a th:href="@{/admin/holidays}">Back to Public Holiday</a> | <a th:href="@{/admin}">Administration</a> | <a
-			th:href="@{/logout}">Logout</a></p>
-	<div th:if="${error}" class="error-message" th:text="${error}"></div>
+    <div class="navbar">
+        <a th:href="@{/admin/holidays}">Back to Public Holidays</a>
+        |
+        <a th:href="@{/admin}">Administration</a>
+        |
+        <form th:action="@{/logout}" method="post"
+              style="display: inline;">
+            <button type="submit" class="logout-link">Logout</button>
+        </form>
+    </div>
 
-	<form th:action="@{/admin/holidays}" method="post">
-		<p>
-			<label for="date">Holiday date</label>
-			<br>
-			<input type="date" id="date" name="date" required/>
-		</p>
-		<p>
-			<label for="name">Holiday name</label>
-			<br>
-			<input type="text" id="name" name="name" required/>
-		</p>
-		<p>
-			<button type="submit">Add Public Holiday</button>
-			<a th:href="@{/admin/holidays|}">Cancel</a>
-		</p>
-		
-	</form>
-	
-	<div th:replace="~{fragments/footer :: footer}"></div>
+    <div th:if="${error}"
+         class="error-message"
+         th:text="${error}">
+    </div>
+
+    <form th:action="@{/admin/holidays}" method="post">
+        <p>
+            <label for="date">Holiday date</label>
+            <br>
+            <input type="date" id="date" name="date" required>
+        </p>
+
+        <p>
+            <label for="name">Holiday name</label>
+            <br>
+            <input type="text" id="name" name="name" required>
+        </p>
+
+        <p>
+            <button type="submit">Add Public Holiday</button>
+            <a th:href="@{/admin/holidays}">Cancel</a>
+        </p>
+    </form>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

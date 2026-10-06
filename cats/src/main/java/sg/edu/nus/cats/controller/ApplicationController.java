@@ -418,8 +418,6 @@ public class ApplicationController {
 			        id,
 			        changes,
 			        applicant);
-			
-			applicationService.update(id, changes, applicant);
 		
 		} catch (IllegalArgumentException validationError) {
 			
@@ -542,6 +540,8 @@ public class ApplicationController {
 				
 			redirectAttributes.addFlashAttribute("error",
 					validationError.getMessage());
+			
+			return "redirect:/applications";
 			
 		}
 		

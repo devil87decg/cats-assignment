@@ -709,8 +709,30 @@ public class ApplicationService {
 	
 	private boolean isInternalTraining(CourseApplication application) {
 
-		return application.getCourse()
-				.getCategory()
-				.isInternalTraining();
+		if (application.getCourse() != null 
+				&& application.getCourse().getCategory() != null) {
+			
+			return application.getCourse()
+					.getCategory()
+					.isInternalTraining();
+			
+		}
+		
+		String category = application.getLegacyCategory();
+		
+		if ("INTERNAL".equals(category) ) {
+			
+			return true;
+		}
+		
+		if ("EXTERNAL".equals(category)
+				|| "CERTIFICATION".equals(category)) {
+			
+			return false;
+		}
+		
+		throw new IllegalStateException(
+				"Missing or unknown category for application" + application.getId());
+			
 	}
 }

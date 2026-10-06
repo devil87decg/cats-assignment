@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+
+	<title>Training Details | CATS</title>
+</head>
+
+<body>
+
+	<nav>
+		<a href="/">Home</a>
+
+		<form th:action="@{/logout}" method="post" style="display: inline;">
+			<button type="submit" class="logout-link">
+				Logout
+			</button>
+		</form>
+	</nav>
+
+	<h1 th:text="${calendarEntry.course.title}">
+		Course Name
+	</h1>
+
+	<p th:text="${calendarEntry.course.description}">
+		Course description
+	</p>
+
+	<div class="table-wrap">
+		<table>
+			<tbody>
+				<tr>
+					<th>Category</th>
+					<td th:text="${calendarEntry.course.category.name}">
+						Category
+					</td>
+				</tr>
+
+				<tr>
+					<th>Training provider</th>
+					<td th:text="${calendarEntry.course.provider.name}">
+						Training Provider
+					</td>
+				</tr>
+
+				<tr>
+					<th>Start date</th>
+					<td th:text="${calendarEntry.startDate}">
+						Start date
+					</td>
+				</tr>
+
+				<tr>
+					<th>End date</th>
+					<td th:text="${calendarEntry.endDate}">
+						End date
+					</td>
+				</tr>
+
+				<tr>
+					<th>Duration</th>
+					<td>
+						<span th:text="${calendarEntry.course.durationDays}"></span>
+						day(s)
+					</td>
+				</tr>
+
+				<tr>
+					<th>Fee (S$)</th>
+					<td th:text="${calendarEntry.course.fee}">
+						Fee
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h2>Employees Attending</h2>
+
+	<div class="table-wrap">
+
+		<table>
+			<thead>
+				<tr>
+					<th>Employee</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="courseApplication : ${calendarEntry.applications}">
+					<td th:text="${courseApplication.employee.name}">
+						Employee Name
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div>
+		<p th:if="${courseStarted}">
+			<strong>Course has already started.</strong>
+		</p>
+
+		<p th:if="${!courseStarted and alreadyApplied}">
+			<strong>You have already applied for this course session.</strong>
+		</p>
+
+		<a th:if="${canApply}"
+		   class="button"
+		   th:href="@{/applications/new(
+				courseId=${calendarEntry.course.id},
+				startDate=${calendarEntry.startDate})}">
+			Apply
+		</a>
+	</div>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

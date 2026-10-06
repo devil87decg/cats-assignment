@@ -20,7 +20,12 @@
 		<nav>
 			<a href="/">Home</a>
 			<a href="/applications/new">New application</a>
-			<a href="/logout">Logout</a>
+			
+			<form th:action="@{/logout}" method="post"
+			      style="display: inline;">
+			    <button type="submit" class="logout-link">Logout</button>
+			</form>
+			
 		</nav>
 	
 		<h1>My Applications</h1>
@@ -56,7 +61,10 @@
 			<tbody>
 				<tr th:each="courseRequest : ${applications}">
 					<td th:text="${courseRequest.courseTitle}"></td>
-					<td th:text="${courseRequest.course.category.name}"></td>
+					<td th:text="${courseRequest.course != null and courseRequest.course.category != null
+					    ? courseRequest.course.category.name
+					    : (courseRequest.legacyCategory != null ? courseRequest.legacyCategory : 'Not specified')}">
+					</td>
 					<td th:text="${courseRequest.startDate}"></td>	
 					<td th:text="${courseRequest.endDate}"></td>
 					<td th:text="${courseRequest.durationDays}"></td>

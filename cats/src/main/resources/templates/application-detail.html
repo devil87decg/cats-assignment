@@ -17,7 +17,12 @@
     <nav>
         <a href="/applications">My applications</a>
         <a href="/">Home</a>
-        <a href="/logout">Logout</a>
+        
+		<form th:action="@{/logout}" method="post"
+		      style="display: inline;">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
+		
     </nav>
 
     <h1>Application Details</h1>
@@ -44,7 +49,10 @@
 
             <tr>
                 <th scope="row">Category</th>
-                <td th:text="${courseRequest.course.category.name}"></td>
+				<td th:text="${courseRequest.course != null and courseRequest.course.category != null
+				    ? courseRequest.course.category.name
+				    : (courseRequest.legacyCategory != null ? courseRequest.legacyCategory : 'Not specified')}">
+				</td>
             </tr>
 
             <tr>

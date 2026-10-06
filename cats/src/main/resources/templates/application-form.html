@@ -14,7 +14,12 @@
 
 	<nav>
 		<a href="/">Home</a>
-		<a href="/logout">Logout</a>
+		
+		<form th:action="@{/logout}" method="post"
+		      style="display: inline;">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
+		
 	</nav>
 
 	<h1 th:text="${courseForm.id == null

@@ -41,25 +41,34 @@
         Showing applications from all years.
     </p>
 
-    <!-- Switch between current-year and all-year history -->
-    <p class="history-filter">
-        <a th:href="@{/manager/subordinates/{id}/history(id=${subordinate.id})}">
-            Current year
-        </a>
+    <!-- Switch between current-year and all-year history -->	
+	<p class="history-filter">
+	    <a th:href="@{/manager/subordinates/{id}/history(
+	            id=${subordinate.id},
+	            allYears=false,
+	            size=${pageSize})}">
+	        Current year
+	    </a>
+	    <a th:href="@{/manager/subordinates/{id}/history(
+	            id=${subordinate.id},
+	            allYears=true,
+	            size=${pageSize})}">
+	        All years
+	    </a>
+	</p>
 
-        <a th:href="@{/manager/subordinates/{id}/history(id=${subordinate.id}, allYears=true)}">
-            All years
-        </a>
-    </p>
-
+	<p th:if="${totalItems == 0}">
+	    No course applications were found for the selected period.
+	</p>
+	
     <!-- Display a message when the selected history contains no applications -->
     <p th:if="${#lists.isEmpty(courseHistory)}">
         No course applications were found for the selected period.
     </p>
 
     <!-- Allow the history table to scroll horizontally on smaller screens -->
-    <div class="table-scroll"
-         th:if="${!#lists.isEmpty(courseHistory)}">
+	<div class="table-scroll"
+		th:if="${totalItems > 0}">
 
         <table>
             <thead>
@@ -98,6 +107,88 @@
             </tbody>
         </table>
     </div>
+	
+	<!-- Pagination controls -->
+	<div class="pagination-controls" th:if="${totalItems > 0}">
+
+	    <!-- Allow manager to choose the number of applications per page -->
+	    <form class="pagination-form"
+	          th:action="@{/manager/subordinates/{id}/history(id=${subordinate.id})}"
+	          method="get">
+
+	        <!-- Preserve current-year/all-years selection -->
+	        <input type="hidden" name="allYears" th:value="${allYears}">
+
+	        <label for="pageSize">Results per page:</label>
+	        <select id="pageSize" name="size" onchange="this.form.submit()">
+	            <option value="5" th:selected="${pageSize == 5}">5</option>
+	            <option value="10" th:selected="${pageSize == 10}">10</option>
+	            <option value="15" th:selected="${pageSize == 15}">15</option>
+	        </select>
+	    </form>
+
+	    <!-- Show page navigation only when there is more than one page -->
+	    <nav class="pagination-nav" th:if="${totalPages > 1}" aria-label="Application pages">
+
+	        <ul class="pagination">
+
+	            <!-- Previous page -->
+	            <li class="page-item" th:if="${currentPage > 1}">
+	                <a class="page-link"
+	                   th:href="@{/manager/subordinates/{id}/history(
+	                       id=${subordinate.id},
+	                       allYears=${allYears},
+	                       page=${currentPage - 1},
+	                       size=${pageSize})}">
+	                    Previous
+	                </a>
+	            </li>
+
+	            <!-- Page numbers -->
+	            <li class="page-item"
+	                th:each="i : ${#numbers.sequence(1, totalPages)}"
+	                th:classappend="${currentPage == i} ? 'active'">
+
+	                <a class="page-link"
+	                   th:href="@{/manager/subordinates/{id}/history(
+	                       id=${subordinate.id},
+	                       allYears=${allYears},
+	                       page=${i},
+	                       size=${pageSize})}"
+	                   th:text="${i}">
+	                    1
+	                </a>
+	            </li>
+
+	            <!-- Next page -->
+	            <li class="page-item" th:if="${currentPage < totalPages}">
+	                <a class="page-link"
+	                   th:href="@{/manager/subordinates/{id}/history(
+	                       id=${subordinate.id},
+	                       allYears=${allYears},
+	                       page=${currentPage + 1},
+	                       size=${pageSize})}">
+	                    Next
+	                </a>
+	            </li>
+
+	        </ul>
+	    </nav>
+
+	</div>
+
+	<!-- Display the range of results currently shown -->
+	<p class="pagination-summary" th:if="${totalItems > 0}">
+	    Showing
+	    <span th:text="${((currentPage - 1) * pageSize) + 1}"></span>-<span
+	          th:text="${currentPage * pageSize > totalItems
+	                   ? totalItems
+	                   : currentPage * pageSize}"></span>
+	    of
+	    <span th:text="${totalItems}"></span>
+		results
+	</p>
+	
 	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 

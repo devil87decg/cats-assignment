@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,8 +33,7 @@ import sg.edu.nus.cats.utils.EmployeeAuthHelper;
 @RequestMapping("/applications")
 public class ApplicationController {
 
-	// Keep a reference to the service that validates and manages course
-	// applications.
+	// Keep a reference to the service that validates and manages course applications.
 	private final ApplicationService applicationService;
 
 	private final CourseService courseService;
@@ -133,9 +133,11 @@ public class ApplicationController {
 
 		return "redirect:/applications";
 	}
-
-	@GetMapping
-	public String showMyApplications(HttpSession session, Model model) {
+	
+	/*@GetMapping
+	public String showMyApplications(
+			HttpSession session, 
+			Model model) {
 
 		// check if employee have login
 		Employee applicant = employeeAuthentication.getEmployee(session);
@@ -163,6 +165,54 @@ public class ApplicationController {
 
 		return "application-list";
 
+	}*/
+
+	@GetMapping
+	public String showMyApplications(
+			HttpSession session, 
+			@RequestParam(value = "page", defaultValue = "1") int pageNo,
+            @RequestParam(value = "size", defaultValue = "5") int pageSize,
+			Model model) {
+
+		// check if employee have login
+		Employee applicant = employeeAuthentication.getEmployee(session);
+
+		if (applicant == null) {
+			return "redirect:/login";
+		}
+
+		// get the current calendar year
+		int currentYear = LocalDate.now().getYear();
+
+		// set the first and last dates of that year
+		LocalDate firstDay = LocalDate.of(currentYear, 1, 1);
+		LocalDate lastDay = LocalDate.of(currentYear, 12, 31);
+		
+        // Retrieve one page of this employee's applications for the current year
+        Page<CourseApplication> page =
+                applicationService.findMyApplicationsPaginated(
+                        applicant.getId(),
+                        firstDay,
+                        lastDay,
+                        pageNo,
+                        pageSize);
+
+        // Actual applications for the current page
+        List<CourseApplication> myApplications = page.getContent();
+
+        // Make the application list available to the HTML page
+        model.addAttribute("applications", myApplications);
+
+        // Make the current year available for the page heading
+        model.addAttribute("currentYear", currentYear);
+
+        // Pagination information
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("pageSize", pageSize);
+
+		return "application-list";
 	}
 
 	// Handle requests to view one course application's details

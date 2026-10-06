@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import sg.edu.nus.cats.model.ApplicationStatus;
@@ -20,6 +22,10 @@ public interface ApplicationRepository extends JpaRepository<CourseApplication, 
 	List<CourseApplication> findByEmployeeIdAndStartDateBetween(
 			Long employeeId, LocalDate first, LocalDate last);
 	
+	// Overloaded method for pagination
+	Page<CourseApplication> findByEmployeeIdAndStartDateBetween(
+			Long employeeId, LocalDate first, LocalDate last, Pageable pageable);
+	
 	// EmployeeSupervisorId -> find applications where the applicant's supervisor has this ID.
 	// StatusIn -> include only applications whose status is in the set provided
 	// For e.g. passing APPLIED asks for applications that;
@@ -27,8 +33,11 @@ public interface ApplicationRepository extends JpaRepository<CourseApplication, 
 	List<CourseApplication> findByEmployeeSupervisorIdAndStatusInOrderByEmployeeIdAsc(
 			Long managerId, Collection<ApplicationStatus> statues);
 	
-	// All applicantion for this employee, including ones starting in another year
+	// All applications for this employee, including ones starting in another year
 	List<CourseApplication> findByEmployeeId(Long employeeId);
+	
+	// Overloaded method for pagination
+	Page<CourseApplication> findByEmployeeId(Long employeeId, Pageable pageable);
 	
 	// Find this manager's subordinates applications with its status
 	List<CourseApplication> findByEmployeeSupervisorIdAndStatus(Long managerId, ApplicationStatus status);

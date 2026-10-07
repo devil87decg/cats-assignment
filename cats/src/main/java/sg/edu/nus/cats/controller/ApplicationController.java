@@ -34,7 +34,8 @@ import sg.edu.nus.cats.utils.EmployeeAuthHelper;
 @RequestMapping("/applications")
 public class ApplicationController {
 
-	// Keep a reference to the service that validates and manages course applications.
+	// Keep a reference to the service that validates and manages course
+	// applications.
 	private final ApplicationService applicationService;
 	
 	private final ClaimService claimService;
@@ -47,7 +48,8 @@ public class ApplicationController {
 
 	// open the form for submitting a new course application
 	@GetMapping("/new")
-	public String showApplicationForm(HttpSession session, Model model) {
+	public String showApplicationForm(@RequestParam(required = false) Long courseId,
+			@RequestParam(required = false) LocalDate startDate, HttpSession session, Model model) {
 
 		// check if employee have login
 		if (employeeAuthentication.getEmployee(session) == null) {
@@ -56,6 +58,51 @@ public class ApplicationController {
 
 		// Create an empty application object for the form fields
 		CourseApplication courseForm = new CourseApplication();
+
+		if (courseId == null || startDate == null) {
+			session.removeAttribute("calendarCourseId");
+			session.removeAttribute("calendarStartDate");
+		}
+
+		// If employee came from the Training Calendar,
+		// pre-populate the selected course and training dates.
+		if (courseId != null && startDate != null) {
+
+			try {
+
+				Course selectedCourse = courseService.findById(courseId);
+
+				if (!selectedCourse.isActive()) {
+					throw new IllegalArgumentException("Selected course is no longer available");
+				}
+
+				// Calendar applications must still be for a future course.
+				if (!startDate.isAfter(LocalDate.now())) {
+					throw new IllegalArgumentException("Course must start on a future date");
+				}
+
+				courseForm.setCourse(selectedCourse);
+				courseForm.setStartDate(startDate);
+
+				BigDecimal duration = selectedCourse.getDurationDays();
+
+				LocalDate endDate = trainingDayService.calculateEndDate(startDate, duration);
+
+				courseForm.setEndDate(endDate);
+				model.addAttribute("fromCalendar", true);
+
+				// Remember the actual calendar session on the server.
+				session.setAttribute("calendarCourseId", selectedCourse.getId());
+				session.setAttribute("calendarStartDate", startDate);
+
+			} catch (IllegalArgumentException validationError) {
+
+				model.addAttribute("error", validationError.getMessage());
+			}
+		}
+		if (!model.containsAttribute("fromCalendar")) {
+			model.addAttribute("fromCalendar", false);
+		}
 
 		// make the application object available to the HTML form
 		model.addAttribute("courseForm", courseForm);
@@ -95,7 +142,8 @@ public class ApplicationController {
 	// Receive the course details submitted by the application form
 	@PostMapping
 	public String submitApplication(@ModelAttribute("courseForm") CourseApplication courseForm,
-			@RequestParam Long courseId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+			@RequestParam Long courseId, @RequestParam(defaultValue = "false") boolean fromCalendar,
+			HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
 		// check if employee have login
 		Employee applicant = employeeAuthentication.getEmployee(session);
@@ -111,23 +159,52 @@ public class ApplicationController {
 				throw new IllegalArgumentException("Selected course is no longer available");
 			}
 
+			if (fromCalendar) {
+
+				Long calendarCourseId = (Long) session.getAttribute("calendarCourseId");
+
+				LocalDate calendarStartDate = (LocalDate) session.getAttribute("calendarStartDate");
+
+				if (calendarCourseId == null || calendarStartDate == null) {
+					throw new IllegalArgumentException(
+							"Training calendar session is no longer available. Please select the course again.");
+				}
+
+				if (!calendarCourseId.equals(courseId)) {
+					throw new IllegalArgumentException(
+							"The selected course does not match the training calendar session.");
+				}
+
+				// Ignore whatever start date came from the browser.
+				// Use the server's stored calendar date instead.
+				courseForm.setStartDate(calendarStartDate);
+
+				BigDecimal duration = selectedCourse.getDurationDays();
+
+				LocalDate endDate = trainingDayService.calculateEndDate(calendarStartDate, duration);
+
+				courseForm.setEndDate(endDate);
+			}
+
 			// Link this application to that Course
 			courseForm.setCourse(selectedCourse);
-
 			courseForm.setCourseTitle(selectedCourse.getTitle());
-
 			courseForm.setTrainingProvider(selectedCourse.getProvider().getName());
-
 			courseForm.setFee(selectedCourse.getFee());
 
 			// Ask the service to validate and save the applicant's course request
 			applicationService.submit(courseForm, applicant);
 
+			if (fromCalendar) {
+				session.removeAttribute("calendarCourseId");
+				session.removeAttribute("calendarStartDate");
+			}
+
 		} catch (IllegalArgumentException validationError) {
-
+			
 			model.addAttribute("error", validationError.getMessage());
-
 			model.addAttribute("courses", courseService.findActive());
+			model.addAttribute("fromCalendar", fromCalendar);
 
 			return "application-form";
 		}
@@ -139,9 +216,9 @@ public class ApplicationController {
 
 	@GetMapping
 	public String showMyApplications(
-			HttpSession session, 
+			HttpSession session,
 			@RequestParam(value = "page", defaultValue = "1") int pageNo,
-            @RequestParam(value = "size", defaultValue = "5") int pageSize,
+			@RequestParam(value = "size", defaultValue = "5") int pageSize,
 			Model model) {
 
 		// check if employee have login
@@ -157,42 +234,42 @@ public class ApplicationController {
 		// set the first and last dates of that year
 		LocalDate firstDay = LocalDate.of(currentYear, 1, 1);
 		LocalDate lastDay = LocalDate.of(currentYear, 12, 31);
-		
-        // Retrieve one page of this employee's applications for the current year
-        Page<CourseApplication> page =
-                applicationService.findMyApplicationsPaginated(
-                        applicant.getId(),
-                        firstDay,
-                        lastDay,
-                        pageNo,
-                        pageSize);
 
-        // Actual applications for the current page
-        List<CourseApplication> myApplications = page.getContent();
+		// Retrieve one page of this employee's applications for the current year
+		Page<CourseApplication> page =
+				applicationService.findMyApplicationsPaginated(
+						applicant.getId(),
+						firstDay,
+						lastDay,
+						pageNo,
+						pageSize);
 
-        // Find which applications are currently eligible for reimbursement.
-        List<Long> claimableApplicationIds =
-        		myApplications.stream()
-        				.filter(claimService::canClaim)
-        				.map(CourseApplication::getId)
-        				.toList();
+		// Actual applications for the current page
+		List<CourseApplication> myApplications = page.getContent();
 
-        // Make the application list available to the HTML page
-        model.addAttribute("applications", myApplications);
+		// Find which applications are currently eligible for reimbursement.
+		List<Long> claimableApplicationIds =
+				myApplications.stream()
+						.filter(claimService::canClaim)
+						.map(CourseApplication::getId)
+						.toList();
 
-        // Make the claimable application IDs available to the HTML page
-        model.addAttribute(
-        		"claimableApplicationIds",
-        		claimableApplicationIds);
+		// Make the application list available to the HTML page
+		model.addAttribute("applications", myApplications);
 
-        // Make the current year available for the page heading
-        model.addAttribute("currentYear", currentYear);
+		// Make the claimable application IDs available to the HTML page
+		model.addAttribute(
+				"claimableApplicationIds",
+				claimableApplicationIds);
 
-        // Pagination information
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-        model.addAttribute("pageSize", pageSize);
+		// Make the current year available for the page heading
+		model.addAttribute("currentYear", currentYear);
+
+		// Pagination information
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", page.getTotalPages());
+		model.addAttribute("totalItems", page.getTotalElements());
+		model.addAttribute("pageSize", pageSize);
 
 		return "application-list";
 	}
@@ -251,8 +328,8 @@ public class ApplicationController {
 			}
 
 			model.addAttribute("courseForm", courseRequest);
-
 			model.addAttribute("courses", courseService.findActive());
+			model.addAttribute("fromCalendar", false);
 
 		} catch (IllegalArgumentException validationError) {
 
@@ -300,8 +377,8 @@ public class ApplicationController {
 
 			model.addAttribute("courseForm", changes);
 			model.addAttribute("error", validationError.getMessage());
-
 			model.addAttribute("courses", courseService.findActive());
+			model.addAttribute("fromCalendar", false);
 
 			return "application-form";
 		}
@@ -385,18 +462,14 @@ public class ApplicationController {
 			applicationService.complete(id, applicant, experienceComment);
 
 		} catch (IllegalArgumentException validationError) {
-			redirectAttributes.addFlashAttribute(
-		            "error",
-		            validationError.getMessage());
+			redirectAttributes.addFlashAttribute("error", validationError.getMessage());
 
 			return "redirect:/applications";
-	    }
+		}
 
-	    redirectAttributes.addFlashAttribute(
-	            "success",
-	            "Course application completed successfully");
+		redirectAttributes.addFlashAttribute("success", "Course application completed successfully");
 
-	    return "redirect:/applications";
+		return "redirect:/applications";
 	}
 
 }

@@ -26,22 +26,30 @@
 		<a href="/applications/new">New application</a>
 		<a href="/claims">Training Ledger</a>
 
-		<a th:if="${isManager == true}" th:href="@{/manager/applications}">
+		<a th:if="${isManager == true}"
+		   th:href="@{/manager/applications}">
 			Review applications
 		</a>
-		
-		<a th:if="${isManager == true}" th:href="@{/manager/claims}">
+
+		<a th:if="${isManager == true}"
+		   th:href="@{/manager/claims}">
 			Review course fee claims
 		</a>
 
-		<a th:if="${isManager == true}" th:href="@{/manager/subordinates}">
+		<a th:if="${isManager == true}"
+		   th:href="@{/manager/subordinates}">
 			Subordinate history
+		</a>
+
+		<a th:if="${isManager == true}"
+		   th:href="@{/reports}">
+			Reports
 		</a>
 		
 		<a th:href="@{/account/password}">Change password</a>
 
 		<form th:action="@{/logout}" method="post"
-		      style="display: inline;">
+		      class="logout-form">
 		    <button type="submit" class="logout-link">Logout</button>
 		</form>
 	</nav>
@@ -67,6 +75,7 @@
 				</div>
 			</div>
 		</section>
+		<div th:replace="~{fragments/training-calendar :: trainingCalendar}"></div>
 	</div>
 	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>

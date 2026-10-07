@@ -27,11 +27,14 @@
 	    <a th:href="@{/account/password}"> Change Password</a>
 	    
 		<form th:action="@{/logout}" method="post"
-		      style="display: inline;">
+		      class="logout-form">
 		    <button type="submit" class="logout-link">Logout</button>
 		</form>
 		
 	</nav>
+	
+	<!-- Training calendar -->
+	<div th:replace="~{fragments/training-calendar :: trainingCalendar}"></div>
 	
 	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>

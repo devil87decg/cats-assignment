@@ -11,4 +11,6 @@ public interface AllowanceRepository extends JpaRepository<TrainingAllowance, Lo
 	// Find the allowance for this employee in this year
 	Optional<TrainingAllowance> findByEmployeeIdAndYear(Long employeeId, int year);
 	
+	// Delete all allowance records belonging to this employee
+    void deleteByEmployeeId(Long employeeId);
 }

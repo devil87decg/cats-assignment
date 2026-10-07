@@ -59,7 +59,7 @@ public class CourseApplication {
 	private Employee decidedBy;
 	
 	@ManyToOne
-	@JoinColumn(name = "course_id")
+	@JoinColumn(name="course_id", nullable=false)
 	private Course course;
 	
 	// connects the field to the existing database column

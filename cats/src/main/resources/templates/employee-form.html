@@ -17,7 +17,7 @@
 <body>
 	
 	<nav>
-		<a href="/admin">Adminstration</a>
+		<a href="/admin">Administration</a>
 	</nav>
 	
 	<h1>Create Employee</h1>
@@ -30,7 +30,7 @@
 	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 	
 	<!-- Send the entered employee profile details to /admin/employees using POST when the form is submitted. -->
-	<form action="/admin/employees" method="post">
+	<form th:action="@{/admin/employees}" method="post">
 	
 		<h2>Login Account</h2>
 
@@ -74,7 +74,10 @@
 			<label for="name">Employee name</label>
 			<input type="text" id="name" name="name" required>
 		</p>
-		
+		<p>
+			<label for="email">Email</label>
+			<input type="email" id="email" name="email" required>
+		</p>
 		<p>
 			<label for="designation">Desgination (optional)</label>
 			<input type="text" id="designation" name="designation">

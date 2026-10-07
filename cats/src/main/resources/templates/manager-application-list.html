@@ -19,16 +19,19 @@
 	<nav>
 		<a href="/">Home</a>
 		<a href="/manager/subordinates">Subordinate course history</a>
-		<a href="/logout">Logout</a>
+		<form th:action="@{/logout}" method="post"
+		     class="logout-form">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
 	</nav>
 
 	<h1>Pending Course Applications</h1>
 
 	<!-- Display confirmation when a decision was saved -->
-	<p th:if="${success}" th:text="${success}"></p>
+	<div th:if="${success}" class="message message-success" th:text="${success}"></div>
 
 	<!-- Display the reason a decision could not be saved -->
-	<p th:if="${error}" th:text="${error}"></p>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<p>Review course applications submitted by your subordinates.</p>
 
@@ -66,7 +69,12 @@
 					<td th:text="${courseRequest.employee.id}"></td>
 					<td th:text="${courseRequest.employee.name}"></td>
 					<td th:text="${courseRequest.courseTitle}"></td>
-					<td th:text="${courseRequest.course.category.name}"></td>
+					<td th:text="${courseRequest.course != null and courseRequest.course.category != null
+					    ? courseRequest.course.category.name
+					    : (courseRequest.legacyCategory != null
+					        ? courseRequest.legacyCategory
+					        : 'Not specified')}">
+					</td>
 					<td th:text="${courseRequest.startDate}"></td>
 					<td th:text="${courseRequest.endDate}"></td>
 					<td th:text="${courseRequest.status}"></td>

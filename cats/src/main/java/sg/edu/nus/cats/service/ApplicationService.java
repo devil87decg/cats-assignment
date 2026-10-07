@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -540,11 +543,39 @@ public class ApplicationService {
 		return applications.findByEmployeeIdAndStartDateBetween(employeeId, firstDay, lastDay);
 
 	}
+	
+	public Page<CourseApplication> findMyApplicationsPaginated(
+	        Long employeeId,
+	        LocalDate firstDay,
+	        LocalDate lastDay,
+	        int pageNo,
+	        int pageSize) {
+		
+	    Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+	    return applications.findByEmployeeIdAndStartDateBetween(
+	            employeeId,
+	            firstDay,
+	            lastDay,
+	            pageable);
+	}
 
 	// Retrieve all saved course applications belonging to this employee
 	public List<CourseApplication> findEmployeeHistory(Employee employee) {
 
 		return applications.findByEmployeeId(employee.getId());
+	}
+	
+	public Page<CourseApplication> findEmployeeHistoryPaginated(
+	        Employee employee,
+	        int pageNo,
+	        int pageSize) {
+
+	    Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+
+	    return applications.findByEmployeeId(
+	            employee.getId(),
+	            pageable);
 	}
 
 	public CourseApplication findMyApplication(Long id, Employee applicant) {
@@ -763,6 +794,31 @@ public class ApplicationService {
 
 	private boolean isInternalTraining(CourseApplication application) {
 
-		return application.getCourse().getCategory().isInternalTraining();
+		if (application.getCourse() != null 
+				&& application.getCourse().getCategory() != null) {
+			
+			return application.getCourse()
+					.getCategory()
+					.isInternalTraining();
+			
+		}
+		
+		String category = application.getLegacyCategory();
+		
+		if ("INTERNAL".equals(category) ) {
+			
+			return true;
+		}
+		
+		if ("EXTERNAL".equals(category)
+				|| "CERTIFICATION".equals(category)) {
+			
+			return false;
+		}
+		
+		throw new IllegalStateException(
+				"Missing or unknown category for application" + application.getId());
+			
 	}
+
 }

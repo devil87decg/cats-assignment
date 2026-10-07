@@ -14,7 +14,11 @@
 
 	<nav>
 		<a href="/">Home</a>
-		<a href="/logout">Logout</a>
+
+		<form th:action="@{/logout}" method="post" class="logout-form">
+			<button type="submit" class="logout-link">Logout</button>
+		</form>
+
 	</nav>
 
 	<h1 th:text="${courseForm.id == null
@@ -27,9 +31,9 @@
 	        : 'Update your course application details.'}">
 	</p>
 
-	<p th:if="${success}" th:text="${success}"></p>
+	<div th:if="${success}" class="message message-success" th:text="${success}"></div>
 
-	<p th:if="${error}" th:text="${error}"></p>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<p th:if="${courseForm.id != null}">
 		Application ID:
@@ -46,7 +50,7 @@
 				Course
 			</label>
 
-			<select id="courseId" name="courseId" required>
+			<select th:if="${!fromCalendar}" id="courseId" name="courseId" required>
 
 				<option value="">
 					Select a course
@@ -62,8 +66,56 @@
 				</option>
 
 			</select>
+			<!-- FROM TRAINING CALENDAR -->
+		<div th:if="${fromCalendar}">
 
-		<div id="courseDetails" class="course-details" style="display: none;">
+			<input type="text" th:value="${courseForm.course.code + ' - ' + courseForm.course.title}" readonly>
+
+			<input type="hidden" name="courseId" th:value="${courseForm.course.id}">
+			<input type="hidden" name="fromCalendar" value="true">
+
+			<div class="course-details">
+
+				<h3>Course Details</h3>
+
+				<div class="details-grid">
+
+					<p>
+						<strong>Category</strong><br>
+						<span th:text="${courseForm.course.category.name}">
+							Category
+						</span>
+					</p>
+
+					<p>
+						<strong>Training Provider</strong><br>
+						<span th:text="${courseForm.course.provider.name}">
+							Provider
+						</span>
+					</p>
+
+					<p>
+						<strong>Duration</strong><br>
+						<span th:text="${courseForm.course.durationDays}">
+							Duration
+						</span>
+						day(s)
+					</p>
+
+					<p>
+						<strong>Fee</strong><br>
+						$<span th:text="${courseForm.course.fee}">
+							Fee
+						</span>
+					</p>
+
+				</div>
+
+			</div>
+
+		</div>
+		<!-- NORMAL NEW APPLICATION -->
+		<div th:if="${!fromCalendar}" id="courseDetails" class="course-details" style="display: none;">
 
 			<h3>Course Details</h3>
 
@@ -97,7 +149,7 @@
 		<!-- Select the first date of the course. -->
 		<p>
 			<label for="startDate">Start date</label>
-			<input type="date" id="startDate" th:field="*{startDate}" required>
+			<input type="date" id="startDate" th:field="*{startDate}" th:readonly="${fromCalendar}" required>
 		</p>
 
 		<p>
@@ -140,10 +192,14 @@
 		// Ask the backend to calculate the end date using the selected course duration, weekends and public holidays.
 		async function calculateEndDate() {
 
+			// Calendar application already has its dates.
+			if (!courseSelect) {
+				return;
+			}
+
 			const courseId = courseSelect.value;
 			const selectedStartDate = startDate.value;
 
-			// We need both values before an end date can be calculated.
 			if (!courseId || !selectedStartDate) {
 				endDate.value = "";
 				return;
@@ -204,25 +260,28 @@
 			courseDetails.style.display = "block";
 		}
 
-		// Recalculate the end date when the employee selects a start date.
-		startDate.addEventListener("change", function () {
-			calculateEndDate();
-		});
+		if (courseSelect) {
 
-		courseSelect.addEventListener("change", function () {
+			// Recalculate the end date when the employee selects a start date.
+			startDate.addEventListener("change", function () {
+				calculateEndDate();
+			});
 
-			displayCourseDetails();
+			courseSelect.addEventListener("change", function () {
 
-			if (!courseSelect.value) {
-				endDate.value = "";
-				return;
+				displayCourseDetails();
+
+				if (!courseSelect.value) {
+					endDate.value = "";
+					return;
+				}
+
+				calculateEndDate();
+			});
+
+			if (courseSelect.value) {
+				displayCourseDetails();
 			}
-
-			calculateEndDate();
-		});
-
-		if (courseSelect.value) {
-			displayCourseDetails();
 		}
 	</script>
 </body>

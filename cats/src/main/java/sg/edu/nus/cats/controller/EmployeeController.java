@@ -40,7 +40,8 @@ public class EmployeeController {
 	
 	public String showEmployeeForm(HttpSession session, Model model) {
 		
-		// reads the acount ID stored during login, if the session has no userId -> sends the broswer to /login
+		// reads the account ID stored during login, if the session has no userId ->
+		// sends the browser to /login
 		Long userId = (Long) session.getAttribute("userId");
 		
 		if (userId == null) {
@@ -79,7 +80,7 @@ public class EmployeeController {
 		return "employee-form";
 	}
 	
-	// recieve the login account ID submitted by the employee profile form
+	// receive the login account ID submitted by the employee profile form
 	@PostMapping("/admin/employees")
 	
 	public String saveEmployee(
@@ -87,6 +88,7 @@ public class EmployeeController {
 			@RequestParam String password,
 			@RequestParam Role role,
 			@RequestParam String name,
+			@RequestParam String email,
 			@RequestParam(required = false) String designation,
 			@RequestParam(required = false) String department,
 			@RequestParam StaffCategory staffCategory,
@@ -124,6 +126,7 @@ public class EmployeeController {
 					password,
 					role,
 					name,
+					email,
 					designation,
 					department,
 					staffCategory,
@@ -210,6 +213,7 @@ public class EmployeeController {
 	public String updateEmployee(
 			@PathVariable Long id,
 			@RequestParam String name,
+			@RequestParam String email,
 			@RequestParam Role role,
 			@RequestParam(required = false) String designation,
 			@RequestParam(required = false) String department,
@@ -239,6 +243,7 @@ public class EmployeeController {
 			employeeService.updateEmployee(
 					id,
 					name,
+					email,
 					role,
 					designation,
 					department,

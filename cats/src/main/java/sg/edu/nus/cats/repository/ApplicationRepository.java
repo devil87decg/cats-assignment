@@ -57,5 +57,5 @@ public interface ApplicationRepository extends JpaRepository<CourseApplication, 
 			ApplicationStatus status, LocalDate monthEnd, LocalDate monthStart);
 
 	boolean existsByEmployeeIdAndCourseIdAndStartDateAndEndDate(Long employeeId, Long courseId, LocalDate startDate,
-			LocalDate endDate);
+			LocalDate endDate);	
 }

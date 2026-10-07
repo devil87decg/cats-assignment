@@ -24,13 +24,9 @@
 	<nav>
 		<a href="/applications">My application(s)</a>
 		<a href="/applications/new">New application</a>
-
-		<a th:if="${isManager == true}" th:href="@{/manager/applications}">Review applications
-		</a>
-
-		<a th:if="${isManager == true}" th:href="@{/manager/subordinates}">Subordinate course history
-		</a>
-		
+		<a th:if="${isManager == true}" th:href="@{/manager/applications}">Review applications</a>
+		<a th:if="${isManager == true}" th:href="@{/manager/subordinates}">Subordinate course history</a>
+		<a th:if="${isManager == true}" th:href="@{/reports}"> Reports </a>
 		<a th:href="@{/account/password}">Change password</a>
 
 		<form th:action="@{/logout}" method="post"

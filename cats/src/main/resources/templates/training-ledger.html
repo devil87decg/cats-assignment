@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet"
+	      th:href="@{/css/cats.css}">
+
+	<title>Training Ledger | CATS</title>
+</head>
+
+<body>
+
+	<nav>
+		<a href="/">Home</a>
+		<a href="/applications">My Applications</a>
+
+		<form th:action="@{/logout}"
+		      method="post"
+		      style="display: inline;">
+
+			<button type="submit"
+			        class="logout-link">
+				Logout
+			</button>
+
+		</form>
+	</nav>
+
+	<h1>Training Ledger</h1>
+
+	<p>
+		Training budget and reimbursement activity for
+		<span th:text="${currentYear}"></span>.
+	</p>
+
+	<div th:if="${success}"
+	     class="message message-success"
+	     th:text="${success}">
+	</div>
+
+	<div th:if="${error}"
+	     class="message message-error"
+	     th:text="${error}">
+	</div>
+
+
+	<h2>Financial Summary</h2>
+
+	<div class="details-grid">
+
+		<p>
+			<strong>Annual Training Budget</strong><br>
+			S$<span th:text="${annualBudget}"></span>
+		</p>
+
+		<p>
+			<strong>Committed Course Fees</strong><br>
+			S$<span th:text="${committedFees}"></span>
+		</p>
+
+		<p>
+			<strong>Completed Course Fees</strong><br>
+			S$<span th:text="${completedFees}"></span>
+		</p>
+
+		<p>
+			<strong>Pending Claims</strong><br>
+			S$<span th:text="${pendingClaims}"></span>
+		</p>
+
+		<p>
+			<strong>Reimbursed Claims</strong><br>
+			S$<span th:text="${reimbursedClaims}"></span>
+		</p>
+
+		<p>
+			<strong>Remaining Budget</strong><br>
+			S$<span th:text="${remainingBudget}"></span>
+		</p>
+
+	</div>
+
+
+	<h2>Budget &amp; Reimbursement Overview</h2>
+
+	<div class="chart-container">
+		<canvas id="trainingLedgerChart"></canvas>
+	</div>
+
+
+	<h2>Claim History</h2>
+
+	<p th:if="${#lists.isEmpty(claims)}">
+		You have no reimbursement claims for this year.
+	</p>
+
+	<table th:unless="${#lists.isEmpty(claims)}">
+
+		<thead>
+
+			<tr>
+				<th>Claim ID</th>
+				<th>Course</th>
+				<th>Claim Amount (S$)</th>
+				<th>Claim Date</th>
+				<th>Status</th>
+				<th>Decision Date</th>
+				<th>Details</th>
+			</tr>
+
+		</thead>
+
+		<tbody>
+
+			<tr th:each="claim : ${claims}">
+
+				<td th:text="${claim.id}"></td>
+
+				<td th:text="${claim.application.courseTitle}"></td>
+
+				<td th:text="${claim.amount}"></td>
+
+				<td th:text="${#temporals.format(
+						claim.claimDate,
+						'dd MMM yyyy, HH:mm')}">
+				</td>
+
+				<td th:text="${claim.status}"></td>
+
+				<td th:text="${claim.decisionDate != null
+						? #temporals.format(
+							claim.decisionDate,
+							'dd MMM yyyy, HH:mm')
+						: '-'}">
+				</td>
+
+				<td>
+					<a th:href="@{/claims/{claimId}
+							(claimId=${claim.id})}">
+						View details
+					</a>
+				</td>
+
+			</tr>
+
+		</tbody>
+
+	</table>
+
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script th:inline="javascript">
+
+		const annualBudget =
+			/*[[${annualBudget}]]*/ 0;
+
+		const committedFees =
+			/*[[${committedFees}]]*/ 0;
+
+		const completedFees =
+			/*[[${completedFees}]]*/ 0;
+
+		const reimbursedClaims =
+			/*[[${reimbursedClaims}]]*/ 0;
+
+		const pendingClaims =
+			/*[[${pendingClaims}]]*/ 0;
+
+		const remainingBudget =
+			/*[[${remainingBudget}]]*/ 0;
+
+
+		const chartCanvas =
+			document.getElementById("trainingLedgerChart");
+
+
+		new Chart(chartCanvas, {
+
+			type: "bar",
+
+			data: {
+
+				labels: [
+					"Annual Training Budget",
+					"Committed Course Fees",
+					"Completed Course Fees",
+					"Reimbursed Claims",
+					"Pending Claims",
+					"Remaining Budget"
+				],
+
+				datasets: [{
+					label: "Amount (S$)",
+
+					data: [
+						annualBudget,
+						committedFees,
+						completedFees,
+						reimbursedClaims,
+						pendingClaims,
+						remainingBudget
+					]
+				}]
+			},
+
+			options: {
+
+				indexAxis: "y",
+
+				responsive: true,
+
+				plugins: {
+
+					legend: {
+						display: false
+					}
+				},
+
+				scales: {
+
+					x: {
+
+						beginAtZero: true,
+
+						title: {
+							display: true,
+							text: "Amount (S$)"
+						}
+					}
+				}
+			}
+		});
+
+	</script>
+
+</body>
+
+</html>

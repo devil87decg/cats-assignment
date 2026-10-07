@@ -24,6 +24,7 @@ import sg.edu.nus.cats.model.Course;
 import sg.edu.nus.cats.model.CourseApplication;
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.service.ApplicationService;
+import sg.edu.nus.cats.service.ClaimService;
 import sg.edu.nus.cats.service.CourseService;
 import sg.edu.nus.cats.service.TrainingDayService;
 import sg.edu.nus.cats.utils.EmployeeAuthHelper;
@@ -35,6 +36,8 @@ public class ApplicationController {
 
 	// Keep a reference to the service that validates and manages course applications.
 	private final ApplicationService applicationService;
+	
+	private final ClaimService claimService;
 
 	private final CourseService courseService;
 
@@ -133,39 +136,6 @@ public class ApplicationController {
 
 		return "redirect:/applications";
 	}
-	
-	/*@GetMapping
-	public String showMyApplications(
-			HttpSession session, 
-			Model model) {
-
-		// check if employee have login
-		Employee applicant = employeeAuthentication.getEmployee(session);
-
-		if (applicant == null) {
-			return "redirect:/login";
-		}
-
-		// get the current calendar year
-		int currentYear = LocalDate.now().getYear();
-
-		// set the first and last dates of that year
-		LocalDate firstDay = LocalDate.of(currentYear, 1, 1);
-		LocalDate lastDay = LocalDate.of(currentYear, 12, 31);
-
-		// Retrieve this employee's applications for the current year
-		List<CourseApplication> myApplications = applicationService.findMyApplications(applicant.getId(), firstDay,
-				lastDay);
-
-		// Make the application list available to the HTML page
-		model.addAttribute("applications", myApplications);
-
-		// Make the current year available for the page heading
-		model.addAttribute("currentYear", currentYear);
-
-		return "application-list";
-
-	}*/
 
 	@GetMapping
 	public String showMyApplications(
@@ -200,8 +170,20 @@ public class ApplicationController {
         // Actual applications for the current page
         List<CourseApplication> myApplications = page.getContent();
 
+        // Find which applications are currently eligible for reimbursement.
+        List<Long> claimableApplicationIds =
+        		myApplications.stream()
+        				.filter(claimService::canClaim)
+        				.map(CourseApplication::getId)
+        				.toList();
+
         // Make the application list available to the HTML page
         model.addAttribute("applications", myApplications);
+
+        // Make the claimable application IDs available to the HTML page
+        model.addAttribute(
+        		"claimableApplicationIds",
+        		claimableApplicationIds);
 
         // Make the current year available for the page heading
         model.addAttribute("currentYear", currentYear);

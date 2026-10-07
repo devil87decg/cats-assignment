@@ -25,152 +25,336 @@
 		 class="message message-error"
 		 th:text="${error}">
 	</div>
+	
+	<div class="panel">
 
-
-	<main>
-
-		<h2>Course Attendance Report</h2>
+		<h2>Select Report</h2>
 
 		<form method="get"
-			  th:action="@{/reports}">
+			  th:action="@{/reports}">			  
 
-			<div class="form-grid">
+			<p>
+				<label for="reportType">
+					Report Type
+				</label>
 
-				<p>
-					<label for="startDate">
-						Start Date
-					</label>
+				<select id="reportType"
+						name="reportType"
+						required>
 
-					<input type="date"
-						   id="startDate"
-						   name="startDate"
-						   th:value="${startDate}"
-						   required>
-				</p>
+					<option value="">
+						Select a report
+					</option>
 
+					<option value="attendance"
+							th:selected="${reportType == 'attendance'}">
+						Course Attendance Report
+					</option>
 
-				<p>
-					<label for="endDate">
-						End Date
-					</label>
+					<option value="budget"
+							th:selected="${reportType == 'budget'}">
+						Training Budget Utilisation Report
+					</option>
 
-					<input type="date"
-						   id="endDate"
-						   name="endDate"
-						   th:value="${endDate}"
-						   required>
-				</p>
-				
-				<p>
-				    <label for="categoryId">
-				        Course Category
-				    </label>
-
-				    <select id="categoryId"
-				            name="categoryId">
-
-				        <option value="">
-				            All Categories
-				        </option>
-
-				        <option th:each="category : ${categories}"
-				                th:value="${category.id}"
-				                th:text="${category.name}"
-				                th:selected="${categoryId != null
-				                        and category.id.equals(categoryId)}">
-				        </option>
-
-				    </select>
-				</p>
-
-			</div>
+				</select>
+			</p>
 
 			<button type="submit">
-				Generate Report
+				Select Report
 			</button>
 
 		</form>
-		
-		<div th:if="${results != null}"
-			 class="actions">
 
-			<a class="button"
-			   th:href="@{/reports/export(
-			   		startDate=${startDate},
-			   		endDate=${endDate},
-			   		categoryId=${categoryId}
-			   )}">
-				Export CSV
-			</a>
+	</div>
 
-		</div>
+	<main>
 
-		<div th:if="${results != null}">
+		<div th:if="${reportType == 'attendance'}">
 
-			<h2>Results</h2>
-
-			<p th:if="${#lists.isEmpty(results)}">
-				No approved course applications found
-				for the selected period.
-			</p>
-
-
-			<div class="table-scroll"
-				 th:unless="${#lists.isEmpty(results)}">
-
-				<table>
-
-					<thead>
-						<tr>
-							<th>Employee</th>
-							<th>Course</th>
-							<th>Category</th>
-							<th>Provider</th>
-							<th>Start Date</th>
-							<th>End Date</th>
-							<th>Training Days</th>
-							<th>Fee (S$)</th>
-						</tr>
-					</thead>
-
-					<tbody>
-
-						<tr th:each="courseRequest  : ${results}">
-
-							<td th:text="${courseRequest .employee.name}">
-							</td>
-
-							<td th:text="${courseRequest .courseTitle}">
-							</td>
-
-							<td th:text="${courseRequest .course.category.name}">
-							</td>
-
-							<td th:text="${courseRequest .trainingProvider}">
-							</td>
-
-							<td th:text="${courseRequest .startDate}">
-							</td>
-
-							<td th:text="${courseRequest .endDate}">
-							</td>
-
-							<td th:text="${courseRequest .durationDays}">
-							</td>
-
-							<td th:text="${courseRequest .fee}">
-							</td>
-
-						</tr>
-
-					</tbody>
-
-				</table>
-
+			<h2>Course Attendance Report</h2>
+	
+			<form method="get"
+				  th:action="@{/reports}">
+				  
+				  <input type="hidden"
+				  name="reportType"
+				  value="attendance">
+	
+				<div class="form-grid">
+	
+					<p>
+						<label for="startDate">
+							Start Date
+						</label>
+	
+						<input type="date"
+							   id="startDate"
+							   name="startDate"
+							   th:value="${startDate}"
+							   required>
+					</p>
+	
+	
+					<p>
+						<label for="endDate">
+							End Date
+						</label>
+	
+						<input type="date"
+							   id="endDate"
+							   name="endDate"
+							   th:value="${endDate}"
+							   required>
+					</p>
+					
+					<p>
+					    <label for="categoryId">
+					        Course Category
+					    </label>
+	
+					    <select id="categoryId"
+					            name="categoryId">
+	
+					        <option value="">
+					            All Categories
+					        </option>
+	
+					        <option th:each="category : ${categories}"
+					                th:value="${category.id}"
+					                th:text="${category.name}"
+					                th:selected="${categoryId != null
+					                        and category.id.equals(categoryId)}">
+					        </option>
+	
+					    </select>
+					</p>
+	
+				</div>
+	
+				<button type="submit">
+					Generate Report
+				</button>
+	
+			</form>
+			
+			<div th:if="${results != null}"
+				 class="actions">
+	
+				<a class="button"
+				   th:href="@{/reports/export(
+				   		startDate=${startDate},
+				   		endDate=${endDate},
+				   		categoryId=${categoryId}
+				   )}">
+					Export CSV
+				</a>
+	
 			</div>
+	
+			<div th:if="${results != null}">
+	
+				<h2>Results</h2>
+	
+				<p th:if="${#lists.isEmpty(results)}">
+					No approved course applications found
+					for the selected period.
+				</p>
+	
+	
+				<div class="table-scroll"
+					 th:unless="${#lists.isEmpty(results)}">
+	
+					<table>
+	
+						<thead>
+							<tr>
+								<th>Employee</th>
+								<th>Course</th>
+								<th>Category</th>
+								<th>Provider</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+								<th>Training Days</th>
+								<th>Fee (S$)</th>
+							</tr>
+						</thead>
+	
+						<tbody>
+	
+							<tr th:each="courseRequest  : ${results}">
+	
+								<td th:text="${courseRequest .employee.name}">
+								</td>
+	
+								<td th:text="${courseRequest .courseTitle}">
+								</td>
+	
+								<td th:text="${courseRequest .course.category.name}">
+								</td>
+	
+								<td th:text="${courseRequest .trainingProvider}">
+								</td>
+	
+								<td th:text="${courseRequest .startDate}">
+								</td>
+	
+								<td th:text="${courseRequest .endDate}">
+								</td>
+	
+								<td th:text="${courseRequest .durationDays}">
+								</td>
+	
+								<td th:text="${courseRequest .fee}">
+								</td>
+	
+							</tr>
+	
+						</tbody>
+	
+					</table>
+	
+				</div>
+	
+			</div>
+		
+		</div> <!--Report type-->
+		
+		<div th:if="${reportType == 'budget'}">
+		
+			<h2>Training Budget Utilisation Report</h2>
+	
+			<p>
+				View annual training-day and training-budget utilisation
+				for all employees or a selected employee.
+			</p>
+	
+	
+			<form method="get"
+				  th:action="@{/reports}">
+				  
+				  <input type="hidden"
+				  name="reportType"
+				  value="budget">
+	
+				<div class="form-grid">
+	
+					<p>
+						<label for="budgetYear">
+							Year
+						</label>
+	
+						<input type="number"
+							   id="budgetYear"
+							   name="budgetYear"
+							   min="2000"
+							   max="2100"
+							   th:value="${budgetYear}"
+							   required>
+					</p>
+	
+	
+					<p>
+						<label for="employeeId">
+							Employee
+						</label>
+	
+						<select id="employeeId"
+								name="employeeId">
+	
+							<option value="">
+								All Employees
+							</option>
+	
+							<option th:each="employee : ${employees}"
+									th:value="${employee.id}"
+									th:text="${employee.name}"
+									th:selected="${employeeId != null
+											and employee.id.equals(employeeId)}">
+							</option>
+	
+						</select>
+					</p>
+	
+				</div>
+	
+	
+				<button type="submit">
+					Generate Budget Report
+				</button>
+	
+			</form>
+			
+			<div th:if="${budgetResults != null}">
+	
+				<h2>Budget Utilisation Results</h2>
+				
+				<div class="actions">
 
+					<a class="button"
+					   th:href="@{/reports/budget/export(
+					   		budgetYear=${budgetYear},
+					   		employeeId=${employeeId}
+					   )}">
+						Export CSV
+					</a>
+
+				</div>
+	
+				<p th:if="${#lists.isEmpty(budgetResults)}">
+					No training allowance records found
+					for the selected criteria.
+				</p>
+	
+	
+				<div class="table-scroll"
+					 th:unless="${#lists.isEmpty(budgetResults)}">
+	
+					<table>
+	
+						<thead>
+							<tr>
+								<th>Employee</th>
+								<th>Year</th>
+								<th>Day Allowance</th>
+								<th>Days Used</th>
+								<th>Days Remaining</th>
+								<th>Fee Budget (S$)</th>
+								<th>Budget Used (S$)</th>
+								<th>Budget Remaining (S$)</th>
+							</tr>
+						</thead>
+	
+	
+						<tbody>
+	
+							<tr th:each="row : ${budgetResults}">
+	
+								<td th:text="${row.employeeName}"></td>
+	
+								<td th:text="${row.year}"></td>
+	
+								<td th:text="${row.dayAllowance}"></td>
+	
+								<td th:text="${row.daysUsed}"></td>
+	
+								<td th:text="${row.daysRemaining}"></td>
+	
+								<td th:text="${row.feeBudget}"></td>
+	
+								<td th:text="${row.budgetUsed}"></td>
+	
+								<td th:text="${row.budgetRemaining}"></td>
+	
+							</tr>
+	
+						</tbody>
+	
+					</table>
+	
+				</div>
+	
+			</div>
 		</div>
-
 	</main>
 
 </body>

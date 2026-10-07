@@ -49,7 +49,6 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Email</th>
                     <th>Department</th>
                     <th>Designation</th>
                     <th>Staff Category</th>
@@ -62,8 +61,6 @@
             <tbody>
                 <tr th:each="employee : ${employees}">
                     <td th:text="${employee.name}"></td>
-                  
-                    <td th:text="${employee.email}"></td>
 
                     <td th:text="${employee.department}"></td>
 

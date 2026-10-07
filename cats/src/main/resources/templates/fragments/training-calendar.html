@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<section th:fragment="trainingCalendar">
+
+		<h2>Training Calendar</h2>
+
+		<p>
+			View employees attending approved courses for the selected month.
+		</p>
+		<div class="calendar-navigation">
+
+		    <a class="button"
+		       th:href="@{/(year=${previousMonth.year},
+		                    month=${previousMonth.monthValue})}">
+		        Previous
+		    </a>
+
+		    <strong th:text="${selectedMonth.month + ' ' + selectedMonth.year}">
+		        October 2026
+		    </strong>
+
+		    <a class="button"
+		       th:href="@{/(year=${nextMonth.year},
+		                    month=${nextMonth.monthValue})}">
+		        Next
+		    </a>
+
+		</div>
+
+		<div class="table-wrap">
+			<table>
+				<thead>
+					<tr>
+						<th>Course</th>
+						<th>Start date</th>
+						<th>End date</th>
+						<th>Category</th>
+						<th>Fee</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr th:if="${#lists.isEmpty(calendarEntries)}">
+						<td colspan="6">
+							No approved courses scheduled for this month.
+						</td>
+					</tr>
+					<tr th:each="entry : ${calendarEntries}">
+						<td th:text="${entry.course.title}">
+							Course
+						</td>
+
+						<td th:text="${entry.startDate}">
+							Start date
+						</td>
+
+						<td th:text="${entry.endDate}">
+							End date
+						</td>
+
+						<td th:text="${entry.course.category.name}">
+							Category
+						</td>
+
+						<td th:text="${entry.course.fee}">
+							Fee
+						</td>
+
+						<td>
+							<a th:href="@{/training-calendar/details(
+							courseId=${entry.course.id},
+							startDate=${entry.startDate},
+							endDate=${entry.endDate})}">View</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</section>
+
+</body>
+
+</html>

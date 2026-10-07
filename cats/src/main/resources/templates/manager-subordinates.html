@@ -19,7 +19,10 @@
 	<nav>
 		<a href="/">Home</a>
 		<a href="/manager/applications">Review applications</a>
-		<a href="/logout">Logout</a>
+		<form th:action="@{/logout}" method="post"
+		      class="logout-form">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
 	</nav>
 	
 	<h1>Subordinate Course History</h1>

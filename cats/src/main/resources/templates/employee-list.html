@@ -2,131 +2,118 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Manage Employees</title>
+    <meta charset="UTF-8">
+    <title>Manage Employees</title>
 
-	<link rel="stylesheet" th:href="@{/css/cats.css}">
+    <link rel="stylesheet" th:href="@{/css/cats.css}">
 </head>
 
 <body>
-		<h1>Employee Management</h1>
+    <h1>Employee Management</h1>
 
-		<p class="page-description">
-			Manage employee profiles and reporting relationships.
-		</p>
+    <p class="page-description">
+        Manage employee profiles and reporting relationships.
+    </p>
 
-		<nav>
-			<a th:href="@{/admin}">Administration</a>
-			<a th:href="@{/admin/employees}">Employees</a>
-			<a th:href="@{/logout}">Logout</a>
-		</nav>
-	
+	<nav>
+	    <a th:href="@{/admin}">Administration</a>
+	    <a th:href="@{/admin/employees}">Employees</a>
 
-		<div th:if="${success}"
-			 class="alert alert-success"
-			 th:text="${success}">
-		</div>
+	    <form th:action="@{/logout}" method="post"
+	          class="logout-form">
+	        <button type="submit" class="logout-link">Logout</button>
+	    </form>
+	</nav>
 
-		<div th:if="${error}"
-			 class="alert alert-error"
-			 th:text="${error}">
-		</div>
-
-
-		<div class="card">
-
-			<div class="page-actions">
-
-				<h2>Employees</h2>
-
-				<a th:href="@{/admin/employees/new}"
-				   class="btn btn-primary">
-					Create Employee
-				</a>
-
-			</div>
-
-
-			<table class="table">
-
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Email</th>
-						<th>Department</th>
-						<th>Designation</th>
-						<th>Staff Category</th>
-						<th>Supervisor</th>
-						<th>Status</th>
-						<th class="action-column">Action</th>
-					</tr>
-				</thead>
-
-				<tbody>
-
-					<tr th:each="employee : ${employees}">
-
-						<td th:text="${employee.name}"></td>
-						
-						<td th:text="${employee.email}"></td>
-
-						<td th:text="${employee.department}"></td>
-
-						<td th:text="${employee.designation}"></td>
-
-						<td th:text="${employee.staffCategory}"></td>
-
-						<td th:text="${employee.supervisor != null
-								? employee.supervisor.name
-								: '-'}">
-						</td>
-						
-						<td>
-							<span th:if="${employee.user.active}"
-								  class="status status-approved">
-								Active
-							</span>
-
-							<span th:unless="${employee.user.active}"
-								  class="status status-deleted">
-								Inactive
-							</span>
-						</td>
-
-						<td class="action-column">
-							<div class="employee-actions">
-
-								<a th:href="@{/admin/employees/{id}/edit(id=${employee.id})}"
-								   class="employee-action-btn employee-edit-btn">
-									Edit
-								</a>
-
-								<form th:if="${employee.user.active}"
-									  th:action="@{/admin/employees/{id}/delete(id=${employee.id})}"
-									  method="post"
-									  class="employee-delete-form"
-									  onsubmit="return confirm('Are you sure you want to delete this employee?');">
-
-									<button type="submit"
-											class="employee-action-btn employee-delete-btn">
-										Delete
-									</button>
-
-								</form>
-
-							</div>
-						</td>
-
-					</tr>
-
-				</tbody>
-
-			</table>
-
-		</div>
-
+	<div th:if="${success}"
+	     class="message message-success"
+	     th:text="${success}">
 	</div>
-	<div th:replace="~{fragments/footer :: footer}"></div>
+
+	<div th:if="${error}"
+	     class="message message-error"
+	     th:text="${error}">
+	</div>
+
+    <div class="card">
+        <div class="page-actions">
+            <h2>Employees</h2>
+
+            <a th:href="@{/admin/employees/new}"
+               class="btn btn-primary">
+                Create Employee
+            </a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Staff Category</th>
+                    <th>Supervisor</th>
+                    <th>Status</th>
+                    <th class="action-column">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="employee : ${employees}">
+                    <td th:text="${employee.name}"></td>
+                  
+                    <td th:text="${employee.email}"></td>
+
+                    <td th:text="${employee.department}"></td>
+
+                    <td th:text="${employee.designation}"></td>
+
+                    <td th:text="${employee.staffCategory}"></td>
+
+                    <td th:text="${employee.supervisor != null
+                            ? employee.supervisor.name
+                            : '-'}">
+                    </td>
+
+                    <td>
+                        <span th:if="${employee.user.active}"
+                              class="status status-approved">
+                            Active
+                        </span>
+
+                        <span th:unless="${employee.user.active}"
+                              class="status status-deleted">
+                            Inactive
+                        </span>
+                    </td>
+
+                    <td class="action-column">
+                        <div class="employee-actions">
+                            <a th:href="@{/admin/employees/{id}/edit(id=${employee.id})}"
+                               class="employee-action-btn employee-edit-btn">
+                                Edit
+                            </a>
+
+                            <form th:if="${employee.user.active}"
+                                  th:action="@{/admin/employees/{id}/delete(id=${employee.id})}"
+                                  method="post"
+                                  class="employee-delete-form"
+                                  onsubmit="return confirm('Are you sure you want to delete this employee?');">
+
+                                <button type="submit"
+                                        class="employee-action-btn employee-delete-btn">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

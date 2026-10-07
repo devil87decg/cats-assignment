@@ -22,16 +22,19 @@
 		<div class="navbar">
 			<a th:href="@{/admin}">Administration</a>
 			<a th:href="@{/admin/employees}">Employees</a>
-			<a th:href="@{/logout}">Logout</a>
+			<form th:action="@{/logout}" method="post"
+			      class="logout-form">
+			    <button type="submit" class="logout-link">Logout</button>
+			</form>
 		</div>
 		
 		<div th:if="${success}"
-			 class="alert alert-success"
+			 class="message message-success"
 			 th:text="${success}">
 		</div>
 
 		<div th:if="${error}"
-			 class="alert alert-error"
+			 class="message message-error"
 			 th:text="${error}">
 		</div>
 

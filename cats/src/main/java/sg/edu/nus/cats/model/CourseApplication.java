@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -58,8 +59,12 @@ public class CourseApplication {
 	private Employee decidedBy;
 	
 	@ManyToOne
-	@JoinColumn(name = "course_id")
+	@JoinColumn(name="course_id", nullable=false)
 	private Course course;
-		
+	
+	// connects the field to the existing database column
+	@Column
+	(name = "category", insertable = false, updatable = false)
+	private String legacyCategory;
 	
 }

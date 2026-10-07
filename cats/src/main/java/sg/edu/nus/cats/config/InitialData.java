@@ -1,11 +1,8 @@
 package sg.edu.nus.cats.config;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import sg.edu.nus.cats.model.Role;
-import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.AccountService;
 
@@ -36,31 +33,6 @@ public class InitialData implements CommandLineRunner {
 			accounts.createAccount("admin", "CatsDemo123!", Role.ADMIN);
 			
 			}
-		
-		// Temporarily reset the manager account's password for testing.
-		User managerAccount = users.findByUsername("manager1").orElse(null);
-
-		if (managerAccount != null) {
-		    managerAccount.setPasswordHash(
-		            new BCryptPasswordEncoder().encode("ManagerTest123!"));
-
-		    users.save(managerAccount);
-		
-		}
-		
-		// Find the test account whose password we want to reset.
-		User testAccount = users.findByUsername("employee2").orElse(null);
-
-		// Reset the password only if this account exists.
-		if (testAccount != null) {
-
-		    // Convert the new password into a BCrypt hash.
-		    testAccount.setPasswordHash(
-		            new BCryptPasswordEncoder().encode("EmployeeTest123!"));
-
-		    // Save the new password hash to MySQL.
-		    users.save(testAccount);
-		}
 		
 	}
 	

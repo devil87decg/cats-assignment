@@ -20,7 +20,12 @@
 		<a th:href="@{/admin/course-categories}">
 			Course Categories
 		</a>
-		<a th:href="@{/logout}">Logout</a>
+		
+		<form th:action="@{/logout}" method="post"
+		      class="logout-form">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
+		
 	</nav>
 
 

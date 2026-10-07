@@ -23,9 +23,9 @@
 
 	<p>Maintain each employee's training-day entitlement and training budget for the current year.</p>
 
-	<p th:if="${success}" th:text="${success}"></p>
+	<div th:if="${success}" class="message message-success" th:text="${success}"></div>
 
-	<p th:if="${error}" th:text="${error}"></p>
+	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
 	<!-- STEP 1: Choose employee -->
 	<form th:action="@{/admin/allowances/new}" method="get">

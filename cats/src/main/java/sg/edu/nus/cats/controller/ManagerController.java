@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -283,8 +284,10 @@ public class ManagerController {
 	// Open the course history page for the selected subordinate
 	@GetMapping("/manager/subordinates/{id}/history")
 	
-	public String showSubordinateHistory(@PathVariable("id") Long employeeId,
-			
+	public String showSubordinateHistory(
+			@PathVariable("id") Long employeeId,
+			@RequestParam(name = "page", defaultValue = "1") int pageNo,
+			@RequestParam(name = "size", defaultValue = "5") int pageSize,
 			// defaultValue = "false" -> manager has not requested all years, 
 			// so default show all employee's application for current year
 			@RequestParam(name = "allYears", defaultValue = "false") boolean allYears,
@@ -335,17 +338,27 @@ public class ManagerController {
 				LocalDate lastDay = LocalDate.of(currentYear, 12, 31);
 				
 				// Declare the list that will hold the selected course history
-				List<CourseApplication> courseHistory;
+				Page<CourseApplication> page;
 				
 				// if allYears is true -> retrieve all saved history
 				if (allYears) {
-					courseHistory = applicationService.findEmployeeHistory(subordinate);
-					
-				// else -> retrieve applications whose start dates fall within the current year	
-				} else {
-					
-					courseHistory =applicationService.findMyApplications(subordinate.getId(), firstDay, lastDay);
+				    page = applicationService.findEmployeeHistoryPaginated(
+				            subordinate,
+				            pageNo,
+				            pageSize);
 				}
+				
+				// else -> retrieve applications whose start dates fall within the current year	
+				else {
+				    page = applicationService.findMyApplicationsPaginated(
+				            subordinate.getId(),
+				            firstDay,
+				            lastDay,
+				            pageNo,
+				            pageSize);
+				}
+				
+				List<CourseApplication> courseHistory = page.getContent();
 				
 				// supply the employee profile and course history to HTML
 				model.addAttribute("subordinate", subordinate);
@@ -356,6 +369,12 @@ public class ManagerController {
 				
 				// tell the page whether it is displaying history from all years
 				model.addAttribute("allYears", allYears);
+				
+				// Pagination
+				model.addAttribute("currentPage", pageNo);
+				model.addAttribute("totalPages", page.getTotalPages());
+				model.addAttribute("totalItems", page.getTotalElements());
+				model.addAttribute("pageSize", pageSize);
 				
 			} catch (IllegalArgumentException validationError) {
 				

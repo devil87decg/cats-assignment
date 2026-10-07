@@ -3,15 +3,15 @@ package sg.edu.nus.cats.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.StaffCategory;
 import sg.edu.nus.cats.model.User;
-import sg.edu.nus.cats.repository.ApplicationRepository;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.UserRepository;
+import sg.edu.nus.cats.repository.ApplicationRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
@@ -39,7 +39,7 @@ public class EmployeeService {
 	}
 	
 	// paramters supply the profile details required 
-	public Employee createProfile(Long userId, String name, String email, String designation, String department,
+	public Employee createProfile(Long userId, String name, String designation, String department,
 			StaffCategory staffCategory, Long supervisorId) {
 		
 		// check that a login account ID was supplied
@@ -54,10 +54,6 @@ public class EmployeeService {
 			
 		}
 		
-		if (email == null || email.isBlank()) {
-			throw new IllegalArgumentException("Employee name is required");
-		}
-
 		if (staffCategory == null) {
 			
 			throw new IllegalArgumentException("Staff category is required");
@@ -80,7 +76,6 @@ public class EmployeeService {
 		employee.setUser(user);
 		// if supplied name to createProfile(..) is "Alice Tan", the profile now holds that name
 		employee.setName(name);
-		employee.setEmail(email);
 		employee.setDesignation(designation);
 		employee.setDepartment(department);
 		employee.setStaffCategory(staffCategory);
@@ -146,7 +141,6 @@ public class EmployeeService {
 	public Employee updateEmployee(
 			Long employeeId,
 			String name,
-			String email,
 			Role role,
 			String designation,
 			String department,
@@ -163,9 +157,6 @@ public class EmployeeService {
 			throw new IllegalArgumentException("Employee name is required");
 		}
 		
-		if (email == null || email.isBlank()) {
-			throw new IllegalArgumentException("Employee email is required");
-		}
 		if (role == null) {
 			throw new IllegalArgumentException("Role is required");
 		}
@@ -193,7 +184,6 @@ public class EmployeeService {
 		
 		// Update the existing employee object
 		employee.setName(name);
-		employee.setEmail(email);
 		employee.setDesignation(designation);
 		employee.setDepartment(department);
 		employee.setStaffCategory(staffCategory);
@@ -283,7 +273,6 @@ public class EmployeeService {
 			String password,
 			Role role,
 			String name,
-			String email,
 			String designation,
 			String department,
 			StaffCategory staffCategory,
@@ -296,8 +285,7 @@ public class EmployeeService {
 				role);
 
 		// Create the employee profile linked to that account.
-		Employee employee = createProfile(user.getId(), name, email, designation, department, staffCategory,
-				supervisorId);
+		Employee employee = createProfile(user.getId(), name, designation, department, staffCategory, supervisorId);
 		
 		// Set the default allowance for the new employee
 		allowanceService.createDefaultAllowance(employee);

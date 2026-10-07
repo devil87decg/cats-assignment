@@ -1148,3 +1148,18 @@ button.table-action-delete:hover {
 .course-status-column .status {
 	white-space: nowrap;
 }
+
+/* ---------- Logout Button ---------- */
+
+nav form.logout-form {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+nav .logout-link {
+    margin: 0;
+}

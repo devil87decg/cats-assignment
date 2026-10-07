@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -16,11 +17,12 @@ import sg.edu.nus.cats.utils.AdminAuthHelper;
 
 @AllArgsConstructor
 @Controller
+@RequestMapping("/admin/training-providers")
 public class TrainingProviderController {
 	private final TrainingProviderService providerService;
 	private final AdminAuthHelper adminAuth;
 	
-	@GetMapping("/admin/training-providers")
+	@GetMapping
 	public String showProviders(
 			HttpSession session,
 			Model model) {
@@ -39,7 +41,7 @@ public class TrainingProviderController {
 	}
 
 
-	@GetMapping("/admin/training-providers/new")
+	@GetMapping("/new")
 	public String showCreateForm(
 			HttpSession session) {
 
@@ -53,7 +55,7 @@ public class TrainingProviderController {
 	}
 
 
-	@PostMapping("/admin/training-providers")
+	@PostMapping
 	public String createProvider(
 			@RequestParam String name,
 			@RequestParam(required = false) String description,
@@ -89,7 +91,7 @@ public class TrainingProviderController {
 	}
 
 
-	@GetMapping("/admin/training-providers/{id}/edit")
+	@GetMapping("/{id}/edit")
 	public String showEditForm(
 			@PathVariable Long id,
 			HttpSession session,
@@ -116,7 +118,7 @@ public class TrainingProviderController {
 	}
 
 
-	@PostMapping("/admin/training-providers/{id}")
+	@PostMapping("/{id}")
 	public String updateProvider(
 			@PathVariable Long id,
 			@RequestParam String name,
@@ -155,7 +157,7 @@ public class TrainingProviderController {
 	}
 
 
-	@PostMapping("/admin/training-providers/{id}/deactivate")
+	@PostMapping("/{id}/deactivate")
 	public String deactivateProvider(
 			@PathVariable Long id,
 			HttpSession session,
@@ -186,7 +188,7 @@ public class TrainingProviderController {
 	}
 
 
-	@PostMapping("/admin/training-providers/{id}/reactivate")
+	@PostMapping("/{id}/reactivate")
 	public String reactivateProvider(
 			@PathVariable Long id,
 			HttpSession session,
@@ -216,7 +218,7 @@ public class TrainingProviderController {
 		return "redirect:/admin/training-providers";
 	}
 
-	@PostMapping("/admin/training-providers/{id}/delete")
+	@PostMapping("/{id}/delete")
 	public String deleteProvider(
 			@PathVariable Long id,
 			HttpSession session,

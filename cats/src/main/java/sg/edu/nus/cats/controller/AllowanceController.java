@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
@@ -19,36 +20,16 @@ import sg.edu.nus.cats.utils.AdminAuthHelper;
 
 // tells Spring that this class will handle web requests
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/allowances")
+@RequiredArgsConstructor
 public class AllowanceController {
 
 	private final AllowanceService allowanceService;
 	private final AdminAuthHelper adminAuthentication;
 	private final EmployeeRepository employeeRepository;
 
-	public AllowanceController(AllowanceService allowanceService, AdminAuthHelper adminAuthentication,
-			EmployeeRepository employeeRepository) {
-
-		this.allowanceService = allowanceService;
-		this.adminAuthentication = adminAuthentication;
-		this.employeeRepository = employeeRepository;
-	}
-
-	@GetMapping
-	public String showAdminPage(HttpSession session) {
-
-		User admin = adminAuthentication.getAdmin(session);
-
-		if (admin == null) {
-			return "redirect:/";
-		}
-
-		return "admin";
-
-	}
-
 	// open the allowance form when this URL is visited
-	@GetMapping("/allowances/new")
+	@GetMapping("/new")
 	public String showAllowanceForm(@RequestParam(required = false) Long employeeId, HttpSession session, Model model) {
 
 		User admin = adminAuthentication.getAdmin(session);
@@ -76,7 +57,7 @@ public class AllowanceController {
 		return "allowance-form";
 	}
 
-	@PostMapping("/allowances")
+	@PostMapping
 	public String saveAllowance(@RequestParam Long employeeId,
 			@RequestParam BigDecimal dayLimit, @RequestParam BigDecimal feeBudget,
 			HttpSession session, RedirectAttributes redirectAttributes) {

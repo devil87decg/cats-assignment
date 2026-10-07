@@ -1,5 +1,7 @@
 package sg.edu.nus.cats.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,19 +11,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import sg.edu.nus.cats.dto.TrainingBudgetReportDto;
 import sg.edu.nus.cats.model.CourseApplication;
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.service.CourseCategoryService;
 import sg.edu.nus.cats.service.ReportService;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @AllArgsConstructor
 @Controller
@@ -42,6 +41,15 @@ public class ReportController {
 			
 			@RequestParam(required = false)
 			Long categoryId,
+			
+			@RequestParam(required = false)
+			Integer budgetYear,
+
+			@RequestParam(required = false)
+			Long employeeId,
+			
+			@RequestParam(required = false)
+			String reportType,
 
 			HttpSession session,
 			Model model) {
@@ -60,8 +68,18 @@ public class ReportController {
 		        categoryService.findActive());
 		
 		model.addAttribute("categoryId", categoryId);
+		
+		model.addAttribute(
+				"employees",
+				employees.findAll());
 
-		if (startDate != null && endDate != null) {
+		model.addAttribute("budgetYear", budgetYear);
+		model.addAttribute("employeeId",employeeId);
+		model.addAttribute("reportType", reportType);
+
+		if ("attendance".equals(reportType)
+				&& startDate != null
+				&& endDate != null) {
 
 			try {
 
@@ -74,6 +92,25 @@ public class ReportController {
 				model.addAttribute(
 						"results",
 						results);
+
+			} catch (IllegalArgumentException e) {
+
+				model.addAttribute(
+						"error",
+						e.getMessage());
+			}
+		}
+		
+		if ("budget".equals(reportType)
+				&& budgetYear != null) {
+
+			try {
+
+				model.addAttribute(
+						"budgetResults",
+						reportService.getTrainingBudgetReport(
+								budgetYear,
+								employeeId));
 
 			} catch (IllegalArgumentException e) {
 
@@ -172,6 +209,61 @@ public class ReportController {
 					+ csv(courseRequest.getEndDate().toString()) + ","
 					+ csv(courseRequest.getDurationDays().toString()) + ","
 					+ csv(courseRequest.getFee().toString()));
+		}
+
+		writer.flush();
+	}
+	
+	@GetMapping("/reports/budget/export")
+	public void exportTrainingBudgetReport(
+			@RequestParam int budgetYear,
+			@RequestParam(required = false) Long employeeId,
+			HttpSession session,
+			HttpServletResponse response)
+			throws IOException {
+
+		Employee manager = getManager(session);
+
+		if (manager == null) {
+			response.sendRedirect("/");
+			return;
+		}
+
+		List<TrainingBudgetReportDto> results =
+				reportService.getTrainingBudgetReport(
+						budgetYear,
+						employeeId);
+
+		String filename =
+				"training-budget-utilisation-"
+				+ budgetYear
+				+ ".csv";
+
+		response.setContentType("text/csv");
+		response.setCharacterEncoding("UTF-8");
+
+		response.setHeader(
+				"Content-Disposition",
+				"attachment; filename=\"" + filename + "\"");
+
+		PrintWriter writer = response.getWriter();
+
+		writer.println(
+				"Employee,Year,Day Allowance,Days Used,"
+				+ "Days Remaining,Fee Budget (S$),"
+				+ "Budget Used (S$),Budget Remaining (S$)");
+
+		for (TrainingBudgetReportDto row : results) {
+
+			writer.println(
+					csv(row.getEmployeeName()) + ","
+					+ csv(String.valueOf(row.getYear())) + ","
+					+ csv(row.getDayAllowance().toString()) + ","
+					+ csv(row.getDaysUsed().toString()) + ","
+					+ csv(row.getDaysRemaining().toString()) + ","
+					+ csv(row.getFeeBudget().toString()) + ","
+					+ csv(row.getBudgetUsed().toString()) + ","
+					+ csv(row.getBudgetRemaining().toString()));
 		}
 
 		writer.flush();

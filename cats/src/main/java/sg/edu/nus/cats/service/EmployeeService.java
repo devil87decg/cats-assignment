@@ -270,8 +270,14 @@ public class EmployeeService {
 			return false;
 		}
 		
-		// No historical records exist, so both records can safely be removed.
-		employees.delete(employee);		
+		// No historical records exist, so the employee can be fully deleted.
+
+		// Delete the employee's training allowance first because
+		// training_allowance has a foreign key referencing employees.
+		allowanceService.deleteAllowancesForEmployee(employeeId);
+
+		// Now it is safe to delete the employee and user account.
+		employees.delete(employee);
 		users.delete(user);
 		
 		return true;

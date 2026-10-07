@@ -114,6 +114,15 @@ public class AllowanceService {
 		
 	}
 	
+	public void deleteAllowancesForEmployee(Long employeeId) {
+
+	    if (employeeId == null) {
+	        throw new IllegalArgumentException("Employee is required");
+	    }
+
+	    allowances.deleteByEmployeeId(employeeId);
+	}
+	
 	// get the current year allowance by employeeId
 	public TrainingAllowance getCurrentYearAllowance(Long employeeId) {
 		if(employeeId == null) {

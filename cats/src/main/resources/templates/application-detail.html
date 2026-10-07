@@ -17,21 +17,26 @@
     <nav>
         <a href="/applications">My applications</a>
         <a href="/">Home</a>
-        <a href="/logout">Logout</a>
+        
+		<form th:action="@{/logout}" method="post"
+		      class="logout-form">
+		    <button type="submit" class="logout-link">Logout</button>
+		</form>
+		
     </nav>
 
     <h1>Application Details</h1>
 
     <!-- Display feedback supplied by the controller. -->
-    <p class="message message-success"
-       th:if="${success}"
-       th:text="${success}">
-    </p>
+    <div th:if="${success}"
+		 class="message message-success"
+    	 th:text="${success}">
+    </div>
 
-    <p class="message message-error"
-       th:if="${error}"
-       th:text="${error}">
-    </p>
+    <div th:if="${error}"
+		 class="message message-error"
+		 th:text="${error}">
+    </div>
 
     <!-- Display application details with labels in the left column. -->
     <table class="detail-table">
@@ -44,7 +49,10 @@
 
             <tr>
                 <th scope="row">Category</th>
-                <td th:text="${courseRequest.course.category.name}"></td>
+				<td th:text="${courseRequest.course != null and courseRequest.course.category != null
+				    ? courseRequest.course.category.name
+				    : (courseRequest.legacyCategory != null ? courseRequest.legacyCategory : 'Not specified')}">
+				</td>
             </tr>
 
             <tr>

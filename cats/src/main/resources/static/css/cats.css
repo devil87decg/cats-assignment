@@ -348,6 +348,105 @@ tbody tr:hover {
     min-width: 720px;
 }
 
+/* ---------- Pagination Controls ---------- */
+
+/* Holds the page-size selector and page navigation on one compact row */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin: 16px 0 4px;
+}
+
+/* Override the normal full-sized form styling for the page-size selector */
+form.pagination-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+/* Keep the label beside the select box */
+.pagination-form label {
+    display: inline-block;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Keep the page-size dropdown small */
+.pagination-form select {
+    display: inline-block;
+    width: auto;
+    min-width: 70px;
+    padding: 7px 28px 7px 10px;
+}
+
+/* Override the normal site navigation styling */
+nav.pagination-nav {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+/* Remove the normal ul bullets and arrange links horizontally */
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pagination .page-item {
+    margin: 0;
+}
+
+/* Individual page links */
+.pagination-nav .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Hover over a page link */
+.pagination-nav .page-link:hover {
+    background: var(--tint);
+    color: var(--teal-hover);
+    text-decoration: none;
+}
+
+/* Highlight the current page */
+.pagination-nav .page-item.active .page-link {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+    font-weight: 700;
+}
+
+/* Summary below pagination controls */
+.pagination-summary {
+    margin: 6px 0 18px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
 .status {
     display: inline-block;
     padding: 4px 10px;
@@ -485,6 +584,11 @@ table {
     white-space: pre-wrap;
 }
 
+/* Stack pagination controls on smaller screens */
+.pagination-controls {
+    align-items: flex-start;
+    flex-direction: column;
+}
 
 }
 
@@ -803,6 +907,13 @@ div.message.message-error {
     display: block !important;            /* Ensures it handles structural layouts perfectly */
 }
 
+message.message-success {
+    background-color: #e9f5ef !important; /* Forces the light green background */
+    color: #176244 !important;            /* Forces the crisp, dark green text color */
+    border: 1px solid #b9dbc8 !important;  /* Forces the light green border line */
+    display: block !important;            /* Ensures it handles structural layouts perfectly */
+}
+
 /* ---------- Training Provider Actions ---------- */
 
 .provider-action-column {
@@ -1036,4 +1147,19 @@ button.table-action-delete:hover {
 
 .course-status-column .status {
 	white-space: nowrap;
+}
+
+/* ---------- Logout Button ---------- */
+
+nav form.logout-form {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+nav .logout-link {
+    margin: 0;
 }

@@ -126,25 +126,26 @@ public class ReportController {
 
 	private Employee getManager(HttpSession session) {
 
-		Long employeeId =
-				(Long) session.getAttribute("userId");
+	    Long userId =
+	            (Long) session.getAttribute("userId");
 
-		if (employeeId == null) {
-			return null;
-		}
+	    if (userId == null) {
+	        return null;
+	    }
 
-		Employee employee =
-				employees.findById(employeeId)
-						.orElse(null);
+	    Employee manager =
+	            employees.findByUserId(userId)
+	                    .orElse(null);
 
-		if (employee == null
-				|| employee.getUser() == null
-				|| employee.getUser().getRole() != Role.MANAGER) {
+	    if (manager == null
+	            || manager.getUser() == null
+	            || !manager.getUser().isActive()
+	            || manager.getUser().getRole() != Role.MANAGER) {
 
-			return null;
-		}
+	        return null;
+	    }
 
-		return employee;
+	    return manager;
 	}
 	
 	@GetMapping("/reports/export")

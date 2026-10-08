@@ -15,17 +15,8 @@
 </head>
 
 <body>
-	
-	<nav>
-		<a href="/">Home</a>
-		<a href="/manager/applications">Review applications</a>
-		<a href="/manager/claims">Review course fee claims</a>
-		
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-	</nav>
+	<div th:replace="~{fragments/header :: header}"></div>
+
 	
 	<h1>Subordinate History</h1>
 

@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- ============================================================
 -- USERS
 -- Preserve the original demo users, IDs, roles and password hashes.
@@ -9,6 +11,9 @@ INSERT IGNORE INTO users (id, username, active, password_hash, role) VALUES
 (4, 'employee2',  b'1', '$2a$10$k585OedWPUdUdV/3lcHrCeqzjs3rnsbrsZUbk3pJ63TRCRie.6Zy6', 'EMPLOYEE'),
 (5, 'manager2',   b'1', '$2a$10$UaQQjacpa3TmoL29Crfxfe8117Rm6Ouw3Lk9W9LWSnCsnU1Y1YT0u', 'MANAGER');
 
+-- ============================================================
+-- EXTENDED DEMO USERS
+-- Password for each account is the same as its username.
 -- Pattern per person: base=ADMIN, base2=EMPLOYEE, base3=MANAGER.
 -- IDs start at 101 to avoid colliding with the original demo data.
 -- ============================================================
@@ -46,7 +51,7 @@ INSERT IGNORE INTO users (id, username, active, password_hash, role) VALUES
 INSERT IGNORE INTO employees
 (id, department, designation, name, staff_category, supervisor_id, user_id, email)
 VALUES
-(2, 'IT ',         'Manager',          'Dogbert',    'PROFESSIONAL', NULL, 3, 'manager1@example.com'),
+(2, 'IT ',         'Manager',          'Dogbert',    'PROFESSIONAL', NULL, 3, 'xin.xian.quek@u.nus.edu'),
 (1, '',            '',                 'xiang xuan', 'PROFESSIONAL', 2,    2, 'employee1@example.com'),
 (3, 'Admin Staff', 'Secretary',        'Ratbert',    'PROFESSIONAL', 2,    4, 'employee2@example.com'),
 (4, 'Finance',     'Accounts Manager', 'Kuan Yew',   'PROFESSIONAL', NULL, 5, 'manager2@example.com');

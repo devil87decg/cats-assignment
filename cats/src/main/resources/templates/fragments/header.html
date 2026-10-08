@@ -3,42 +3,65 @@
 
 <body>
 
-	<th:block th:fragment="header">
+	<!--
+		Shared site header. Include it as the first element inside <body> on every page:
 
-		<!-- Top Navigation Bar -->
-		<nav class="topbar">
-			<a class="site-title" th:href="@{/}">🙀 T8CATS </a>
+			<div th:replace="~{fragments/header :: header}"></div>
 
-			<div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+	-->
+	<nav class="site-header" th:fragment="header">
 
-				<!-- <span th:if="${loggedInUser == null}" class="user-info">
-                <a th:href="@{/login}"    class="logout-link">Login</a>&nbsp;/&nbsp;<a th:href="@{/register}" class="logout-link">Register</a>
-			
-            </span>-->
-				<a th:href="@{/}" style="color:#c8d8ec; text-decoration:none; font-size:0.92rem;">Home</a>
-				<span th:if="${userId != null}" class="user-info">
-					Hello, <strong th:text="${loggedInName}">Xiang Xuan</strong>
-					&nbsp;|&nbsp;<a th:href="@{/employees/profile}" class="logout-link">Profile</a>
-					&nbsp;|&nbsp;
-				</span>
-				
-				<form th:if="${userId !=null}"
-					th:action="@{/logout}"
-					method="post"
-					style="display: inline;">
-					<button type="submit" class="logout-link">Logout</button>
-				</form>
-				
-			</div>
-		</nav>
+		<a class="brand" th:href="${session.role == 'ADMIN'} ? @{/admin} : @{/}">CATS</a>
 
-		<!-- Flash messages (inside page-wrapper so they align) -->
-		<div class="page-wrapper">
-			<div th:if="${success}" class="alert alert-success" th:text="${success}">OK</div>
-			<div th:if="${error}" class="alert alert-error" th:text="${error}">Error</div>
+		<!-- Employee and manager links -->
+		<th:block th:if="${session.role == 'EMPLOYEE' or session.role == 'MANAGER'}">
+			<a th:href="@{/}">Home</a>
+			<a th:href="@{/applications}">My applications</a>
+			<a th:href="@{/applications/new}">New application</a>
+			<a th:href="@{/claims}">Training Ledger</a>
+		</th:block>
+
+		<!-- Manager-only links -->
+		<th:block th:if="${session.role == 'MANAGER'}">
+			<a th:href="@{/manager/applications}">Review applications</a>
+			<a th:href="@{/manager/claims}">Review course fee claims</a>
+			<a th:href="@{/manager/subordinates}">Subordinate history</a>
+			<a th:href="@{/reports}">Reports</a>
+		</th:block>
+
+		<!-- Admin links -->
+		<th:block th:if="${session.role == 'ADMIN'}">
+			<a th:href="@{/admin}">Administration</a>
+			<a th:href="@{/admin/employees}">Employees</a>
+			<a th:href="@{/admin/allowances/new}">Allowances</a>
+			<a th:href="@{/admin/holidays}">Public holidays</a>
+			<a th:href="@{/admin/course-categories}">Course categories</a>
+			<a th:href="@{/admin/training-providers}">Training providers</a>
+			<a th:href="@{/admin/courses}">Course catalogue</a>
+		</th:block>
+
+		<!-- Signed-in user: name, change password, logout -->
+		<th:block th:if="${session.userId != null}">
+			<a th:href="@{/account/password}">Change password</a>
+			<span class="nav-user-name">
+				Signed in as <strong th:text="${session.loggedInName}">username</strong>
+			</span>
+
+			<form th:action="@{/logout}" method="post" class="logout-form">
+				<button type="submit" class="logout-link">Logout</button>
+			</form>
+		</th:block>
+		<!--<div class="nav-user" th:if="${session.userId != null}">
+			<span class="nav-user-name">
+				Signed in as <strong th:text="${session.loggedInName}">username</strong>
+			</span>
+			<a th:href="@{/account/password}">Change password</a>
+			<form th:action="@{/logout}" method="post" class="logout-form">
+				<button type="submit" class="logout-link">Logout</button>
+			</form>
 		</div>
-
-	</th:block>
+		-->
+	</nav>
 
 </body>
 

@@ -15,10 +15,8 @@
 </head>
 
 <body>
-	
-	<nav>
-		<a href="/admin">Administration</a>
-	</nav>
+	<div th:replace="~{fragments/header :: header}"></div>
+
 	
 	<h1>Create Employee</h1>
 	<p>Create a login account and employee profile.</p>
@@ -30,7 +28,7 @@
 	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 	
 	<!-- Send the entered employee profile details to /admin/employees using POST when the form is submitted. -->
-	<form action="/admin/employees" method="post">
+	<form th:action="@{/admin/employees}" method="post">
 	
 		<h2>Login Account</h2>
 

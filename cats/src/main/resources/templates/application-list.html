@@ -15,18 +15,8 @@
 </head>
 		
 <body>
-	
-		<!-- Provide links to the home page, application form, and logout -->
-		<nav>
-			<a href="/">Home</a>
-			<a href="/applications/new">New application</a>
-			
-			<form th:action="@{/logout}" method="post"
-			      class="logout-form">
-			    <button type="submit" class="logout-link">Logout</button>
-			</form>
-			
-		</nav>
+	<div th:replace="~{fragments/header :: header}"></div>
+
 	
 		<h1>My Applications</h1>
 		
@@ -55,6 +45,7 @@
 					<th>Fee ($)</th>
 					<th>Status</th>
 					<th>Details</th>
+					<th>Reimbursement</th>
 				</tr>
 			</thead>
 			<!-- Repeat this row for each application in the list -->
@@ -72,7 +63,16 @@
 					<td th:text="${courseRequest.status}"></td>
 					<td>
 						<a th:href="@{/applications/{id}(id=${courseRequest.id})}">View details</a>
-					</td>																					
+					</td>
+					<td>
+						<a th:if="${claimableApplicationIds.contains(courseRequest.id)}"
+						   th:href="@{/claims/new/{id}(id=${courseRequest.id})}">
+							Claim
+						</a>
+						<span th:unless="${claimableApplicationIds.contains(courseRequest.id)}">
+							-
+						</span>
+					</td>
 				</tr>
 			</tbody>
 		</table>

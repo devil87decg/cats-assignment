@@ -13,21 +13,19 @@
 		</p>
 		<div class="calendar-navigation">
 
-		    <a class="button"
-		       th:href="@{/(year=${previousMonth.year},
-		                    month=${previousMonth.monthValue})}">
-		        Previous
-		    </a>
+			<a class="button" th:href="@{${calendarBaseUrl}(year=${previousMonth.year},
+			                                month=${previousMonth.monthValue})}">
+				Previous
+			</a>
 
-		    <strong th:text="${selectedMonth.month + ' ' + selectedMonth.year}">
-		        October 2026
-		    </strong>
+			<strong th:text="${selectedMonth.month + ' ' + selectedMonth.year}">
+				October 2026
+			</strong>
 
-		    <a class="button"
-		       th:href="@{/(year=${nextMonth.year},
-		                    month=${nextMonth.monthValue})}">
-		        Next
-		    </a>
+			<a class="button" th:href="@{${calendarBaseUrl}(year=${nextMonth.year},
+			                                month=${nextMonth.monthValue})}">
+				Next
+			</a>
 
 		</div>
 

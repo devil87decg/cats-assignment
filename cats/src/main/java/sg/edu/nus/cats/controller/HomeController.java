@@ -49,11 +49,9 @@ public class HomeController {
 		}
 
 		// Find the account matching the session's user ID
-		User loggedInUser = users.findById(loggedInUserId).orElse(null);
-		Employee loggedInEmp = employees.findByUserId(loggedInUserId).orElse(null);
-
-		BigDecimal remainingDays = applicationService.balanceDays(loggedInEmp, loggedInYear);
-		BigDecimal remainingFees = applicationService.balanceBudget(loggedInEmp, loggedInYear);
+		User loggedInUser =
+				users.findById(loggedInUserId)
+						.orElse(null);
 
 		// Require an account that still exists
 		if (loggedInUser == null) {
@@ -65,11 +63,56 @@ public class HomeController {
 			return "redirect:/login";
 		}
 
-		// Tell the home page whether this account is a manager
-		model.addAttribute("isManager", loggedInUser.getRole() == Role.MANAGER);
-		model.addAttribute("remainingDays", remainingDays);
-		model.addAttribute("remainingFees", remainingFees);
-		// Display index.html
+		// Find the employee profile linked to this user account
+		Employee loggedInEmp =
+				employees.findByUserId(loggedInUserId)
+						.orElse(null);
+
+		if (loggedInEmp == null) {
+
+			model.addAttribute(
+					"error",
+					"Ask an administrator to create your employee profile first");
+
+			model.addAttribute(
+					"isManager",
+					loggedInUser.getRole() == Role.MANAGER);
+
+			model.addAttribute(
+					"remainingDays",
+					BigDecimal.ZERO);
+
+			model.addAttribute(
+					"remainingFees",
+					BigDecimal.ZERO);
+
+			return "index";
+		}
+
+		// Calculate remaining training allowance only after
+		// confirming that an employee profile exists.
+		BigDecimal remainingDays =
+				applicationService.balanceDays(
+						loggedInEmp,
+						loggedInYear);
+
+		BigDecimal remainingFees =
+				applicationService.balanceBudget(
+						loggedInEmp,
+						loggedInYear);
+
+		model.addAttribute(
+				"isManager",
+				loggedInUser.getRole() == Role.MANAGER);
+
+		model.addAttribute(
+				"remainingDays",
+				remainingDays);
+
+		model.addAttribute(
+				"remainingFees",
+				remainingFees);
+
 		return "index";
 	}
 

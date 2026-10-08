@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" th:href="@{/css/cats.css}">
+
+	<title>Course Fee Reimbursement | CATS</title>
+</head>
+
+<body>
+
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<h1>Course Fee Reimbursement</h1>
+
+	<p>
+		Submit your receipt and certificate of completion to claim reimbursement for this course.
+	</p>
+
+	<div th:if="${error}"
+	     class="message message-error"
+	     th:text="${error}">
+	</div>
+
+	<h3>Course Details</h3>
+
+	<div class="course-details">
+
+		<div class="details-grid">
+
+			<p>
+				<strong>Course</strong><br>
+				<span th:text="${courseRequest.courseTitle}">
+				Course title
+				</span>
+			</p>
+
+			<p>
+				<strong>Category</strong><br>
+
+				<span th:text="${courseRequest.course != null
+						and courseRequest.course.category != null
+						? courseRequest.course.category.name
+						: courseRequest.legacyCategory}">
+					Category
+				</span>
+			</p>
+
+			<p>
+				<strong>Training Provider</strong><br>
+				<span th:text="${courseRequest.trainingProvider}">
+					Training provider
+				</span>
+			</p>
+
+			<p>
+				<strong>Course Period</strong><br>
+
+				<span th:text="${courseRequest.startDate}">
+					Start date
+				</span>
+
+				<span> to </span>
+
+				<span th:text="${courseRequest.endDate}">
+					End date
+				</span>
+			</p>
+
+			<p>
+				<strong>Course Fee</strong><br>
+				$<span th:text="${courseRequest.fee}">
+					0.00
+				</span>
+			</p>
+
+			<p>
+				<strong>Status</strong><br>
+				<span th:text="${courseRequest.status}">
+					COMPLETED
+				</span>
+			</p>
+
+		</div>
+
+	</div>
+
+	<h3>Supporting Documents</h3>
+
+	<form th:action="@{/claims/{applicationId}(applicationId=${courseRequest.id})}"
+	      method="post"
+	      enctype="multipart/form-data">
+
+		<p>
+			<label for="receipt">
+				Receipt
+			</label>
+
+			<input type="file"
+			       id="receipt"
+			       name="receipt"
+				   accept=".pdf,.jpg,.jpeg,.png"
+			       required>
+
+			<small>
+				Upload proof of payment for the course fee.
+			</small>
+		</p>
+
+		<p>
+			<label for="certificate">
+				Certificate of completion
+			</label>
+
+			<input type="file"
+			       id="certificate"
+			       name="certificate"
+				   accept=".pdf,.jpg,.jpeg,.png"
+			       required>
+
+			<small>
+				Upload your certificate showing that the course has been completed.
+			</small>
+		</p>
+
+		<button type="submit">
+			Submit reimbursement claim
+		</button>
+
+	</form>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

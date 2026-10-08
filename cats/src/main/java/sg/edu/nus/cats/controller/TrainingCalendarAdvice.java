@@ -40,6 +40,9 @@ public class TrainingCalendarAdvice {
 	    model.addAttribute("selectedMonth", selectedMonth);
 	    model.addAttribute("previousMonth", selectedMonth.minusMonths(1));
 	    model.addAttribute("nextMonth", selectedMonth.plusMonths(1));
+	    
+	    // Default calendar location for employee/manager home page
+	    model.addAttribute("calendarBaseUrl", "/");
 	}
 	
 	

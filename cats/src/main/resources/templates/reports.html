@@ -8,23 +8,13 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
 
 	<h1>Reports</h1>
 
 	<p>
 		View approved course attendance during a selected period.
 	</p>
-
-	<nav>
-		<a th:href="@{/}">Home</a>
-		<form th:action="@{/logout}" method="post"
-			  class="logout-form">
-		    <button type="submit" class="btn">
-		        Logout
-		    </button>
-		</form>
-	</nav>
-
 
 	<div th:if="${error}"
 		 class="message message-error"

@@ -43,6 +43,7 @@ public class CatsLoginSuccessHandler implements AuthenticationSuccessHandler {
 		
 		session.setAttribute("userId", user.getId());
 		session.setAttribute("loggedInName", user.getUsername());
+		session.setAttribute("role", user.getRole().name());
 		session.setAttribute("year", Year.now().getValue());	
 		
 		if (user.getRole() == Role.ADMIN) {

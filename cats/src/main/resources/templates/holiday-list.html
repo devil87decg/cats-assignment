@@ -11,20 +11,13 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
     <h1>Public Holiday Administration</h1>
     <p>
         Maintain the public holiday calendar used when calculating
         employee training days.
     </p>
-
-    <div class="navbar">
-        <a th:href="@{/admin}">Back to Administration</a>
-        |
-        <form th:action="@{/logout}" method="post"
-              class="logout-form">
-            <button type="submit" class="logout-link">Logout</button>
-        </form>
-    </div>
 
     <p>
         <a th:href="@{/admin/holidays/new}">Add public holiday</a>

@@ -18,36 +18,7 @@
 
 <body>
 
-    <nav>
-
-        <a href="/manager/subordinates">
-            Back to subordinates
-        </a>
-
-        <a href="/manager/claims">
-            Pending claims
-        </a>
-
-        <a href="/manager/applications">
-            Pending applications
-        </a>
-
-        <a href="/">
-            Home
-        </a>
-
-        <form th:action="@{/logout}"
-              method="post"
-              class="logout-form">
-
-            <button type="submit"
-                    class="logout-link">
-                Logout
-            </button>
-
-        </form>
-
-    </nav>
+	<div th:replace="~{fragments/header :: header}"></div>
 
 
     <h1>Employee Course Fee Claim History</h1>

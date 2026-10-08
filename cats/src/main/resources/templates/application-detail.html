@@ -12,19 +12,9 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
 
     <!-- Provide navigation back to the application list and home page. -->
-    <nav>
-        <a href="/applications">My applications</a>
-        <a href="/">Home</a>
-        
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-		
-    </nav>
-
     <h1>Application Details</h1>
 
     <!-- Display feedback supplied by the controller. -->

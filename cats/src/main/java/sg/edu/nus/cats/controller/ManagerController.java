@@ -1,10 +1,18 @@
 package sg.edu.nus.cats.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +23,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import sg.edu.nus.cats.model.CourseApplication;
+import sg.edu.nus.cats.model.CourseFeeClaim;
 import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.model.Role;
 import sg.edu.nus.cats.model.User;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.repository.UserRepository;
 import sg.edu.nus.cats.service.ApplicationService;
+import sg.edu.nus.cats.service.ClaimService;
 import sg.edu.nus.cats.service.EmployeeService;
 
 @Controller
@@ -28,23 +38,29 @@ public class ManagerController {
 
 	private final ApplicationService applicationService;
 	
+	private final ClaimService claimService;
+	
 	private final EmployeeRepository employees;
 	
 	private final UserRepository users;
 	
 	private final EmployeeService employeeService;
 	
-	public ManagerController (ApplicationService applicationService, EmployeeRepository employees, UserRepository users,
-			EmployeeService employeeService) {
-		
+	public ManagerController(
+			ApplicationService applicationService,
+			EmployeeRepository employees,
+			UserRepository users,
+			EmployeeService employeeService,
+			ClaimService claimService) {
+
 		this.applicationService = applicationService;
 		this.employees = employees;
 		this.users = users;
 		this.employeeService = employeeService;
+		this.claimService = claimService;
 	}
 	
 	@GetMapping("/manager/applications")
-	
 	public String showPendingApplications(HttpSession session, Model model) {
 		
 		Long loggedInUserId = (Long) session.getAttribute("userId");
@@ -88,7 +104,6 @@ public class ManagerController {
 	
 	// Open the manager's review page for one course application.
 	@GetMapping("/manager/applications/{id}")
-	
 	public String showApplicationReview(@PathVariable("id") Long id,
 			HttpSession session,
 			Model model) {
@@ -240,9 +255,314 @@ public class ManagerController {
 		return "redirect:/manager/applications";
 	}
 	
+	@GetMapping("/manager/claims")
+	public String showPendingClaims(
+			HttpSession session,
+			Model model) {
+
+		Long loggedInUserId =
+				(Long) session.getAttribute("userId");
+
+		if (loggedInUserId == null) {
+			return "redirect:/login";
+		}
+
+		User loggedInUser =
+				users.findById(loggedInUserId)
+						.orElse(null);
+
+		if (loggedInUser == null) {
+			return "redirect:/login";
+		}
+
+		// Allow only active manager accounts to review claims.
+		if (!loggedInUser.isActive()
+				|| loggedInUser.getRole() != Role.MANAGER) {
+
+			return "redirect:/";
+		}
+
+		Employee manager =
+				employees.findByUserId(loggedInUserId)
+						.orElse(null);
+
+		if (manager == null) {
+
+			model.addAttribute(
+					"error",
+					"Ask an adminstrator to create your employee profile first");
+
+			return "index";
+		}
+
+		List<CourseFeeClaim> pendingClaims =
+				claimService.findPendingClaims(manager);
+
+		model.addAttribute(
+				"claims",
+				pendingClaims);
+
+		return "manager-claim-list";
+	}
+	
+	// Open the manager's review page for one course fee claim.
+	@GetMapping("/manager/claims/{id}")
+	public String showClaimReview(
+			@PathVariable("id") Long id,
+			HttpSession session,
+			Model model) {
+
+		Long loggedInUserId =
+				(Long) session.getAttribute("userId");
+
+		if (loggedInUserId == null) {
+			return "redirect:/login";
+		}
+
+		User loggedInUser =
+				users.findById(loggedInUserId)
+						.orElse(null);
+
+		if (loggedInUser == null) {
+			return "redirect:/login";
+		}
+
+		if (!loggedInUser.isActive()
+				|| loggedInUser.getRole() != Role.MANAGER) {
+
+			return "redirect:/";
+		}
+
+		Employee manager =
+				employees.findByUserId(loggedInUserId)
+						.orElse(null);
+
+		if (manager == null) {
+
+			model.addAttribute(
+					"error",
+					"Ask an adminstrator to create your employee profile first");
+
+			return "index";
+		}
+
+		try {
+
+			CourseFeeClaim claim =
+					claimService.findClaimForReview(
+							id,
+							manager);
+
+			model.addAttribute(
+					"claim",
+					claim);
+
+		} catch (IllegalArgumentException validationError) {
+
+			model.addAttribute(
+					"error",
+					validationError.getMessage());
+
+			model.addAttribute(
+					"isManager",
+					true);
+
+			return "index";
+		}
+
+		return "manager-claim-detail";
+	}
+	
+	// Allow a manager to securely view/download the receipt
+	// belonging to a claim by their own subordinate.
+	@GetMapping("/manager/claims/{id}/receipt")
+	public ResponseEntity<Resource> viewReceiptForReview(
+			@PathVariable("id") Long id,
+			HttpSession session) {
+
+		Long loggedInUserId =
+				(Long) session.getAttribute("userId");
+
+		if (loggedInUserId == null) {
+			return ResponseEntity.status(401).build();
+		}
+
+		User loggedInUser =
+				users.findById(loggedInUserId)
+						.orElse(null);
+
+		if (loggedInUser == null
+				|| !loggedInUser.isActive()
+				|| loggedInUser.getRole() != Role.MANAGER) {
+
+			return ResponseEntity.status(403).build();
+		}
+
+		Employee manager =
+				employees.findByUserId(loggedInUserId)
+						.orElse(null);
+
+		if (manager == null) {
+			return ResponseEntity.status(403).build();
+		}
+
+		try {
+
+			Path file =
+					claimService.getReceiptFileForReview(
+							id,
+							manager);
+
+			return buildFileResponse(file);
+
+		} catch (IllegalArgumentException | IOException error) {
+
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	// Allow a manager to securely view/download the certificate
+	// belonging to a claim by their own subordinate.
+	@GetMapping("/manager/claims/{id}/certificate")
+	public ResponseEntity<Resource> viewCertificateForReview(
+			@PathVariable("id") Long id,
+			HttpSession session) {
+
+		Long loggedInUserId =
+				(Long) session.getAttribute("userId");
+
+		if (loggedInUserId == null) {
+			return ResponseEntity.status(401).build();
+		}
+
+		User loggedInUser =
+				users.findById(loggedInUserId)
+						.orElse(null);
+
+		if (loggedInUser == null
+				|| !loggedInUser.isActive()
+				|| loggedInUser.getRole() != Role.MANAGER) {
+
+			return ResponseEntity.status(403).build();
+		}
+
+		Employee manager =
+				employees.findByUserId(loggedInUserId)
+						.orElse(null);
+
+		if (manager == null) {
+			return ResponseEntity.status(403).build();
+		}
+
+		try {
+
+			Path file =
+					claimService.getCertificateFileForReview(
+							id,
+							manager);
+
+			return buildFileResponse(file);
+
+		} catch (IllegalArgumentException | IOException error) {
+
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	// Private helper method for viewReceiptForReview() and viewCertificateForReview()
+	private ResponseEntity<Resource> buildFileResponse(Path file)
+			throws IOException {
+
+		Resource resource =
+				new UrlResource(file.toUri());
+
+		String contentType =
+				Files.probeContentType(file);
+
+		if (contentType == null) {
+			contentType =
+					MediaType.APPLICATION_OCTET_STREAM_VALUE;
+		}
+
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(contentType))
+				.header(
+						HttpHeaders.CONTENT_DISPOSITION,
+						"inline; filename=\"" +
+								file.getFileName().toString() +
+								"\"")
+				.body(resource);
+	}
+	
+	// Receive the manager's decision and its reason
+	@PostMapping("/manager/claims/{id}/decide")
+	public String decideClaim(
+			@PathVariable("id") Long id,
+			@RequestParam boolean approved,
+			@RequestParam String reason,
+			HttpSession session,
+			RedirectAttributes redirectAttributes) {
+
+		Long loggedInUserId =
+				(Long) session.getAttribute("userId");
+
+		if (loggedInUserId == null) {
+			return "redirect:/login";
+		}
+
+		User loggedInUser =
+				users.findById(loggedInUserId)
+						.orElse(null);
+
+		if (loggedInUser == null) {
+			return "redirect:/login";
+		}
+
+		if (!loggedInUser.isActive()
+				|| loggedInUser.getRole() != Role.MANAGER) {
+
+			return "redirect:/";
+		}
+
+		Employee manager =
+				employees.findByUserId(loggedInUserId)
+						.orElse(null);
+
+		if (manager == null) {
+
+			redirectAttributes.addFlashAttribute(
+					"error",
+					"Ask an adminstrator to create your employee profile first");
+
+			return "redirect:/";
+		}
+
+		try {
+
+			claimService.decide(
+					id,
+					manager,
+					approved,
+					reason);
+
+		} catch (IllegalArgumentException validationError) {
+
+			redirectAttributes.addFlashAttribute(
+					"error",
+					validationError.getMessage());
+
+			return "redirect:/manager/claims/" + id;
+		}
+
+		redirectAttributes.addFlashAttribute(
+				"success",
+				"Course fee claim decision saved successfully");
+
+		return "redirect:/manager/claims";
+	}
+	
 	// Open the page where a manager selects a subordinate's course history
 	@GetMapping("/manager/subordinates")
-	
 	public String showSubordinates(HttpSession session, Model model) {
 		
 		Long loggedInUserId = (Long) session.getAttribute("userId");
@@ -282,9 +602,8 @@ public class ManagerController {
 	}
 	
 	// Open the course history page for the selected subordinate
-	@GetMapping("/manager/subordinates/{id}/history")
-	
-	public String showSubordinateHistory(
+	@GetMapping("/manager/subordinates/{id}/courses")
+	public String showSubordinateCourseHistory(
 			@PathVariable("id") Long employeeId,
 			@RequestParam(name = "page", defaultValue = "1") int pageNo,
 			@RequestParam(name = "size", defaultValue = "5") int pageSize,
@@ -387,7 +706,111 @@ public class ManagerController {
 				
 			}
 	
-			return "manager-subordinate-history";
+			return "manager-subordinate-course-history";
+	}
+	
+	// Open the claim history page for the selected subordinate
+	@GetMapping("/manager/subordinates/{id}/claims")
+	public String showSubordinateClaimHistory(
+	        @PathVariable("id") Long employeeId,
+	        @RequestParam(name = "allYears", defaultValue = "false")
+	        boolean allYears,
+	        HttpSession session,
+	        Model model) {
+
+	    Long loggedInUserId =
+	            (Long) session.getAttribute("userId");
+
+	    if (loggedInUserId == null) {
+	        return "redirect:/login";
+	    }
+
+	    User loggedInUser =
+	            users.findById(loggedInUserId)
+	                    .orElse(null);
+
+	    if (loggedInUser == null) {
+	        return "redirect:/login";
+	    }
+
+	    // Allow only active manager accounts to view subordinate history.
+	    if (!loggedInUser.isActive()
+	            || loggedInUser.getRole() != Role.MANAGER) {
+
+	        return "redirect:/";
+	    }
+
+	    Employee manager =
+	            employees.findByUserId(loggedInUserId)
+	                    .orElse(null);
+
+	    if (manager == null) {
+
+	        model.addAttribute(
+	                "error",
+	                "Ask an adminstrator to create your employee profile first");
+
+	        return "index";
+	    }
+
+	    try {
+
+	        // Find the selected employee and verify that
+	        // they report to this manager.
+	        Employee subordinate =
+	                employeeService.findSubordinate(
+	                        employeeId,
+	                        manager);
+
+	        int currentYear =
+	                LocalDate.now().getYear();
+
+	        List<CourseFeeClaim> claimHistory;
+
+	        if (allYears) {
+
+	            claimHistory =
+	                    claimService.findEmployeeClaimHistory(
+	                            subordinate);
+
+	        } else {
+
+	            claimHistory =
+	                    claimService.findEmployeeClaimsForYear(
+	                            subordinate,
+	                            currentYear);
+	        }
+
+	        model.addAttribute(
+	                "subordinate",
+	                subordinate);
+
+	        model.addAttribute(
+	                "claimHistory",
+	                claimHistory);
+
+	        model.addAttribute(
+	                "currentYear",
+	                currentYear);
+
+	        model.addAttribute(
+	                "allYears",
+	                allYears);
+
+	    } catch (IllegalArgumentException validationError) {
+
+	        model.addAttribute(
+	                "error",
+	                validationError.getMessage());
+
+	        model.addAttribute(
+	                "isManager",
+	                true);
+
+	        return "index";
+	    }
+
+	    return "manager-subordinate-claim-history";
 	}
 	
 }

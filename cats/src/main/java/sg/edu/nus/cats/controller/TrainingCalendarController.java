@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import sg.edu.nus.cats.model.Employee;
 import sg.edu.nus.cats.repository.ApplicationRepository;
 import sg.edu.nus.cats.repository.EmployeeRepository;
 import sg.edu.nus.cats.service.TrainingCalendarService;
+import sg.edu.nus.cats.utils.AdminAuthHelper;
 
 @Controller
 @AllArgsConstructor
@@ -26,6 +28,7 @@ public class TrainingCalendarController {
 	private final TrainingCalendarService trainingCalendarService;
 	private final EmployeeRepository employeeRepository;
 	private final ApplicationRepository applicationRepository;
+	private final AdminAuthHelper adminAuthentication;
 
 	@GetMapping
 	public String showTrainingCalendar(@RequestParam(required = false) Integer year,
@@ -51,7 +54,7 @@ public class TrainingCalendarController {
 	public String showTrainingCalendarDetails(@RequestParam Long courseId,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate, HttpSession session,
-			Model model) {
+			Authentication authentication, Model model) {
 
 		TrainingCalendarEntryDto calendarEntry = trainingCalendarService.getCalendarEntry(courseId, startDate, endDate);
 
@@ -76,10 +79,19 @@ public class TrainingCalendarController {
 			}
 		}
 
+		boolean isAdmin = authentication.getAuthorities().stream()
+				.anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+
 		model.addAttribute("calendarEntry", calendarEntry);
 		model.addAttribute("courseStarted", courseStarted);
 		model.addAttribute("alreadyApplied", alreadyApplied);
-		model.addAttribute("canApply", loggedInUserId != null && !courseStarted && !alreadyApplied);
+		model.addAttribute("canApply", loggedInUserId != null && !isAdmin && !courseStarted && !alreadyApplied);
+		
+		if (adminAuthentication.getAdmin(session) != null) {
+		    model.addAttribute("homeUrl", "/admin");
+		} else {
+		    model.addAttribute("homeUrl", "/");
+		}
 
 		return "training-calendar-details";
 	}

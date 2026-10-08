@@ -11,16 +11,7 @@
 </head>
 
 <body>
-
-    <nav>
-        <a href="/manager/subordinates">Back to subordinates</a>
-        <a href="/manager/applications">Pending applications</a>
-        <a href="/">Home</a>
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-    </nav>
+	<div th:replace="~{fragments/header :: header}"></div>
 
     <h1>Employee Course History</h1>
 
@@ -46,13 +37,13 @@
 
     <!-- Switch between current-year and all-year history -->	
 	<p class="history-filter">
-	    <a th:href="@{/manager/subordinates/{id}/history(
+	    <a th:href="@{/manager/subordinates/{id}/courses(
 	            id=${subordinate.id},
 	            allYears=false,
 	            size=${pageSize})}">
 	        Current year
 	    </a>
-	    <a th:href="@{/manager/subordinates/{id}/history(
+	    <a th:href="@{/manager/subordinates/{id}/courses(
 	            id=${subordinate.id},
 	            allYears=true,
 	            size=${pageSize})}">
@@ -120,7 +111,7 @@
 
 	    <!-- Allow manager to choose the number of applications per page -->
 	    <form class="pagination-form"
-	          th:action="@{/manager/subordinates/{id}/history(id=${subordinate.id})}"
+	          th:action="@{/manager/subordinates/{id}/courses(id=${subordinate.id})}"
 	          method="get">
 
 	        <!-- Preserve current-year/all-years selection -->
@@ -142,7 +133,7 @@
 	            <!-- Previous page -->
 	            <li class="page-item" th:if="${currentPage > 1}">
 	                <a class="page-link"
-	                   th:href="@{/manager/subordinates/{id}/history(
+	                   th:href="@{/manager/subordinates/{id}/courses(
 	                       id=${subordinate.id},
 	                       allYears=${allYears},
 	                       page=${currentPage - 1},
@@ -157,7 +148,7 @@
 	                th:classappend="${currentPage == i} ? 'active'">
 
 	                <a class="page-link"
-	                   th:href="@{/manager/subordinates/{id}/history(
+	                   th:href="@{/manager/subordinates/{id}/courses(
 	                       id=${subordinate.id},
 	                       allYears=${allYears},
 	                       page=${i},
@@ -170,7 +161,7 @@
 	            <!-- Next page -->
 	            <li class="page-item" th:if="${currentPage < totalPages}">
 	                <a class="page-link"
-	                   th:href="@{/manager/subordinates/{id}/history(
+	                   th:href="@{/manager/subordinates/{id}/courses(
 	                       id=${subordinate.id},
 	                       allYears=${allYears},
 	                       page=${currentPage + 1},

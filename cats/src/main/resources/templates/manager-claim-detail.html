@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet"
+	      th:href="@{/css/cats.css}">
+
+	<title>Review Course Fee Claim | CATS</title>
+
+</head>
+
+<body>
+
+	<div th:replace="~{fragments/header :: header}"></div>
+
+
+	<h1>Review Course Fee Claim</h1>
+
+
+	<div th:if="${success}"
+	     class="message message-success"
+	     th:text="${success}">
+	</div>
+
+	<div th:if="${error}"
+	     class="message message-error"
+	     th:text="${error}">
+	</div>
+
+
+	<table class="detail-table">
+
+		<tbody>
+
+			<tr>
+				<th scope="row">Claim ID</th>
+				<td th:text="${claim.id}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Employee</th>
+				<td th:text="${claim.application.employee.name}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Employee ID</th>
+				<td th:text="${claim.application.employee.id}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Course title</th>
+				<td th:text="${claim.application.courseTitle}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Category</th>
+
+				<td th:text="${claim.application.course != null
+						and claim.application.course.category != null
+						? claim.application.course.category.name
+						: (claim.application.legacyCategory != null
+						? claim.application.legacyCategory
+						: 'Not specified')}">
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row">Training provider</th>
+				<td th:text="${claim.application.trainingProvider}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Course period</th>
+
+				<td>
+					<span th:text="${claim.application.startDate}"></span>
+					to
+					<span th:text="${claim.application.endDate}"></span>
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row">Claim amount (S$)</th>
+				<td th:text="${claim.amount}"></td>
+			</tr>
+
+			<tr>
+				<th scope="row">Claim date</th>
+
+				<td th:text="${#temporals.format(
+						claim.claimDate,
+						'dd MMM yyyy, HH:mm')}">
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row">Status</th>
+				<td th:text="${claim.status}"></td>
+			</tr>
+
+
+			<!-- Supporting documents -->
+
+			<tr>
+				<th scope="row">Receipt</th>
+
+				<td>
+					<a th:href="@{/manager/claims/{id}/receipt(id=${claim.id})}"
+					   target="_blank">
+						View receipt
+					</a>
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row">Certificate of completion</th>
+
+				<td>
+					<a th:href="@{/manager/claims/{id}/certificate(id=${claim.id})}"
+					   target="_blank">
+						View certificate
+					</a>
+				</td>
+			</tr>
+
+
+			<!-- Display an existing manager decision when present -->
+
+			<tr th:if="${claim.managerReason != null}">
+				<th scope="row">Manager's decision reason</th>
+				<td th:text="${claim.managerReason}"></td>
+			</tr>
+
+			<tr th:if="${claim.decisionDate != null}">
+				<th scope="row">Decision date</th>
+
+				<td th:text="${#temporals.format(
+						claim.decisionDate,
+						'dd MMM yyyy, HH:mm')}">
+				</td>
+			</tr>
+
+			<tr th:if="${claim.decidedBy != null}">
+				<th scope="row">Decided by</th>
+				<td th:text="${claim.decidedBy.name}"></td>
+			</tr>
+
+		</tbody>
+
+	</table>
+
+	<!-- Display decision controls only for pending claims -->
+	<form th:if="${claim.status.name() == 'PENDING'}"
+	      th:action="@{/manager/claims/{id}/decide(id=${claim.id})}"
+	      method="post">
+
+		<p>
+			<label for="reason">
+				Reason for decision
+			</label>
+
+			<textarea id="reason"
+			          name="reason"
+			          rows="4"
+			          required></textarea>
+		</p>
+
+		<button type="submit"
+		        name="approved"
+		        value="true">
+			Approve claim
+		</button>
+
+		<button type="submit"
+		        name="approved"
+		        value="false"
+		        class="button-danger">
+			Reject claim
+		</button>
+
+	</form>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

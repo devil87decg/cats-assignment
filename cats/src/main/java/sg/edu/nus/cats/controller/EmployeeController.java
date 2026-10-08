@@ -1,5 +1,7 @@
 package sg.edu.nus.cats.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -165,8 +167,32 @@ public class EmployeeController {
 			return "redirect:/";
 		}
 		
-		model.addAttribute("employees", employeeService.findAllEmployees());
-		
+		List<Employee> employees = employeeService.findAllEmployees();
+
+		employees.sort((e1, e2) -> {
+
+		    boolean e1IsLoggedInAdmin =
+		            e1.getUser() != null
+		            && e1.getUser().getId().equals(userId);
+
+		    boolean e2IsLoggedInAdmin =
+		            e2.getUser() != null
+		            && e2.getUser().getId().equals(userId);
+
+		    if (e1IsLoggedInAdmin) {
+		        return -1;
+		    }
+
+		    if (e2IsLoggedInAdmin) {
+		        return 1;
+		    }
+
+		    return 0;
+		});
+
+		model.addAttribute("employees", employees);
+		model.addAttribute("loggedInUserId", userId);
+
 		return "employee-list";
 	}
 	
@@ -290,6 +316,18 @@ public class EmployeeController {
 		}
 		
 		try {
+			
+			Employee employeeToDelete = employeeService.findEmployeeById(id);
+
+			if (employeeToDelete.getUser() != null
+			        && employeeToDelete.getUser().getId().equals(userId)) {
+
+			    redirectAttributes.addFlashAttribute(
+			            "error",
+			            "You cannot delete your own account");
+
+			    return "redirect:/admin/employees";
+			}
 			
 			boolean deleted = employeeService.deleteEmployee(id);
 			

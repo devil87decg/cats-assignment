@@ -16,8 +16,13 @@
 	</p>
 
 	<nav>
-		<a th:href="@{/manager}">Home</a>
-		<a th:href="@{/logout}">Logout</a>
+		<a th:href="@{/}">Home</a>
+		<form th:action="@{/logout}" method="post"
+			  class="logout-form">
+		    <button type="submit" class="btn">
+		        Logout
+		    </button>
+		</form>
 	</nav>
 
 

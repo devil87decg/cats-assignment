@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet"
+	      th:href="@{/css/cats.css}">
+
+	<title>Manager Course Fee Claims | CATS</title>
+
+</head>
+
+<body>
+
+	<nav>
+		<a href="/">Home</a>
+		<a href="/manager/applications">Review applications</a>
+		<a href="/manager/claims">Review course fee claims</a>
+		<a href="/manager/subordinates">Subordinate history</a>
+
+		<form th:action="@{/logout}"
+		      method="post"
+		      class="logout-form">
+
+			<button type="submit"
+			        class="logout-link">
+				Logout
+			</button>
+
+		</form>
+	</nav>
+
+	<h1>Pending Course Fee Claims</h1>
+
+	<!-- Display confirmation when a decision was saved -->
+	<div th:if="${success}"
+	     class="message message-success"
+	     th:text="${success}">
+	</div>
+
+	<!-- Display the reason a decision could not be saved -->
+	<div th:if="${error}"
+	     class="message message-error"
+	     th:text="${error}">
+	</div>
+
+	<p>
+		Review course fee reimbursement claims submitted
+		by your subordinates.
+	</p>
+
+	<p th:if="${#lists.isEmpty(claims)}">
+		There are no course fee claims awaiting your decision.
+	</p>
+
+	<!-- Show the table only when pending claims exist -->
+	<table th:if="${!#lists.isEmpty(claims)}">
+
+		<thead>
+
+			<tr>
+				<th>Employee ID</th>
+				<th>Employee</th>
+				<th>Course title</th>
+				<th>Category</th>
+				<th>Claim amount (S$)</th>
+				<th>Claim date</th>
+				<th>Status</th>
+				<th>Details</th>
+			</tr>
+
+		</thead>
+
+		<tbody>
+
+			<!-- Repeat these rows for each pending claim -->
+			<th:block th:each="claim, row : ${claims}">
+
+				<!-- Show a heading whenever the employee changes -->
+				<tr th:if="${row.first or
+						claim.application.employee.id !=
+						claims[row.index - 1].application.employee.id}">
+
+					<th colspan="8"
+					    th:text="${claim.application.employee.name}">
+					</th>
+
+				</tr>
+
+				<tr>
+
+					<td th:text="${claim.application.employee.id}">
+					</td>
+
+					<td th:text="${claim.application.employee.name}">
+					</td>
+
+					<td th:text="${claim.application.courseTitle}">
+					</td>
+
+					<td th:text="${claim.application.course != null
+							and claim.application.course.category != null
+							? claim.application.course.category.name
+							: (claim.application.legacyCategory != null
+							? claim.application.legacyCategory
+							: 'Not specified')}">
+					</td>
+
+					<td th:text="${claim.amount}">
+					</td>
+
+					<td th:text="${#temporals.format(
+							claim.claimDate,
+							'dd MMM yyyy, HH:mm')}">
+					</td>
+
+					<td th:text="${claim.status}">
+					</td>
+
+					<td>
+						<a th:href="@{/manager/claims/{id}(id=${claim.id})}">
+							Review claim
+						</a>
+					</td>
+
+				</tr>
+
+			</th:block>
+
+		</tbody>
+
+	</table>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

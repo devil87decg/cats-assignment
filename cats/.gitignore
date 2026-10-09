@@ -40,3 +40,6 @@ src/main/resources/application-local.properties
 
 # Course Fee Claim uploaded documents
 /uploads/claims/
+
+# Local Dockerfile
+/Dockerfile

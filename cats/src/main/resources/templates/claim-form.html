@@ -13,18 +13,7 @@
 
 <body>
 
-	<nav>
-		<a href="/">Home</a>
-		<a href="/applications">My Applications</a>
-
-		<form th:action="@{/logout}"
-		      method="post"
-		      class="logout-form">
-			<button type="submit" class="logout-link">
-				Logout
-			</button>
-		</form>
-	</nav>
+	<div th:replace="~{fragments/header :: header}"></div>
 
 	<h1>Course Fee Reimbursement</h1>
 

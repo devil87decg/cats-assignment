@@ -9,20 +9,13 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
 	<h1>Employee Management</h1>
 
 	<p class="page-description">
 		Manage employee profiles and reporting relationships.
 	</p>
-
-	<nav>
-		<a th:href="@{/admin}">Administration</a>
-		<a th:href="@{/admin/employees}">Employees</a>
-
-		<form th:action="@{/logout}" method="post" class="logout-form">
-			<button type="submit" class="logout-link">Logout</button>
-		</form>
-	</nav>
 
 	<div th:if="${success}" class="message message-success" th:text="${success}">
 	</div>

@@ -15,18 +15,8 @@
 </head>
 		
 <body>
-	
-		<!-- Provide links to the home page, application form, and logout -->
-		<nav>
-			<a href="/">Home</a>
-			<a href="/applications/new">New application</a>
-			
-			<form th:action="@{/logout}" method="post"
-			      class="logout-form">
-			    <button type="submit" class="logout-link">Logout</button>
-			</form>
-			
-		</nav>
+	<div th:replace="~{fragments/header :: header}"></div>
+
 	
 		<h1>My Applications</h1>
 		

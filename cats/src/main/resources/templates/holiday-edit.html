@@ -11,19 +11,10 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
     <h1>Edit Public Holiday</h1>
     <p>Update an existing public holiday calendar used for training-day calculations.</p>
-
-    <div class="navbar">
-        <a th:href="@{/admin/holidays}">Back to Public Holidays</a>
-        |
-        <a th:href="@{/admin}">Administration</a>
-        |
-        <form th:action="@{/logout}" method="post"
-              class="logout-form">
-            <button type="submit" class="logout-link">Logout</button>
-        </form>
-    </div>
 
     <div th:if="${error}"
          class="error-message"

@@ -183,9 +183,12 @@ UPDATE employees SET supervisor_id = 125 WHERE id = 103;
 UPDATE employees SET supervisor_id = 125 WHERE id = 106;
 UPDATE employees SET supervisor_id = 125 WHERE id = 109;
 UPDATE employees SET supervisor_id = 125 WHERE id = 112;
+UPDATE employees SET supervisor_id = 125 WHERE id = 115;
 UPDATE employees SET supervisor_id = 125 WHERE id = 118;
 UPDATE employees SET supervisor_id = 125 WHERE id = 121;
 UPDATE employees SET supervisor_id = 125 WHERE id = 124;
+UPDATE employees SET supervisor_id = 125 WHERE id = 3;
+UPDATE employees SET supervisor_id = 125 WHERE id = 5;
 
 -- ============================================================
 -- COURSE CATEGORIES

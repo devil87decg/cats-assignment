@@ -8,24 +8,13 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
 
 	<h1>Edit Training Provider</h1>
 
 	<p>
 		Update this training provider.
 	</p>
-
-	<nav>
-		<a th:href="@{/admin}">Administration</a>
-		<a th:href="@{/admin/training-providers}">
-			Training Providers
-		</a>
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-	</nav>
-
 
 	<div th:if="${error}"
 		 class="message message-error"

@@ -41,7 +41,8 @@ INSERT IGNORE INTO users (id, username, active, password_hash, role) VALUES
 (121, 'ramesh3',   b'1', '$2a$10$mkKUiBSmGW3lFcSh0MBOCOltZdPPLw.l9fgLfAbAFKYrJNA80Jtem', 'MANAGER'),
 (122, 'dominic',   b'1', '$2a$10$sPov33e2aIrDaIYObOacue06zzFphY4DueqAE7YiRLfKtfQzMZjL2', 'ADMIN'),
 (123, 'dominic2',  b'1', '$2a$10$n2WaUnTLiXE1Y43sC9BH6e.LoOu.5/gQvvqW4WVfYLbRFvYt47RHy', 'EMPLOYEE'),
-(124, 'dominic3',  b'1', '$2a$10$aYrIhsTPohwl9CLnVKC0je01TxgPFfJg.yo1C4giZ9wcGTSKELkQK', 'MANAGER');
+(124, 'dominic3',  b'1', '$2a$10$aYrIhsTPohwl9CLnVKC0je01TxgPFfJg.yo1C4giZ9wcGTSKELkQK', 'MANAGER'),
+(125, 'ceo',       b'1', '$2a$12$DasSwOUzsJFfdVhZhRfJXevplHt2w0bNYtKq2cB/YwUJcZd3f/njq', 'MANAGER');
 
 -- ============================================================
 -- EMPLOYEES
@@ -159,7 +160,11 @@ VALUES
 
 (124, 'Business', 'Business Manager',
  'Dominic Manager', 'PROFESSIONAL',
- NULL, 124, 'dominic3@example.com');
+ NULL, 124, 'dominic3@example.com'),
+ 
+ (125, 'CEO', 'CEO', 
+ 'Tim CEO', 'PROFESSIONAL', 
+ NULL, 125, 'CEO@example.com');
  
  -- ============================================================
 -- EXTENDED DEMO REPORTING RELATIONSHIPS
@@ -174,6 +179,16 @@ UPDATE employees SET supervisor_id = 115 WHERE id = 114;
 UPDATE employees SET supervisor_id = 118 WHERE id = 117;
 UPDATE employees SET supervisor_id = 121 WHERE id = 120;
 UPDATE employees SET supervisor_id = 124 WHERE id = 123;
+UPDATE employees SET supervisor_id = 125 WHERE id = 103;
+UPDATE employees SET supervisor_id = 125 WHERE id = 106;
+UPDATE employees SET supervisor_id = 125 WHERE id = 109;
+UPDATE employees SET supervisor_id = 125 WHERE id = 112;
+UPDATE employees SET supervisor_id = 125 WHERE id = 115;
+UPDATE employees SET supervisor_id = 125 WHERE id = 118;
+UPDATE employees SET supervisor_id = 125 WHERE id = 121;
+UPDATE employees SET supervisor_id = 125 WHERE id = 124;
+UPDATE employees SET supervisor_id = 125 WHERE id = 2;
+UPDATE employees SET supervisor_id = 125 WHERE id = 4;
 
 -- ============================================================
 -- COURSE CATEGORIES
@@ -547,7 +562,8 @@ INSERT IGNORE INTO training_allowance
 (113, 10.00, 3000.00, 2026, 113), (114, 10.00, 2600.00, 2026, 114), (115, 12.00, 4000.00, 2026, 115),
 (116, 10.00, 3000.00, 2026, 116), (117, 10.00, 3000.00, 2026, 117), (118, 12.00, 4200.00, 2026, 118),
 (119, 10.00, 3000.00, 2026, 119), (120,  8.00, 2200.00, 2026, 120), (121, 12.00, 3500.00, 2026, 121),
-(122, 10.00, 3000.00, 2026, 122), (123, 10.00, 2700.00, 2026, 123), (124, 12.00, 3900.00, 2026, 124);
+(122, 10.00, 3000.00, 2026, 122), (123, 10.00, 2700.00, 2026, 123), (124, 12.00, 3900.00, 2026, 124),
+(125, 0.00, 0.00, 2026, 125);
 
 -- ============================================================
 -- PUBLIC HOLIDAY

@@ -13,25 +13,10 @@
 </head>	
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
 	
 	<h1>Administration</h1>
-	
-	<nav>
-	    <a href="/admin/allowances/new">Annual Allowances</a>
-	    <a href="/admin/employees/new">Create Employee</a>
-	    <a th:href="@{/admin/employees}">Manage Employees</a>
-	    <a th:href="@{/admin/holidays}">Public Holidays</a>
-	    <a th:href="@{/admin/course-categories}"> Course Categories </a>
-	    <a th:href="@{/admin/training-providers}"> Training Providers </a>
-		<a th:href="@{/admin/courses}"> Course Catalogue </a>
-	    <a th:href="@{/account/password}"> Change Password</a>
-	    
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-		
-	</nav>
 	
 	<!-- Training calendar -->
 	<div th:replace="~{fragments/training-calendar :: trainingCalendar}"></div>

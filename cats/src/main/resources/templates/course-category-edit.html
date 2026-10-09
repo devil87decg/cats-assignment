@@ -8,26 +8,13 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
 
 	<h1>Edit Course Category</h1>
 
 	<p>
 		Update this course category.
 	</p>
-
-	<nav>
-		<a th:href="@{/admin}">Administration</a>
-		<a th:href="@{/admin/course-categories}">
-			Course Categories
-		</a>
-		
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-		
-	</nav>
-
 
 	<div th:if="${error}"
 		 class="message message-error"

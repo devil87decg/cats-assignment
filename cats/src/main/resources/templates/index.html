@@ -14,6 +14,7 @@
 </head>
 
 <body>
+	<div th:replace="~{fragments/header :: header}"></div>
 
 	<h1>Course Application Tracking System</h1>
 
@@ -21,38 +22,6 @@
 
 	<div th:if="${error}" class="message message-error" th:text="${error}"></div>
 
-	<nav>
-		<a href="/applications">My application(s)</a>
-		<a href="/applications/new">New application</a>
-		<a href="/claims">Training Ledger</a>
-
-		<a th:if="${isManager == true}"
-		   th:href="@{/manager/applications}">
-			Review applications
-		</a>
-
-		<a th:if="${isManager == true}"
-		   th:href="@{/manager/claims}">
-			Review course fee claims
-		</a>
-
-		<a th:if="${isManager == true}"
-		   th:href="@{/manager/subordinates}">
-			Subordinate history
-		</a>
-
-		<a th:if="${isManager == true}"
-		   th:href="@{/reports}">
-			Reports
-		</a>
-		
-		<a th:href="@{/account/password}">Change password</a>
-
-		<form th:action="@{/logout}" method="post"
-		      class="logout-form">
-		    <button type="submit" class="logout-link">Logout</button>
-		</form>
-	</nav>
 	<!-- Stats Cards -->
 	<div class="page-wrapper">
 		<section class="cards">

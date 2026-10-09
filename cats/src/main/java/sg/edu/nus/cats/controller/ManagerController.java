@@ -606,7 +606,7 @@ public class ManagerController {
 	public String showSubordinateCourseHistory(
 			@PathVariable("id") Long employeeId,
 			@RequestParam(name = "page", defaultValue = "1") int pageNo,
-			@RequestParam(name = "size", defaultValue = "5") int pageSize,
+			@RequestParam(name = "size", defaultValue = "10") int pageSize,
 			// defaultValue = "false" -> manager has not requested all years, 
 			// so default show all employee's application for current year
 			@RequestParam(name = "allYears", defaultValue = "false") boolean allYears,

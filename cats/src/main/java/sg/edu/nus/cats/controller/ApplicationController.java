@@ -218,7 +218,7 @@ public class ApplicationController {
 	public String showMyApplications(
 			HttpSession session,
 			@RequestParam(value = "page", defaultValue = "1") int pageNo,
-			@RequestParam(value = "size", defaultValue = "5") int pageSize,
+			@RequestParam(value = "size", defaultValue = "10") int pageSize,
 			Model model) {
 
 		// check if employee have login

@@ -310,6 +310,46 @@ INSERT IGNORE INTO course_application
 (120, 'Professional Scrum Master I',    'Scrum.org',             '2026-12-03', '2026-12-04', 2.00,  800.00, 'Refresh agile leadership skills.',       'Share Scrum improvements.',               'APPROVED',  'Supports programme delivery.', NULL, '2026-10-21 11:00:00', NULL, 112, 104);
 
 -- ============================================================
+-- PAGINATION DEMO APPLICATIONS - Chloe Employee (108)
+-- 30 additional 2026 applications, IDs 301-330.
+-- 25 excluded statuses and 5 zero-fee internal applications.
+-- ============================================================
+INSERT IGNORE INTO course_application
+(id, course_title, training_provider, start_date, end_date, duration_days, fee,
+ justification, work_dissemination, status, manager_reason, experience_comment,
+ decision_date, decided_by_id, employee_id, course_id) VALUES
+(301, 'Leadership Essentials', 'NUS-ISS', '2026-01-05', '2026-01-06', 2.00, 500.00, 'Pagination demo application 1.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 107),
+(302, 'Data Visualisation Essentials', 'NUS-ISS', '2026-01-14', '2026-01-15', 2.00, 450.00, 'Pagination demo application 2.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 108),
+(303, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-01-23', '2026-01-24', 2.00, 650.00, 'Pagination demo application 3.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 102),
+(304, 'Leadership Essentials', 'NUS-ISS', '2026-02-01', '2026-02-02', 2.00, 500.00, 'Pagination demo application 4.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 107),
+(305, 'Data Visualisation Essentials', 'NUS-ISS', '2026-02-10', '2026-02-11', 2.00, 450.00, 'Pagination demo application 5.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 108),
+(306, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-02-19', '2026-02-20', 2.00, 650.00, 'Pagination demo application 6.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 102),
+(307, 'Leadership Essentials', 'NUS-ISS', '2026-02-28', '2026-03-01', 2.00, 500.00, 'Pagination demo application 7.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 107),
+(308, 'Data Visualisation Essentials', 'NUS-ISS', '2026-03-09', '2026-03-10', 2.00, 450.00, 'Pagination demo application 8.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 108),
+(309, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-03-18', '2026-03-19', 2.00, 650.00, 'Pagination demo application 9.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 102),
+(310, 'Leadership Essentials', 'NUS-ISS', '2026-03-27', '2026-03-28', 2.00, 500.00, 'Pagination demo application 10.', 'Share relevant learning with the team.', 'DELETED', NULL, NULL, NULL, NULL, 108, 107),
+(311, 'Data Visualisation Essentials', 'NUS-ISS', '2026-04-05', '2026-04-06', 2.00, 450.00, 'Pagination demo application 11.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-03-29 10:00:00', 109, 108, 108),
+(312, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-04-14', '2026-04-15', 2.00, 650.00, 'Pagination demo application 12.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-04-07 10:00:00', 109, 108, 102),
+(313, 'Leadership Essentials', 'NUS-ISS', '2026-04-23', '2026-04-24', 2.00, 500.00, 'Pagination demo application 13.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-04-16 10:00:00', 109, 108, 107),
+(314, 'Data Visualisation Essentials', 'NUS-ISS', '2026-05-02', '2026-05-03', 2.00, 450.00, 'Pagination demo application 14.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-04-25 10:00:00', 109, 108, 108),
+(315, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-05-11', '2026-05-12', 2.00, 650.00, 'Pagination demo application 15.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-05-04 10:00:00', 109, 108, 102),
+(316, 'Leadership Essentials', 'NUS-ISS', '2026-05-20', '2026-05-21', 2.00, 500.00, 'Pagination demo application 16.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-05-13 10:00:00', 109, 108, 107),
+(317, 'Data Visualisation Essentials', 'NUS-ISS', '2026-05-29', '2026-05-30', 2.00, 450.00, 'Pagination demo application 17.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-05-22 10:00:00', 109, 108, 108),
+(318, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-06-07', '2026-06-08', 2.00, 650.00, 'Pagination demo application 18.', 'Share relevant learning with the team.', 'REJECTED', 'Not prioritised for this training cycle.', NULL, '2026-05-31 10:00:00', 109, 108, 102),
+(319, 'Leadership Essentials', 'NUS-ISS', '2026-06-16', '2026-06-17', 2.00, 500.00, 'Pagination demo application 19.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 107),
+(320, 'Data Visualisation Essentials', 'NUS-ISS', '2026-06-25', '2026-06-26', 2.00, 450.00, 'Pagination demo application 20.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 108),
+(321, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-07-04', '2026-07-05', 2.00, 650.00, 'Pagination demo application 21.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 102),
+(322, 'Leadership Essentials', 'NUS-ISS', '2026-07-13', '2026-07-14', 2.00, 500.00, 'Pagination demo application 22.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 107),
+(323, 'Data Visualisation Essentials', 'NUS-ISS', '2026-07-22', '2026-07-23', 2.00, 450.00, 'Pagination demo application 23.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 108),
+(324, 'Microsoft Azure Fundamentals', 'Microsoft Learn', '2026-07-31', '2026-08-01', 2.00, 650.00, 'Pagination demo application 24.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 102),
+(325, 'Leadership Essentials', 'NUS-ISS', '2026-08-09', '2026-08-10', 2.00, 500.00, 'Pagination demo application 25.', 'Share relevant learning with the team.', 'CANCELLED', NULL, NULL, NULL, NULL, 108, 107),
+(326, 'Cybersecurity Awareness', 'Internal Academy', '2026-08-18', '2026-08-18', 0.50, 0.00, 'Pagination demo application 26.', 'Share relevant learning with the team.', 'APPROVED', 'Approved for staff development.', NULL, '2026-08-11 10:00:00', 109, 108, 106),
+(327, 'Spring Boot Internal Workshop', 'Internal Academy', '2026-08-27', '2026-08-27', 1.00, 0.00, 'Pagination demo application 27.', 'Share relevant learning with the team.', 'APPROVED', 'Approved for staff development.', NULL, '2026-08-20 10:00:00', 109, 108, 105),
+(328, 'Agile Ways of Working', 'Internal Academy', '2026-09-05', '2026-09-05', 1.00, 0.00, 'Pagination demo application 28.', 'Share relevant learning with the team.', 'APPROVED', 'Approved for staff development.', NULL, '2026-08-29 10:00:00', 109, 108, 109),
+(329, 'Cybersecurity Awareness', 'Internal Academy', '2026-09-14', '2026-09-14', 0.50, 0.00, 'Pagination demo application 29.', 'Share relevant learning with the team.', 'COMPLETED', 'Approved for staff development.', 'Completed training successfully.', '2026-09-07 10:00:00', 109, 108, 106),
+(330, 'Spring Boot Internal Workshop', 'Internal Academy', '2026-09-23', '2026-09-23', 1.00, 0.00, 'Pagination demo application 30.', 'Share relevant learning with the team.', 'COMPLETED', 'Approved for staff development.', 'Completed training successfully.', '2026-09-16 10:00:00', 109, 108, 105);
+
+-- ============================================================
 -- COURSE FEE CLAIM DEMO APPLICATIONS
 -- Completed External Course / Professional Certification
 -- applications used to demonstrate reimbursement workflows.
@@ -557,7 +597,7 @@ INSERT IGNORE INTO training_allowance
 (id, day_limit, fee_budget, year, employee_id) VALUES
 (101, 10.00, 3000.00, 2026, 101), (102, 10.00, 3500.00, 2026, 102), (103, 12.00, 4000.00, 2026, 103),
 (104, 10.00, 3000.00, 2026, 104), (105,  8.00, 2200.00, 2026, 105), (106, 12.00, 3500.00, 2026, 106),
-(107, 10.00, 2800.00, 2026, 107), (108, 10.00, 2400.00, 2026, 108), (109, 12.00, 3600.00, 2026, 109),
+(107, 10.00, 2800.00, 2026, 107), (108, 15.00, 3000.00, 2026, 108), (109, 12.00, 3600.00, 2026, 109),
 (110, 10.00, 3000.00, 2026, 110), (111,  9.00, 2500.00, 2026, 111), (112, 12.00, 3800.00, 2026, 112),
 (113, 10.00, 3000.00, 2026, 113), (114, 10.00, 2600.00, 2026, 114), (115, 12.00, 4000.00, 2026, 115),
 (116, 10.00, 3000.00, 2026, 116), (117, 10.00, 3000.00, 2026, 117), (118, 12.00, 4200.00, 2026, 118),

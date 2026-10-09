@@ -37,3 +37,6 @@ src/main/resources/application-local.properties
 
 # Ignore macOS folder metadata.
 .DS_Store
+
+# Course Fee Claim uploaded documents
+/uploads/claims/

@@ -60,7 +60,7 @@ public class EmailService {
 
 	public void notifyEmployeeOfDecision(ApplicationStatus applicationStatus, String managerReason, String employeeName,
 			String employeeEmail) {
-		String subject = "Course application" + applicationStatus;
+		String subject = "Course application-" + applicationStatus;
 		String reason = managerReason == null ? "No reason provided." : managerReason;
 		String body = "Hello " + employeeName + ",\n\n" + "Your course application has been " + applicationStatus
 				+ ".\n\n" + "Manager's reason: " + reason + "\n\n" + loginUrl() + "\n\n"

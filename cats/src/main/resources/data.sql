@@ -132,7 +132,7 @@ VALUES
 
 (117, 'IT', 'Systems Analyst',
  'Xinxian Employee', 'PROFESSIONAL',
- NULL, 117, 'xinxian2@example.com'),
+ NULL, 117, 'xin.xian.quek@u.nus.edu'),
 
 (118, 'IT', 'IT Manager',
  'Xinxian Manager', 'PROFESSIONAL',
@@ -148,7 +148,7 @@ VALUES
 
 (121, 'Learning', 'Learning Manager',
  'Ramesh Manager', 'PROFESSIONAL',
- NULL, 121, 'ramesh3@example.com'),
+ NULL, 121, 'ramesh.dakshinamoorthy@u.nus.edu'),
 
 (122, 'Administration', 'Business Administrator',
  'Dominic Admin', 'ADMINISTRATIVE',
@@ -176,7 +176,7 @@ UPDATE employees SET supervisor_id = 106 WHERE id = 105;
 UPDATE employees SET supervisor_id = 109 WHERE id = 108;
 UPDATE employees SET supervisor_id = 112 WHERE id = 111;
 UPDATE employees SET supervisor_id = 115 WHERE id = 114;
-UPDATE employees SET supervisor_id = 118 WHERE id = 117;
+UPDATE employees SET supervisor_id = 121 WHERE id = 117;
 UPDATE employees SET supervisor_id = 121 WHERE id = 120;
 UPDATE employees SET supervisor_id = 124 WHERE id = 123;
 UPDATE employees SET supervisor_id = 125 WHERE id = 103;

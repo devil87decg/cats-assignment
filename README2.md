@@ -19,6 +19,13 @@ The authenticated employee page is:
 http://cats-alb-1096256249.us-east-1.elb.amazonaws.com/applications
 ```
 
+The local Docker copy is separate from AWS and is available at:
+
+```text
+http://localhost:8080/login
+http://localhost:8080/applications
+```
+
 The ALB supplies one stable address for the website and application-generated
 links. The Fargate task can be replaced without changing this address, provided
 the ALB is retained.
@@ -87,9 +94,31 @@ Browser -> ALB -> ECS Fargate -> RDS MySQL
 
 ## Evidence screenshots
 
-These pictures are taken from *CATS AWS Deployment Evidence.docx*, in the same
+Local Docker screenshots were captured from `http://localhost:8080`. AWS
+screenshots are taken from *CATS AWS Deployment Evidence.docx*, in the same
 order. No AWS access keys, database passwords, session tokens or Gmail
 application passwords are included.
+
+### Local Docker containers
+
+![docker compose ps showing cats-cats-1 and healthy MySQL](deployment-evidence/screenshots/L0_docker_compose_ps.png)
+
+**Figure L0.** Local Docker Compose runs the CATS container on port 8080 and a
+healthy MySQL 8.4 container.
+
+### Local CATS login
+
+![CATS login page on localhost:8080](deployment-evidence/screenshots/L1_localhost_login.png)
+
+**Figure L1.** The CATS login page served from Docker at
+`http://localhost:8080/login`.
+
+### Local authenticated applications
+
+![My Applications page on localhost:8080](deployment-evidence/screenshots/L2_localhost_applications.png)
+
+**Figure L2.** Employee My Applications loaded from the local Docker database
+at `http://localhost:8080/applications`.
 
 ### Live CATS login through the ALB
 

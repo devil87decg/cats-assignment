@@ -25,6 +25,8 @@ The system manages employee training/course applications, manager approval workf
 
 The libraries are listed in `cats/pom.xml`. The Maven wrapper is included, so Maven does not need to be installed separately.
 
+The Java library files are included in `cats/lib/`. Maven may still need internet access to download build tools when building or running the source code.
+
 ### Database
 
 - **MySQL Server** stores accounts, employee profiles, courses, applications, allowances, holidays and claims.
@@ -38,7 +40,7 @@ The local database name used in this guide is `cats`.
 - Thymeleaf builds the HTML pages using data supplied by the controllers.
 - HTML and CSS provide the page content and appearance.
 - JavaScript helps update form fields, such as the course end date.
-- Chart.js displays the training ledger chart. It is currently loaded from an internet link.
+- Chart.js displays the training ledger chart. A local copy and its licence are included in `cats/src/main/resources/static/js/`.
 
 ### Development Tools
 

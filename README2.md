@@ -99,6 +99,3 @@ Successful authentication and application data display confirm the full path:
 ```text
 Browser -> ALB -> ECS Fargate -> RDS MySQL
 ```
-
-## Scope
-

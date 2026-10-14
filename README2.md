@@ -103,7 +103,7 @@ application passwords are included.
 
 ![docker image ls and docker ps showing cats-local, cats-aws, ECR tag and running containers](deployment-evidence/screenshots/L0_docker_images_and_ps.png)
 
-**Figure L0.** `docker image ls` shows `cats-local:latest` (same image ID as the
+**Figure .** `docker image ls` shows `cats-local:latest` (same image ID as the
 ECR tag) created on 12 October 2026. `docker ps` shows `cats-cats-1` on port
 8080 and healthy `cats-mysql-1`.
 

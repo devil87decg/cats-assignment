@@ -34,8 +34,7 @@ the ALB is retained.
 7. Target group `cats-tg` forwards the traffic to the ECS task on port 8080.
 8. The Spring Boot application connects to the private RDS MySQL database on
    port 3306.
-9. Application logs are written to CloudWatch log group `/ecs/cats`.
-10. The AWS profile is selected at runtime and the ALB address is supplied as
+9. The AWS profile is selected at runtime and the ALB address is supplied as
     the application base URL.
 
 ## Network controls

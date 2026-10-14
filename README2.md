@@ -102,11 +102,3 @@ Browser -> ALB -> ECS Fargate -> RDS MySQL
 
 ## Scope
 
-This package contains deployment evidence only. It does not contain source
-code, AWS credentials, database passwords or Gmail application passwords.
-
-Email receipt screenshots are not included because no new external email test
-was performed while collecting this evidence.
-
-AWS Academy resources and credentials are temporary. The URL stops working if
-the lab removes the ALB or the deployment is torn down.

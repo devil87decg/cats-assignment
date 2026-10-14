@@ -824,5 +824,8 @@ The team used ChatGPT to help draft, structure and format the README files and i
 
 Additionally, ChatGPT's AI image generation tool was used to create eight customised cat illustrations representing each team member's role for the Work Distribution slide (slide 2) in our project presentation.
 
+Cursor was used to help prepare and upload the AWS deployment evidence README and screenshots to GitHub. It also helped organise the README so that the deployment screenshots could be displayed directly in the document.
+
 The team am responsible for the content and quality of the submitted work inlucding code and documentation.
+
 

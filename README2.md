@@ -65,7 +65,7 @@ will no longer load.
 | Load balancer | `cats-alb` |
 | Target group / state | `cats-tg` / `healthy` |
 | RDS identifier | `database-1` |
-| Database | MySQL 8.0.45, `db.t3.micro`, 2 GiB, `cats` |
+| Database | MySQL 8.0.45, `db.t3.micro`, 20 GB, `cats` |
 | CloudWatch log group | `/ecs/cats` |
 
 ## Verified result
@@ -87,13 +87,9 @@ Browser -> ALB -> ECS Fargate -> RDS MySQL
 
 ## Evidence screenshots
 
-The live application screenshots and AWS console pictures come from the Word
-document. The CLI result images confirm the same ECS, ALB, RDS, ECR and
-CloudWatch state. No AWS access keys, database passwords, session tokens or
-Gmail application passwords are included.
-
-Email receipt screenshots are not included because no new external email test
-was performed while collecting this evidence.
+These pictures are taken from *CATS AWS Deployment Evidence.docx*, in the same
+order. No AWS access keys, database passwords, session tokens or Gmail
+application passwords are included.
 
 ### Live CATS login through the ALB
 
@@ -107,55 +103,35 @@ was performed while collecting this evidence.
 
 **Figure 2.** The employee My Applications page loaded through ALB, ECS and RDS.
 
-### ECS deployment result
+### ECR repository result
 
-![ECS service active with one running task and a completed rollout](deployment-evidence/screenshots/03_ECS_Deployment_Success.png)
+![ECR private repository sa63/cats in the AWS console](deployment-evidence/screenshots/03_ECR_Private_Repository.png)
 
-**Figure 3.** ECS service `cats` is `ACTIVE`, one task is running, and the
-rollout completed.
+**Figure 3.** Amazon ECR shows private repository `sa63/cats`.
 
 ### Application Load Balancer result
 
-![ALB active with public DNS hostname](deployment-evidence/screenshots/04_ALB_Active_DNS_Address.png)
-
-![Internet-facing ALB cats-alb shown as Active in the AWS console](deployment-evidence/screenshots/11_ALB_Console_Active.png)
+![Internet-facing ALB cats-alb shown as Active in the AWS console](deployment-evidence/screenshots/04_ALB_Console_Active.png)
 
 **Figure 4.** The internet-facing Application Load Balancer is active and has a
 public DNS name.
 
 ### ALB target health result
 
-![Target group with one healthy target on port 8080](deployment-evidence/screenshots/05_ALB_Target_Healthy.png)
+![AWS CLI target health table showing 172.31.34.94 port 8080 healthy](deployment-evidence/screenshots/05_ALB_Target_Health_CLI.png)
 
 **Figure 5.** Target group `cats-tg` reports one healthy ECS target on port
 8080.
 
 ### RDS database result
 
-![Private RDS MySQL database available](deployment-evidence/screenshots/06_RDS_Database_Available.png)
-
-![RDS database-1 shown as Available in the AWS console](deployment-evidence/screenshots/12_RDS_Console_Available.png)
+![RDS database-1 shown as Available in the AWS console](deployment-evidence/screenshots/06_RDS_Console_Available.png)
 
 **Figure 6.** RDS MySQL database `database-1` is available.
 
-### ECR image result
-
-![Latest CATS image stored in ECR](deployment-evidence/screenshots/07_ECR_Image.png)
-
-![ECR private repository sa63/cats in the AWS console](deployment-evidence/screenshots/10_ECR_Private_Repository_Console.png)
-
-**Figure 7.** The latest CATS image is stored in ECR repository `sa63/cats`.
-
-### CloudWatch startup result
-
-![CloudWatch startup with AWS profile and no recent errors](deployment-evidence/screenshots/08_CloudWatch_Startup_No_Errors.png)
-
-**Figure 8.** The application started with the AWS profile and no recent errors
-were found.
-
 ### Deployment architecture
 
-![Architecture overview for ALB, ECS, RDS, ECR and Gmail SMTP](deployment-evidence/screenshots/09_Architecture_ALB_ECS_RDS.png)
+![Architecture overview for ALB, ECS, RDS, ECR and Gmail SMTP](deployment-evidence/screenshots/07_Architecture_ALB_ECS_RDS.png)
 
-**Figure 9.** Browser traffic passes through ALB to ECS, which connects to
+**Figure 7.** Browser traffic passes through ALB to ECS, which connects to
 private RDS and Gmail SMTP.

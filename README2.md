@@ -99,12 +99,13 @@ screenshots are taken from *CATS AWS Deployment Evidence.docx*, in the same
 order. No AWS access keys, database passwords, session tokens or Gmail
 application passwords are included.
 
-### Local Docker containers
+### Local Docker images and containers
 
-![docker compose ps showing cats-cats-1 and healthy MySQL](deployment-evidence/screenshots/L0_docker_compose_ps.png)
+![docker image ls and docker ps showing cats-local, cats-aws, ECR tag and running containers](deployment-evidence/screenshots/L0_docker_images_and_ps.png)
 
-**Figure L0.** Local Docker Compose runs the CATS container on port 8080 and a
-healthy MySQL 8.4 container.
+**Figure L0.** `docker image ls` shows `cats-local:latest` (same image ID as the
+ECR tag) created on 12 October 2026. `docker ps` shows `cats-cats-1` on port
+8080 and healthy `cats-mysql-1`.
 
 ### Local CATS login
 

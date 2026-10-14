@@ -789,6 +789,22 @@ Keep the app password private. The `localhost` link works on the computer runnin
 
 Uploaded receipts and certificates are saved in `uploads/claims/`, relative to the folder used to run the application. Run from the inner `cats` folder consistently and keep uploaded files with the matching database records.
 
+### Sample Claims and Missing Documents
+
+The seeded data was included for testing the CATS code and application during development.
+
+The seed data includes sample claim records, but their receipt and certificate files are not included in the project. These missing files do not prevent CATS from starting. The sample claims can appear in the ledger, but opening their receipt or certificate will fail.
+
+You can still try a new claim using an employee account that owns an eligible application. The application must:
+
+- be `COMPLETED`
+- be outside internal training and have a fee greater than zero
+- have no existing claim
+
+Choose an eligible completed application with no claim and upload your own sample receipt and completion certificate. If none is available, use an approved paid course that has already ended and record its completion first. Switching employee accounts alone does not make an application eligible.
+
+The employee's assigned manager can then review the new claim and its uploaded documents.
+
 ### Common Problems
 
 | Problem                           | What to check                                                        |
@@ -809,3 +825,4 @@ The team used ChatGPT to help draft, structure and format the README files and i
 Additionally, ChatGPT's AI image generation tool was used to create eight customised cat illustrations representing each team member's role for the Work Distribution slide (slide 2) in our project presentation.
 
 The team am responsible for the content and quality of the submitted work inlucding code and documentation.
+

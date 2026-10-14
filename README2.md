@@ -79,7 +79,7 @@ AWS access keys, database passwords or email credentials are included.
 - RDS identifier: `database-1`
 - Database engine: MySQL 8.0.45
 - Database class: `db.t3.micro`
-- Database storage: 20 GiB
+- Database storage: 2 GiB
 - Database name: `cats`
 - CloudWatch log group: `/ecs/cats`
 
